@@ -1,0 +1,153 @@
+I"‰A<h1 id="introduction">Introduction</h1>
+<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#introduction" id="markdown-toc-introduction">Introduction</a></li>
+  <li><a href="#when-to-use-segment-tree" id="markdown-toc-when-to-use-segment-tree">When to Use Segment Tree</a></li>
+  <li><a href="#implementation" id="markdown-toc-implementation">Implementation</a>    <ul>
+      <li><a href="#header-file" id="markdown-toc-header-file">Header File</a></li>
+      <li><a href="#test-file" id="markdown-toc-test-file">Test File</a></li>
+    </ul>
+  </li>
+</ul>
+
+  </nav>
+</aside>
+<p><span style="display:block; 	float:left; 	font-family:Georgia; 	font-size: 310%; 	font-weight: bold; 	line-height: 90%; 	margin-right: 6px; 	margin-bottom:-2px; 	margin-top: 7px;">S</span>egment tree is used to efficiently answer <em>dynamic range</em> queries, which is abbreviated as a <strong>RMQ</strong> problem. Suppose there is
+an array of size $n$. The question is to find the index of the minimum element in an array with range $[i, j]$.</p>
+
+<p>For example if we have the following data in an array $A$:</p>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Index</td>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+      <td>3</td>
+      <td>4</td>
+      <td>5</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>Value</td>
+      <td>18</td>
+      <td>17</td>
+      <td>13</td>
+      <td>19</td>
+      <td>15</td>
+      <td>11</td>
+      <td>20</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Then, $RMQ(0, 6) = 5$, $RMQ(0,4) = 2$.</p>
+
+<p>The brute force solution is to traverse every element between the two given indices, which will take $O(n)$ time per query.
+To improve it, <strong>Segment tree</strong> can be used which takes $O(n)$ time to construct and $O(\log n)$ time per-query.</p>
+
+<p>Segment tree is a binary structure in theory. But for simplicity, we are going to use 1-based compact array to represent it. In implementation, this will be <code class="language-plaintext highlighter-rouge">vector&lt;int&gt; st</code>.
+Under such settings, index 1 (skipping index 0) is the root and the left and right children of index $p$ are at index $2p$ and $2p+1$ respectively. The value of <code class="language-plaintext highlighter-rouge">sp[t]</code> is the RMQ value of the segment associate
+with index $p$.</p>
+
+<p>The root of segment tree represents segment $[0, n-1]$. For each $[L, R]$ stored in index $p$ where $L!=R$, the segment will split into $[L, (L+R)/2]$ and $[(L+R)/2 + 1, R]$ in a 
+left and right vertices. This building process runs recursively until leaf nodes are hit where $L=R$.</p>
+
+<p>Answering for $RMQ(i, j)$ query where $i &lt; j$ is done recursively. Let $p1 = RMQ(i, (i+j)/2)$ and $p2 = RMQ((i+j)/2 + 1, j)$.
+Then compare $A[p1]$ with $A[p2]$, set the answer to be the smaller one. Detailed implementation is showed below.</p>
+
+<figure class="">
+  <img src="/assets/images/segment_tree.png" alt="Segment Tree" />
+  
+    <figcaption>Segment Tree (VisuAlgo)
+</figcaption>
+  
+</figure>
+
+<h1 id="when-to-use-segment-tree">When to Use Segment Tree</h1>
+
+<p>Note that segment tree is overkill for static range queries. There exists $O(n \log n)$ Dynamic Programming solution for it which takes only $O(1)$ time per-query. The idea is to build a
+table where $i, j$ position value is the minimum value for the sub-array starting at position $i$ with length $2^j$. I will try to describe the details in another post.
+However, when the original array is frequently updated, segment tree is very useful and efficient.</p>
+
+<h1 id="implementation">Implementation</h1>
+
+<h2 id="header-file">Header File</h2>
+
+<p>The following is <code class="language-plaintext highlighter-rouge">segment_tree.hpp</code> file.</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#ifndef MY_SEGMENT_TREE
+#define MY_SEGMENT_TREE
+#include &lt;vector&gt;
+#include &lt;iostream&gt;
+</span>
+<span class="k">class</span> <span class="nc">SegmentTree</span><span class="p">{</span>
+<span class="nl">private:</span>
+  <span class="c1">// st is 1-based conpact array</span>
+  <span class="c1">// A is the original array</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">st</span><span class="p">,</span> <span class="n">A</span><span class="p">;</span>
+  <span class="c1">// n is the size of the data array</span>
+  <span class="kt">int</span> <span class="n">n</span><span class="p">;</span>
+  <span class="c1">// get left child index in compact array</span>
+  <span class="kt">int</span> <span class="n">left</span><span class="p">(</span><span class="kt">int</span> <span class="n">p</span><span class="p">){</span> <span class="k">return</span> <span class="n">p</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">;</span> <span class="p">}</span>
+  <span class="c1">// right child index</span>
+  <span class="kt">int</span> <span class="n">right</span><span class="p">(</span><span class="kt">int</span> <span class="n">p</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="p">(</span><span class="n">p</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span> <span class="p">}</span>
+
+  <span class="c1">// function to build segment tree</span>
+  <span class="kt">void</span> <span class="n">build</span><span class="p">(</span><span class="kt">int</span> <span class="n">p</span><span class="p">,</span> <span class="kt">int</span> <span class="n">L</span><span class="p">,</span> <span class="kt">int</span> <span class="n">R</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">L</span> <span class="o">==</span> <span class="n">R</span><span class="p">)</span> <span class="n">st</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">L</span><span class="p">;</span>
+    <span class="k">else</span><span class="p">{</span>
+      <span class="c1">// recursively compute the values</span>
+      <span class="n">build</span><span class="p">(</span><span class="n">left</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="p">,</span> <span class="n">L</span>            <span class="p">,</span> <span class="p">(</span><span class="n">L</span><span class="o">+</span><span class="n">R</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">);</span>
+      <span class="n">build</span><span class="p">(</span><span class="n">right</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="p">(</span><span class="n">L</span><span class="o">+</span><span class="n">R</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">R</span>        <span class="p">);</span>
+      <span class="kt">int</span> <span class="n">p1</span> <span class="o">=</span> <span class="n">st</span><span class="p">[</span><span class="n">left</span><span class="p">(</span><span class="n">p</span><span class="p">)],</span> <span class="n">p2</span> <span class="o">=</span> <span class="n">st</span><span class="p">[</span><span class="n">right</span><span class="p">(</span><span class="n">p</span><span class="p">)];</span>
+      <span class="n">st</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">p1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">A</span><span class="p">[</span><span class="n">p2</span><span class="p">])</span> <span class="o">?</span> <span class="n">p1</span> <span class="o">:</span> <span class="n">p2</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="c1">// recursive function for doing query</span>
+  <span class="kt">int</span> <span class="n">rmq</span><span class="p">(</span><span class="kt">int</span> <span class="n">p</span><span class="p">,</span> <span class="kt">int</span> <span class="n">L</span><span class="p">,</span> <span class="kt">int</span> <span class="n">R</span><span class="p">,</span> <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">j</span><span class="p">){</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">&gt;</span> <span class="n">R</span> <span class="o">||</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">L</span><span class="p">)</span> <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="c1">// outside of the range represented by st[p]</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;=</span> <span class="n">L</span> <span class="o">&amp;&amp;</span> <span class="n">j</span> <span class="o">&gt;=</span> <span class="n">R</span><span class="p">)</span> <span class="k">return</span> <span class="n">st</span><span class="p">[</span><span class="n">p</span><span class="p">];</span> <span class="c1">// within the query range, than st[p] is needed</span>
+
+    <span class="c1">// compute the min position in the left and right</span>
+    <span class="kt">int</span> <span class="n">p1</span> <span class="o">=</span> <span class="n">rmq</span><span class="p">(</span><span class="n">left</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="p">,</span> <span class="n">L</span>            <span class="p">,</span> <span class="p">(</span><span class="n">L</span><span class="o">+</span><span class="n">R</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">p2</span> <span class="o">=</span> <span class="n">rmq</span><span class="p">(</span><span class="n">right</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="p">(</span><span class="n">L</span><span class="o">+</span><span class="n">R</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">R</span>        <span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">p1</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">return</span> <span class="n">p2</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">p2</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">return</span> <span class="n">p1</span><span class="p">;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">p1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">A</span><span class="p">[</span><span class="n">p2</span><span class="p">])</span> <span class="o">?</span> <span class="n">p1</span> <span class="o">:</span> <span class="n">p2</span><span class="p">;</span>
+  <span class="p">}</span>
+
+<span class="nl">public:</span>
+  <span class="n">SegmentTree</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">_A</span><span class="p">){</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">_A</span><span class="p">;</span> <span class="c1">// copy content from local usage</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">A</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="c1">// set size for data array</span>
+    <span class="n">st</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">n</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span> <span class="c1">// assign enough number of zeros</span>
+    <span class="n">build</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span> <span class="c1">// use index 1 in st as root, build ST</span>
+  <span class="p">}</span>
+
+  <span class="kt">int</span> <span class="n">rmq</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">j</span><span class="p">){</span> <span class="k">return</span> <span class="n">rmq</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">);</span> <span class="p">}</span> <span class="c1">// overloading, start searching from root</span>
+<span class="p">};</span>
+
+<span class="cp">#endif
+</span></code></pre></div></div>
+<h2 id="test-file">Test File</h2>
+
+<p>Test it with the following code (<code class="language-plaintext highlighter-rouge">main.cpp</code>):</p>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;iostream&gt;
+#include "./include/segment_tree.hpp"
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+  <span class="kt">int</span> <span class="n">arr</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">18</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">20</span><span class="p">};</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">A</span><span class="p">(</span><span class="n">arr</span><span class="p">,</span> <span class="n">arr</span> <span class="o">+</span> <span class="mi">7</span><span class="p">);</span>
+  <span class="n">SegmentTree</span> <span class="n">st</span><span class="p">(</span><span class="n">A</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"RMQ(1, 3) = "</span> <span class="o">&lt;&lt;</span> <span class="n">st</span><span class="p">.</span><span class="n">rmq</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"RMQ(4,6) = "</span> <span class="o">&lt;&lt;</span> <span class="n">st</span><span class="p">.</span><span class="n">rmq</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+:ET

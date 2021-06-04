@@ -1,0 +1,35 @@
+I"Y	<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#optimization-overview" id="markdown-toc-optimization-overview">Optimization Overview</a></li>
+  <li><a href="#optimization-tips" id="markdown-toc-optimization-tips">Optimization Tips</a></li>
+</ul>
+
+  </nav>
+</aside>
+
+<p>I am learning about optimization these days. Most of the content came from <em>TAOCP</em>, <em>Comptetitive Programming</em> and the internet.
+From TAOCP, I learned that understanding what the machine is doing in machine code is crucial for optimize things. For example, 
+I didn’t realize how much time we can save by replace <code class="language-plaintext highlighter-rouge">i++</code> with <code class="language-plaintext highlighter-rouge">i+=2</code> until I went through the sequential search chapter. I did 
+an experiment to validate if this is still true nowadays. It is, and I will include that experiment in another post.
+For this post, I am going to note down all quick tips I found useful for optimizing code.</p>
+
+<h1 id="optimization-overview">Optimization Overview</h1>
+
+<h1 id="optimization-tips">Optimization Tips</h1>
+<ol>
+  <li>The C++ STL provided <code class="language-plaintext highlighter-rouge">algorithm::sort</code> is cache-friendly. While the <code class="language-plaintext highlighter-rouge">heapsort</code> is not (its root-to-leaf/leaf-to-root operations
+span a wide range of indices-lots of cache misses).</li>
+  <li>Access a 2D array in a row major fashion.</li>
+  <li>Bit manipulation(bitmask) on the built-in integer data types(64 bits max) is more efficient than index manipulation in an array of booleans.
+If more than 64 bits are needed, use STL <code class="language-plaintext highlighter-rouge">bitset</code>.</li>
+  <li>Prefer lower level DS/types at all times if possible.</li>
+  <li>Avoid passing big data structures around.</li>
+  <li>Always prefer an iterative approach to a recursive approach.</li>
+  <li>Array access in (nested) loops can be slow. Use a temporary instead of accessing it repeatedly.</li>
+  <li>Wisely take advantage of macros and inline functions.</li>
+  <li>Use C-style character arrays will yield faster execution than using STL <code class="language-plaintext highlighter-rouge">string</code>.</li>
+</ol>
+
+:ET

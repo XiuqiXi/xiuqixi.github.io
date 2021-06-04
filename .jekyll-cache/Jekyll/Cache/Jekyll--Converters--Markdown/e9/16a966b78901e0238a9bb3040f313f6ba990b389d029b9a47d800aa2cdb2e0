@@ -1,0 +1,38 @@
+I"e<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#used-with-functions" id="markdown-toc-used-with-functions">Used with Functions</a></li>
+  <li><a href="#used-with-pointers" id="markdown-toc-used-with-pointers">Used with Pointers</a></li>
+  <li><a href="#test-your-understanding" id="markdown-toc-test-your-understanding">Test Your Understanding!</a></li>
+</ul>
+
+  </nav>
+</aside>
+
+<p>I found this issue has been one of those that made me open Google a lot. So I figured a summary in my blog might be great.</p>
+
+<h1 id="used-with-functions">Used with Functions</h1>
+
+<p><span style="color: white; background-color: #ff5555; padding:0.3em 0.5em 0.3em; border-radius: 10px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">const</span> <code class="language-plaintext highlighter-rouge">typename</code> <code class="language-plaintext highlighter-rouge">function_name(...)</code> <span style="color: white; background-color: #ff8844; padding:0.3em 0.5em 0.3em; border-radius: 10px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">const</span> <code class="language-plaintext highlighter-rouge">;</code></p>
+
+<p>The first <code class="language-plaintext highlighter-rouge">const</code> applies to the returned type instance (this will not have any effect on built-in types). Thus, when it is used on any non-built-in types, the caller of the function is not suppose to or able to change returned value.</p>
+
+<p>The latter one appears when this function is a member function of some object. It says that in this function, no member variables will be modified, unless those declared as <code class="language-plaintext highlighter-rouge">mutable</code>.</p>
+
+<h1 id="used-with-pointers">Used with Pointers</h1>
+
+<p><span style="color: white; background-color: #8866ff; padding:0.3em 0.5em 0.3em; border-radius: 10px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">const</span> <code class="language-plaintext highlighter-rouge">typename *</code> <span style="color: white; background-color: #4499ee; padding:0.3em 0.5em 0.3em; border-radius: 10px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">const</span> <code class="language-plaintext highlighter-rouge">var_name</code> <code class="language-plaintext highlighter-rouge">;</code></p>
+
+<p>The first one means that the pointer is pointing to a <code class="language-plaintext highlighter-rouge">const</code> variable of type <code class="language-plaintext highlighter-rouge">typename</code>, that is the thing it points to has a constant value and should not be changed. Note that it is the same if it is written as <code class="language-plaintext highlighter-rouge">typename const* var_name</code>.</p>
+
+<p>The second one means that the pointer itself is immutable, that is, we cannot change what it points to.</p>
+
+<h1 id="test-your-understanding">Test Your Understanding!</h1>
+<p>Now, try to explain the following mad example. :)</p>
+
+<p><span style="color: white; background-color: #ff5555; padding:0.3em 0.5em 0.3em; border-radius: 10px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">const</span> <code class="language-plaintext highlighter-rouge">T*</code> <span style="color: white; background-color: #ff5555; padding:0.3em 0.5em 0.3em; border-radius: 10px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">const</span> <code class="language-plaintext highlighter-rouge">function_name(</code>
+<span style="color: white; background-color: #ff5555; padding:0.3em 0.5em 0.3em; border-radius: 10px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">const</span> <code class="language-plaintext highlighter-rouge">K*</code> <span style="color: white; background-color: #ff5555; padding:0.3em 0.5em 0.3em; border-radius: 10px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">const</span>
+<code class="language-plaintext highlighter-rouge">ptr</code>
+<code class="language-plaintext highlighter-rouge">)</code> <span style="color: white; background-color: #ff8844; padding:0.3em 0.5em 0.3em; border-radius: 10px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">const</span> <code class="language-plaintext highlighter-rouge">;</code></p>
+:ET

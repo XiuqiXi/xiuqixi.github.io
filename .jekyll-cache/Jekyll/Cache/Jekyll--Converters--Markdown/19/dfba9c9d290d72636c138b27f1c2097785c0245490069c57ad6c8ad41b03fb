@@ -1,0 +1,202 @@
+I"�-<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#demands" id="markdown-toc-demands">Demands</a>    <ul>
+      <li><a href="#problems" id="markdown-toc-problems">Problems</a></li>
+    </ul>
+  </li>
+  <li><a href="#key-idea" id="markdown-toc-key-idea">Key Idea</a>    <ul>
+      <li><a href="#techniques-used" id="markdown-toc-techniques-used">techniques used</a></li>
+      <li><a href="#performance" id="markdown-toc-performance">Performance</a></li>
+      <li><a href="#novel" id="markdown-toc-novel">Novel</a>        <ul>
+          <li><a href="#differences" id="markdown-toc-differences">Differences</a></li>
+        </ul>
+      </li>
+      <li><a href="#contribution" id="markdown-toc-contribution">Contribution</a></li>
+    </ul>
+  </li>
+  <li><a href="#background" id="markdown-toc-background">Background</a>    <ul>
+      <li><a href="#system-assumptions-and-requirements" id="markdown-toc-system-assumptions-and-requirements">System Assumptions and Requirements</a></li>
+      <li><a href="#service-level-agreementssla" id="markdown-toc-service-level-agreementssla">Service Level Agreements(SLA)</a></li>
+      <li><a href="#design-considerations" id="markdown-toc-design-considerations">Design Considerations</a>        <ul>
+          <li><a href="#other-key-principles-embraced-in-the-design" id="markdown-toc-other-key-principles-embraced-in-the-design">Other key principles embraced in the design</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#system-architecture" id="markdown-toc-system-architecture">System Architecture</a>    <ul>
+      <li><a href="#system-interface" id="markdown-toc-system-interface">System Interface</a></li>
+      <li><a href="#partioning-algorithm" id="markdown-toc-partioning-algorithm">Partioning Algorithm</a></li>
+      <li><a href="#replication" id="markdown-toc-replication">Replication</a></li>
+      <li><a href="#data-versioning" id="markdown-toc-data-versioning">Data Versioning</a></li>
+      <li><a href="#exceution-of-get-and-put" id="markdown-toc-exceution-of-get-and-put">Exceution of <code class="language-plaintext highlighter-rouge">get()</code> and <code class="language-plaintext highlighter-rouge">put()</code></a></li>
+    </ul>
+  </li>
+</ul>
+
+  </nav>
+</aside>
+
+<h1 id="demands">Demands</h1>
+<blockquote>
+  <p>Reliability at massive scale
+At a large scale, small and large components fail continuously and the way persistent state is managed in the face of these failures drives the reliability and scalability of software systems.</p>
+</blockquote>
+
+<ul>
+  <li>Reliability: slightest outage has significant financial consequences and impacts customer trust.</li>
+  <li>Scalability: support continuous growth.</li>
+  <li>Amazon uses a highly decentralized, lossely coupled, service oriented architecture consisting of hundreds of services. There is paricular need for storage technologies that are <strong>always available</strong> (disks are failing, network routes are flapping, or data centers are being destroyed by tornados).</li>
+  <li>Always be able to write to and read from</li>
+  <li>Need to deal with failures in an infrastructure comprised of millions of components</li>
+  <li>a select set of applications requires a storage that is flexible enough to let application designers configure.</li>
+  <li>Writes are never rejected.</li>
+</ul>
+
+<h2 id="problems">Problems</h2>
+<ul>
+  <li>When to perform the process of resolving update conflicts</li>
+</ul>
+
+<h1 id="key-idea">Key Idea</h1>
+<p><strong>Dynamo</strong>, a highly available key-value storage system that some of Amazon’s core services use to provide an “always-on” experience.</p>
+<ul>
+  <li>It is used to manage the state of services that have very high reliability requirements and need tight control over the tradeoffs between availability, consistency, cost-effectiveness and performance.</li>
+  <li>the common pattern of using a relational database would lead to inefficiencies and limit scale and availability.</li>
+  <li>Dynamo provides a simple primary-key only interface</li>
+</ul>
+
+<h2 id="techniques-used">techniques used</h2>
+<ul>
+  <li>Data is partitioned and replicated using consistent hashing</li>
+  <li>consistency is facilitated by object versioning</li>
+  <li>consistency among replicas during updates is maintained by a quorum-like technique and a decentralized replica synchronization protocol.</li>
+  <li>It uses a gossip based distributed failure detection and membership protocol.</li>
+  <li>It is a completely decentralized system with minimal need for manual administration.</li>
+  <li>Storage nodes can be added and removed from Dynamo without requiring any manual partioning or redistribution.</li>
+</ul>
+
+<h2 id="performance">Performance</h2>
+<p>It was able to scale to extreme peek loads efficiently without any downtime.</p>
+
+<h2 id="novel">Novel</h2>
+<ul>
+  <li>sacrifices consistency under certain failure scenarios.</li>
+  <li>the reliability and scalability of a system is dependent on how its application state is managed.</li>
+</ul>
+
+<p>Traditional replicated relational database systems focus on the problem of guarantee strong consistency to replicate data. Previous systems are not capable of handling network partitions because they typically provide strong consistency guarantees</p>
+
+<h3 id="differences">Differences</h3>
+<ol>
+  <li>Always writeable</li>
+  <li>Built for an infrastructure within a single administrative domain where all nodes are assumed to be trusted.</li>
+  <li>applications that use Dynamo do not require support for hierarchical namespaces or complex relational schema</li>
+  <li>Dynamo is built for latency sensitive applications</li>
+</ol>
+
+<h2 id="contribution">Contribution</h2>
+<ul>
+  <li>Evaluation of how different techniques can be combined to provide a single highly-available system.</li>
+  <li>It demonstrates that an eventually-consistent storage system can be used in production with demanding applications.</li>
+  <li>It also provides insight into the tuning of these techniques to meet the requirements of production systems with very strict performance demands.</li>
+</ul>
+
+<h1 id="background">Background</h1>
+<p><strong>A relational database is a solution that is far from ideal</strong>.</p>
+
+<h2 id="system-assumptions-and-requirements">System Assumptions and Requirements</h2>
+<ol>
+  <li><em>Query Model</em>: simple read and write operations to a data item that is uniquely identified by a key. State is stored as binary objects identified by unique keys.</li>
+  <li><em>ACID Properties</em>: (Atomicity, Consistency, Isolation, Durability) is a set of properties that guarantee that database transactions are processed reliably.</li>
+  <li><em>Efficiency</em>: The system needs to function on a commodity hardware infrastructure.</li>
+</ol>
+
+<h2 id="service-level-agreementssla">Service Level Agreements(SLA)</h2>
+<p>Clients and services engage in a Service Level Agreement(SLA), a formally negotiated contract where a client and a service agree on several system-related characteristics.</p>
+
+<p><strong>Amazon’s engineering and optimization efforts are not focused on averages.</strong></p>
+
+<h2 id="design-considerations">Design Considerations</h2>
+<ul>
+  <li>Dynamo targets the design space of an “always writeable” data store.(when)</li>
+  <li>Who performs the process of conflict resolution.
+    <ul>
+      <li>Data store?: choices are rathre limited.</li>
+      <li>Application?: can decide on the conflict resolution method that is best suited for its client’s experience</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="other-key-principles-embraced-in-the-design">Other key principles embraced in the design</h3>
+<ul>
+  <li><em>Incremental scalability</em></li>
+  <li><em>Symmetry</em></li>
+  <li><em>Decentralization</em></li>
+  <li><em>Heterogeneity</em></li>
+</ul>
+
+<h1 id="system-architecture">System Architecture</h1>
+<p><strong>Core Techniques</strong></p>
+<ol>
+  <li>partitioning</li>
+  <li>replication</li>
+  <li>versioning</li>
+  <li>membership</li>
+  <li>failure handling</li>
+  <li>scaling</li>
+</ol>
+
+<h2 id="system-interface">System Interface</h2>
+<ol>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">get(key)</code>
+locates the object replicas associated with the <em>key</em> in the storage system and returns a single object or a list of objects with confliction versions along with a <em>context</em></p>
+  </li>
+  <li>
+    <p><code class="language-plaintext highlighter-rouge">put(key, context, object)</code>
+determines where the replicas of the object should be placed based on the associated <em>key</em>, and writes the replicas to disk. The <em>context</em> encodes system metadata about the object that is opaque to the caller and includes information.</p>
+  </li>
+</ol>
+
+<h2 id="partioning-algorithm">Partioning Algorithm</h2>
+<p>Dynamo’s partitioning scheme relies on consistent hasing. Each data identified by a key is assigned to a node by hasing its key to yield its position on the ring, then walking clockwise to find the first node with a position larger than the item’s position.</p>
+
+<p>Each node becomes responsible for the region in the ring between it and its predecessor node on the ring.</p>
+
+<p><strong>Advantage</strong> of consistent hashing: departure or arrival of a node only affects its immediate neighbors and other nodes remain unaffected.</p>
+
+<p><strong>Two challenges</strong></p>
+<ol>
+  <li>The random position assignment of each node on the ring leads to non-uniform data and load distribution</li>
+  <li>The basic algorithm is oblivious to the heterogeneity in the performance of nodes.</li>
+</ol>
+
+<p><strong>Solution to these challenges</strong>:</p>
+<ol>
+  <li>each node gets assigned to multiple points in the ring.</li>
+  <li>uses the concept of “virtual nodes”</li>
+</ol>
+
+<h2 id="replication">Replication</h2>
+<p>Each key, k, is assigned to a coordinator node.The coordinator is in charge of the replication of the data items that fall within its range. In addition to locally storing each key within its range, the coordinator replicates these keys at the N-1 clockwise successor nodes in the ring.</p>
+
+<h2 id="data-versioning">Data Versioning</h2>
+<p>Dynamo provides eventual consistency, which allows for updates to be propagated to all replicas asynchronously.</p>
+
+<blockquote>
+  <p>When a customer wants to add an item to (or remove from) a shopping cart and the latest version is not available, the item is added to (or removed from) the older version and the divergent versions are reconciled later.</p>
+</blockquote>
+
+<p>Dynamo treats the result of each modification as a new and immutable version of the data.</p>
+
+<p>It is allowed for multiple versions of an object to be present in the system at the same time. Dynamo uses vector clocks in order to capture causality between different versions of the same object.A vector clock is effectively a list of (node, counter) pairs. One vector clock is associated with every version of every object. One can determine whether two versions of an object are on parallel branches or have a causal ordering, by examine their vector clocks</p>
+
+<h2 id="exceution-of-get-and-put">Exceution of <code class="language-plaintext highlighter-rouge">get()</code> and <code class="language-plaintext highlighter-rouge">put()</code></h2>
+<p>Selecting a node:</p>
+<ol>
+  <li>route is request through a generic load balancer that will select a node based on load information</li>
+  <li>use a partition-aware client library that routes requests directly to the appropriate coordinator nodes.</li>
+</ol>
+:ET

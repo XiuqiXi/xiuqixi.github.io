@@ -1,0 +1,82 @@
+I"k#<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#add-latex-support-for-minimal-mistakes" id="markdown-toc-add-latex-support-for-minimal-mistakes">Add Latex Support for Minimal Mistakes</a></li>
+  <li><a href="#mathjax" id="markdown-toc-mathjax">Mathjax</a>    <ul>
+      <li><a href="#set-markdown-engine-to-kramdown" id="markdown-toc-set-markdown-engine-to-kramdown">Set Markdown Engine to Kramdown</a></li>
+      <li><a href="#include-scripts" id="markdown-toc-include-scripts">Include Scripts</a></li>
+      <li><a href="#adding-configurations-to-scriptshtml" id="markdown-toc-adding-configurations-to-scriptshtml">Adding configurations to <code class="language-plaintext highlighter-rouge">scripts.html</code></a></li>
+      <li><a href="#putting-math-equations-on-your-webpage" id="markdown-toc-putting-math-equations-on-your-webpage">Putting Math Equations on Your Webpage</a></li>
+    </ul>
+  </li>
+  <li><a href="#using-katex-instead-of-mathjax" id="markdown-toc-using-katex-instead-of-mathjax">Using Katex instead of Mathjax</a></li>
+</ul>
+
+  </nav>
+</aside>
+
+<h2 id="add-latex-support-for-minimal-mistakes">Add Latex Support for Minimal Mistakes</h2>
+
+<p>If you are seeing the latex name below, it means latex works for this site:</p>
+
+<p>$$ \LaTeX $$</p>
+
+<h2 id="mathjax">Mathjax</h2>
+<h3 id="set-markdown-engine-to-kramdown">Set Markdown Engine to Kramdown</h3>
+<p>Check <a href="https://jekyllrb.com/docs/configuration/">jekyll documentations</a> for this step’s instructions.</p>
+
+<h3 id="include-scripts">Include Scripts</h3>
+<p>Check <a href="http://docs.mathjax.org/en/latest/web/start.html">MathJax Documentation</a> for this step’s instructions. Note that you might need <code class="language-plaintext highlighter-rouge">config=TeX-MML-AM_CHTML</code> at the end of your src value separated by a question mark in the following form to enable predefined configurations. Add the following into your website, it will load the latest MathJax library.</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span> <span class="na">async</span>
+	<span class="na">src=</span><span class="s">"https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/script&gt;</span></code></pre></figure>
+
+<p>And usually, if you are using a jekyll theme, this include line should go to a file in the <code class="language-plaintext highlighter-rouge">_includes/</code> folder. In my case, I put it into the <code class="language-plaintext highlighter-rouge">scripts.html</code> file. You can also create a file for doing this, a file named <code class="language-plaintext highlighter-rouge">custom.html</code> for an example.</p>
+
+<h3 id="adding-configurations-to-scriptshtml">Adding configurations to <code class="language-plaintext highlighter-rouge">scripts.html</code></h3>
+<p>(Thanks to <strong>Abhijit S.</strong>, I forgot to put this part into this blog.)<br />
+We have included the MathJax library, and next we need to add some configurations and make it actually work pretty on our website. The goal is that we want
+the website to be able to recognize all normal Latex symbols for math equations and symbols: <code class="language-plaintext highlighter-rouge">$$</code> and <code class="language-plaintext highlighter-rouge">\[\]</code>. To do that, add the following
+code into <code class="language-plaintext highlighter-rouge">scripts.html</code>:</p>
+
+<figure class="highlight"><pre><code class="language-html" data-lang="html"><span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/x-mathjax-config"</span><span class="nt">&gt;</span>
+   <span class="nx">MathJax</span><span class="p">.</span><span class="nx">Hub</span><span class="p">.</span><span class="nx">Config</span><span class="p">({</span>
+     <span class="na">extensions</span><span class="p">:</span> <span class="p">[</span><span class="dl">"</span><span class="s2">tex2jax.js</span><span class="dl">"</span><span class="p">],</span>
+     <span class="na">jax</span><span class="p">:</span> <span class="p">[</span><span class="dl">"</span><span class="s2">input/TeX</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">output/HTML-CSS</span><span class="dl">"</span><span class="p">],</span>
+     <span class="na">tex2jax</span><span class="p">:</span> <span class="p">{</span>
+       <span class="na">inlineMath</span><span class="p">:</span> <span class="p">[</span> <span class="p">[</span><span class="dl">'</span><span class="s1">$</span><span class="dl">'</span><span class="p">,</span><span class="dl">'</span><span class="s1">$</span><span class="dl">'</span><span class="p">],</span> <span class="p">[</span><span class="dl">"</span><span class="se">\\</span><span class="s2">(</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="se">\\</span><span class="s2">)</span><span class="dl">"</span><span class="p">]</span> <span class="p">],</span>
+       <span class="na">displayMath</span><span class="p">:</span> <span class="p">[</span> <span class="p">[</span><span class="dl">'</span><span class="se">\</span><span class="s1">$</span><span class="se">\</span><span class="s1">$</span><span class="dl">'</span><span class="p">,</span><span class="dl">'</span><span class="se">\</span><span class="s1">$</span><span class="se">\</span><span class="s1">$</span><span class="dl">'</span><span class="p">],</span> <span class="p">[</span><span class="dl">"</span><span class="se">\\</span><span class="s2">[</span><span class="dl">"</span><span class="p">,</span><span class="dl">"</span><span class="se">\\</span><span class="s2">]</span><span class="dl">"</span><span class="p">]</span> <span class="p">],</span>
+       <span class="na">processEscapes</span><span class="p">:</span> <span class="kc">true</span>
+     <span class="p">},</span>
+     <span class="dl">"</span><span class="s2">HTML-CSS</span><span class="dl">"</span><span class="p">:</span> <span class="p">{</span> <span class="na">availableFonts</span><span class="p">:</span> <span class="p">[</span><span class="dl">"</span><span class="s2">TeX</span><span class="dl">"</span><span class="p">]</span> <span class="p">}</span>
+   <span class="p">});</span>
+<span class="nt">&lt;/script&gt;</span></code></pre></figure>
+
+<p>The meaning of this code is rather straight forward. You can add any symbols you want to enrich the ways MathJax pick up math equations.</p>
+
+<h3 id="putting-math-equations-on-your-webpage">Putting Math Equations on Your Webpage</h3>
+<p>If everything goes fine, you should get a working site with Mathjax. For usages of writing mathematics on page, check <a href="http://docs.mathjax.org/en/latest/start.html#putting-mathematics-in-a-web-page">MathJax Doc</a>. Use my blog as an example:<br />
+Math code:</p>
+
+<figure class="highlight"><pre><code class="language-latex" data-lang="latex"><span class="p">\[</span><span class="nb">p</span><span class="o">(</span><span class="nv">\theta</span><span class="o">)</span><span class="nb"> </span><span class="o">=</span><span class="nb"> </span><span class="nv">\mathbf</span><span class="p">{</span><span class="nv">\prod</span><span class="p">}_{</span><span class="nb">i,c</span><span class="p">}</span><span class="nb">p</span><span class="o">(</span><span class="nv">\mathbf</span><span class="p">{</span><span class="nv">\theta</span><span class="p">}^</span><span class="nb">i</span><span class="o">(</span><span class="nb">c</span><span class="o">))</span><span class="p">\]</span></code></pre></figure>
+
+<p>or</p>
+
+<figure class="highlight"><pre><code class="language-latex" data-lang="latex"><span class="k">\$\$</span> E = mc<span class="p">^</span>2 <span class="k">\$\$</span></code></pre></figure>
+
+<p>Will be rendered to:</p>
+
+<p>[ p(\theta) = \mathbf{\prod}_{i,c}p(\mathbf{\theta}^i(c)) ]</p>
+
+<p>and</p>
+
+<p>$$ E = mc^2 $$</p>
+
+<p>Note that, in my case, it seems like you better <strong>leave blank lines</strong> in your markdown file <strong>around a Latex Code Block</strong> to make it be centered after generated.</p>
+
+<h2 id="using-katex-instead-of-mathjax">Using Katex instead of Mathjax</h2>
+<p>Katex is faster than Mathjax. To migrate, first check <a href="https://kramdown.gettalong.org/math_engine/mathjax.html">kramdown doc</a>. You need <code class="language-plaintext highlighter-rouge">JQuery</code>, <code class="language-plaintext highlighter-rouge">Katex</code> and an automatic rendering script. Check <a href="https://github.com/Khan/KaTeX">Katex on Github</a> and <a href="https://github.com/Khan/KaTeX/blob/master/contrib/auto-render/README.md">Auto render</a>. After doing these, you should have a working site with Katex.</p>
+
+:ET

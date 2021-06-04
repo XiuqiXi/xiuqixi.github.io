@@ -1,0 +1,54 @@
+I"<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#background" id="markdown-toc-background">Background</a></li>
+  <li><a href="#material-i-used" id="markdown-toc-material-i-used">Material I Used</a></li>
+  <li><a href="#multiplayer-under-the-hood" id="markdown-toc-multiplayer-under-the-hood">Multiplayer Under the Hood</a></li>
+  <li><a href="#launch-a-server-and-some-clients" id="markdown-toc-launch-a-server-and-some-clients">Launch a Server and Some Clients</a>    <ul>
+      <li><a href="#server" id="markdown-toc-server">Server</a></li>
+      <li><a href="#client" id="markdown-toc-client">Client</a></li>
+    </ul>
+  </li>
+</ul>
+
+  </nav>
+</aside>
+
+<h1 id="background">Background</h1>
+<p><span style="display:block; 	float:left; 	font-family:Georgia; 	font-size: 310%; 	font-weight: bold; 	line-height: 90%; 	margin-right: 6px; 	margin-bottom:-2px; 	margin-top: 7px;">I</span> have always been interested in MOBA games. I myself is a League of Legends player for 5 years. That brought
+me into a long time thinking how a MOBA game is designed and implemented from scratch. The task seems rather complicated and demanding. You
+not only need to design it so that everything works but also need to make sure all the communication between clients and servers are fast enough
+to meet the requirements for intense gameplay. Any thing that makes a player feels laggy will cause the loss of players.</p>
+
+<h1 id="material-i-used">Material I Used</h1>
+<p>I found some courses on Udemy, namely the “Unreal Multiplayer Master: Online Game Development In C++” will be the one that gives all the contents
+in this note.</p>
+
+<h1 id="multiplayer-under-the-hood">Multiplayer Under the Hood</h1>
+<p>There are couple of major conponents for a MOBA game.</p>
+<ol>
+  <li><span style="color: white; background-color: #ff5555; padding:0.3em 0.5em 0.3em; border-radius: 10px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">Map</span></li>
+  <li><span style="color: white; background-color: #ff8844; padding:0.3em 0.5em 0.3em; border-radius: 10px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">GameMode</span></li>
+  <li><span style="color: white; background-color: #ff5555; padding:0.3em 0.5em 0.3em; border-radius: 10px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">PlayerController</span></li>
+  <li><span style="color: white; background-color: #ff5555; padding:0.3em 0.5em 0.3em; border-radius: 10px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">Pawn</span></li>
+</ol>
+
+<p>The process goes like this:</p>
+<ol>
+  <li>Unreal loads the Map</li>
+  <li>The Map specifies a GameMode</li>
+  <li>The PlayerController joins the Map</li>
+  <li>It ask the GameMode to spawn a Pawn</li>
+  <li>The Pawn is linked to the PlayerController</li>
+</ol>
+
+<h1 id="launch-a-server-and-some-clients">Launch a Server and Some Clients</h1>
+<h2 id="server">Server</h2>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>UE4Editor.exe_LOCATION] <span class="o">[</span>.uproject_LOCATION] /Game/[MAP_LOCATION] <span class="nt">-server</span> <span class="nt">-log</span>
+</code></pre></div></div>
+<h2 id="client">Client</h2>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>UE4Editor.exe_LOCATION] <span class="o">[</span>.uproject_LOCATION] <span class="o">[</span>IP_ADDRESS] <span class="nt">-game</span> <span class="nt">-log</span>
+</code></pre></div></div>
+
+:ET

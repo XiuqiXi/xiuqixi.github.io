@@ -1,0 +1,133 @@
+I"�0<h1 id="introduction">Introduction</h1>
+<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#introduction" id="markdown-toc-introduction">Introduction</a></li>
+  <li><a href="#operations" id="markdown-toc-operations">Operations</a>    <ul>
+      <li><a href="#query" id="markdown-toc-query">Query</a></li>
+      <li><a href="#update-adjust-value" id="markdown-toc-update-adjust-value">Update (Adjust value)</a></li>
+    </ul>
+  </li>
+  <li><a href="#implementation" id="markdown-toc-implementation">Implementation</a>    <ul>
+      <li><a href="#fenwicktree-class" id="markdown-toc-fenwicktree-class">FenwickTree Class</a></li>
+      <li><a href="#test-file" id="markdown-toc-test-file">Test File</a></li>
+    </ul>
+  </li>
+  <li><a href="#time-complexity" id="markdown-toc-time-complexity">Time Complexity</a></li>
+</ul>
+
+  </nav>
+</aside>
+<p><span style="display:block; 	float:left; 	font-family:Georgia; 	font-size: 310%; 	font-weight: bold; 	line-height: 90%; 	margin-right: 6px; 	margin-bottom:-2px; 	margin-top: 7px;">F</span>enwick tree, also known as <em>binary indexed tree</em>, is a tree that is indexed by <em>the bits of its integer keys</em>. It is usually useful  data structure for implementing <em>dynamic cumulative frequency tables</em>. Usually, it can be used to answer <strong>Range Sum Query</strong> questions in a simpler fashion compared with segment tree. It is extremely efficient as they use fast bit manipulation techniques.</p>
+
+<p>To explain how this works, we first define a function $LSOne(i)$, which produces the first <strong>Least Significant One-bit</strong> in $i$. The underlying operation is bit manipulation<br />
+<code class="language-plaintext highlighter-rouge">(i &amp; (-i))</code>.</p>
+
+<p>A Fenwick tree is usually implemented as an array (a <code class="language-plaintext highlighter-rouge">std::vector</code> in this blog), where indices fall in the range $[1 \ldots n]$. We will make the vector big enought to contain all the elements and also skip index zero for simplicity. Let’s assume that the Fenwick tree is <code class="language-plaintext highlighter-rouge">ft</code>. Then the element at index $i$ is responsible for elements in the range $[i-LSOne(i)+1 \ldots i]$, that is from the index: $i$ subtracted by its least significant one-bit plus one, to the index: $i$.</p>
+<figure class="">
+  <img src="/assets/images/fenwick_tree.png" alt="Fenwick Tree" />
+  
+    <figcaption>Figure From VisuAlgo
+</figcaption>
+  
+</figure>
+
+<h1 id="operations">Operations</h1>
+<p>Once the tree is built, the next question is how to use it, dynamically. There are two basic operations: 1. query, 2. update. We will go through them in details.</p>
+
+<h2 id="query">Query</h2>
+<p>The first common operation is to query frequency from the start(1) to some index $b$. Namely, we call all query $rsq$. So the following is how we do a query $rsq(b)$:</p>
+<ol>
+  <li>(Init Sum) Let $sum \leftarrow 0$</li>
+  <li>(Accumulate Sum) $sum \leftarrow sum + ft[b]$</li>
+  <li>(Get new $b$) $b \leftarrow b - LSOne(b)$</li>
+  <li>(If ended?) If $b == 0$, return $sum$, otherwise goto step 2</li>
+</ol>
+
+<p>With the above query available, obtaining the cumulative frequency between two indices $[a\ldots b]$ where $a != 1$ is simple, just evaluate $rsq(a, b) = rsq(b) - rsq(a-1)$.</p>
+
+<h2 id="update-adjust-value">Update (Adjust value)</h2>
+<p>Let’s name the operation of updating the value of the element at index $k$ by adjusting its value by $v$ to be $adjust(k, v)$. This is done by the following steps:</p>
+<ol>
+  <li>(Adjust value at index $k$) $ft[k] += v$</li>
+  <li>(Get new $k$) $k \leftarrow k + LSOne(k)$</li>
+  <li>(If ended?) If $k &lt; ft.size()$, goto step 1.</li>
+</ol>
+
+<h1 id="implementation">Implementation</h1>
+
+<h2 id="fenwicktree-class">FenwickTree Class</h2>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#ifndef FENWICK_TREE
+#define FENWICK_TREE
+#include &lt;vector&gt;
+</span>
+<span class="c1">// Least Significant One-bit Macro</span>
+<span class="cp">#define LSOne(i) (i &amp; (-i))
+</span>
+<span class="k">class</span> <span class="nc">FenwickTree</span><span class="p">{</span>
+<span class="nl">private:</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">ft</span><span class="p">;</span>
+<span class="nl">public:</span>
+  <span class="n">FenwickTree</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">){</span> <span class="n">ft</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span> <span class="p">}</span>
+
+  <span class="c1">// function to query range [1, b]</span>
+  <span class="kt">int</span> <span class="n">rsq</span><span class="p">(</span><span class="kt">int</span> <span class="n">b</span><span class="p">){</span>
+    <span class="kt">int</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(;</span> <span class="n">b</span><span class="p">;</span> <span class="n">b</span> <span class="o">-=</span> <span class="n">LSOne</span><span class="p">(</span><span class="n">b</span><span class="p">)){</span>
+      <span class="n">sum</span> <span class="o">+=</span> <span class="n">ft</span><span class="p">[</span><span class="n">b</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">sum</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// function to query range [a, b]</span>
+  <span class="kt">int</span> <span class="n">rsq</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">){</span>
+    <span class="k">return</span> <span class="n">rsq</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">a</span> <span class="o">==</span> <span class="mi">1</span> <span class="o">?</span> <span class="mi">0</span> <span class="o">:</span> <span class="n">rsq</span><span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="mi">1</span><span class="p">));</span>
+  <span class="p">}</span>
+
+  <span class="c1">// adjusts value of the k-th element by v</span>
+  <span class="kt">void</span> <span class="n">adjust</span><span class="p">(</span><span class="kt">int</span> <span class="n">k</span><span class="p">,</span> <span class="kt">int</span> <span class="n">v</span><span class="p">){</span>
+    <span class="k">for</span><span class="p">(</span> <span class="p">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">ft</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="n">k</span> <span class="o">+=</span> <span class="n">LSOne</span><span class="p">(</span><span class="n">k</span><span class="p">)){</span>
+      <span class="n">ft</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">v</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="cp">#endif
+</span>
+</code></pre></div></div>
+
+<h2 id="test-file">Test File</h2>
+
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;iostream&gt;
+#include "./include/fenwick_tree.hpp"
+</span>
+<span class="cp">#define LOG(X) std::cout &lt;&lt; X &lt;&lt; std::endl
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+  <span class="c1">// assume we have following student scores</span>
+  <span class="c1">// ranging from 1 to 10</span>
+  <span class="kt">int</span> <span class="n">f</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">};</span>
+  <span class="n">FenwickTree</span> <span class="n">ft</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+  <span class="c1">// insert scores manually to an empty fenwick tree</span>
+  <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">11</span> <span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">ft</span><span class="p">.</span><span class="n">adjust</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">1</span><span class="p">);</span> <span class="c1">// accumulate by one occurence</span>
+  <span class="n">LOG</span><span class="p">(</span><span class="n">ft</span><span class="p">.</span><span class="n">rsq</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">));</span>
+  <span class="n">LOG</span><span class="p">(</span><span class="n">ft</span><span class="p">.</span><span class="n">rsq</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+  <span class="n">LOG</span><span class="p">(</span><span class="n">ft</span><span class="p">.</span><span class="n">rsq</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">));</span>
+  <span class="n">LOG</span><span class="p">(</span><span class="n">ft</span><span class="p">.</span><span class="n">rsq</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">));</span>
+  <span class="n">LOG</span><span class="p">(</span><span class="n">ft</span><span class="p">.</span><span class="n">rsq</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">));</span>
+  <span class="n">ft</span><span class="p">.</span><span class="n">adjust</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+  <span class="n">LOG</span><span class="p">(</span><span class="n">ft</span><span class="p">.</span><span class="n">rsq</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h1 id="time-complexity">Time Complexity</h1>
+<p>Because the building of a Fenwick Tree is manually done by calling<br />
+<code class="language-plaintext highlighter-rouge">adjust(int k, int v)</code> function, so we first need to analyze the two basic
+operations provided by Fenwick Tree. In query operation, an integer $b$ can at most have $O(\log b)$ bits. So the query operation has time complexity of $O(\log n)$ per-run.
+Similarly for adjust operation, one change at index $k$ can at most affect $O(\log n)$ nodes in Fenwick tree.
+With those in mind, the building of Fenwick Tree is clearly multiple runs of<br />
+<code class="language-plaintext highlighter-rouge">adjust</code> function. So it takes time $O(m \log n)$ time to build such a tree, where
+$m$ is the number of data points.</p>
+:ET

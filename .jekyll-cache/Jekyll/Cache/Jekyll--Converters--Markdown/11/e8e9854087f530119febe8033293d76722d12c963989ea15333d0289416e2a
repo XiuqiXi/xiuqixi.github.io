@@ -1,0 +1,32 @@
+I"[<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#buy-a-server-from-bandwagon" id="markdown-toc-buy-a-server-from-bandwagon">Buy a server from Bandwagon</a></li>
+  <li><a href="#link-to-your-server" id="markdown-toc-link-to-your-server">Link to your server</a></li>
+  <li><a href="#install-python27-or-36" id="markdown-toc-install-python27-or-36">Install Python2.7 or 3.6</a></li>
+  <li><a href="#install-pip27-or-pip36" id="markdown-toc-install-pip27-or-pip36">Install pip2.7 or pip3.6</a></li>
+  <li><a href="#create-a-virtualenv" id="markdown-toc-create-a-virtualenv">Create a Virtualenv</a></li>
+  <li><a href="#install-shadowsocks" id="markdown-toc-install-shadowsocks">Install Shadowsocks</a></li>
+  <li><a href="#setting-up-your-shadowsocks-configuration" id="markdown-toc-setting-up-your-shadowsocks-configuration">Setting up your Shadowsocks configuration</a></li>
+</ul>
+
+  </nav>
+</aside>
+
+<h2 id="buy-a-server-from-bandwagon">Buy a server from Bandwagon</h2>
+
+<h2 id="link-to-your-server">Link to your server</h2>
+
+<h2 id="install-python27-or-36">Install Python2.7 or 3.6</h2>
+<p><a href="https://danieleriksson.net/2017/02/08/how-to-install-latest-python-on-centos/">centOS install py2.7</a></p>
+
+<h2 id="install-pip27-or-pip36">Install pip2.7 or pip3.6</h2>
+
+<h2 id="create-a-virtualenv">Create a Virtualenv</h2>
+
+<h2 id="install-shadowsocks">Install Shadowsocks</h2>
+
+<h2 id="setting-up-your-shadowsocks-configuration">Setting up your Shadowsocks configuration</h2>
+
+:ET

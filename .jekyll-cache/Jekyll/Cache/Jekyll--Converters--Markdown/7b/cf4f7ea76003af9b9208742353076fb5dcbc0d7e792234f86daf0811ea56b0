@@ -1,0 +1,83 @@
+I"� <aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#introduction" id="markdown-toc-introduction">Introduction</a></li>
+  <li><a href="#implementation" id="markdown-toc-implementation">Implementation</a></li>
+</ul>
+
+  </nav>
+</aside>
+
+<h1 id="introduction">Introduction</h1>
+<p>The <strong>Union-Find Disjoint Set (UFDS)</strong> is a data structure to model a collection of disjoint sets with the ability
+to efficiently determine which set an item belongs to in constant time. It is usually used to solve the problem of finding connected
+components in an undirected graph.</p>
+
+<p>The process is begun with initialize every vertex to a separate disjoint set, then enumerate every edge in a graph (or every relationship between
+two vertices) and join every two vertices or disjoint sets. UFDS is designed to solve this. In C++, such structure is not <strong>efficiently supported</strong>
+in STL library. So we will implement it here.</p>
+
+<p>The whole idea is above how to select a good representative ‘parent’ item to represent a set. We need to ensure that all vertices in one 
+set all have one unique ‘representative’. The UFDS takes advantage of tree structures where the disjoint sets form a forest of trees. 
+The root of one tree is picked to be the representative for all its descendants.</p>
+
+<p>To achieve this, I will use <code class="language-plaintext highlighter-rouge">std::vector&lt;int&gt; p</code> to denote the parents and <code class="language-plaintext highlighter-rouge">std::vector&lt;int&gt; rank</code> to denote the height of a node.
+Thus $p[i]$ stores the immediate parent of item $i$. $p[i] = i$ is true when item $i$ is a representative of a certain disjoint set. To union two disjoint sets,
+we set the representative item (root) of one disjoint set to be the new parent of the representative item of the other disjoint set. After calling $unionSet(i, j)$
+function, both item $i$ and $j$ will have the same representative item, directly or indirectly. During this process, we pick the mutual representative
+based on the rank field values. Note that we always pick the one with <em>higher rank</em> to be the new parent of the disjoint set.</p>
+
+<figure class="">
+  <img src="/assets/images/ufds.png" alt="UFDS" />
+  
+    <figcaption>UFDS from VisuAlgo
+</figcaption>
+  
+</figure>
+
+<p>There is also one technique called <strong>Path Compression</strong>, which is used to vastly speed up the $findSet(i)$ function. This is done by setting the parent
+of all items traverse to point directly to the root. Any subsequent calls to $findSet(i)$ on the affected items will then result in only one link being traversed.</p>
+
+<h1 id="implementation">Implementation</h1>
+<div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#ifndef __UFDS
+#define __UFDS
+#include &lt;vector&gt;
+</span>
+<span class="k">class</span> <span class="nc">UnionFind</span><span class="p">{</span>
+<span class="nl">private:</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">p</span><span class="p">,</span> <span class="n">rank</span><span class="p">;</span>
+<span class="nl">public:</span>
+  <span class="n">UnionFind</span><span class="p">(</span><span class="kt">int</span> <span class="n">N</span><span class="p">){</span>
+    <span class="n">rank</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+    <span class="n">p</span><span class="p">.</span><span class="n">assign</span><span class="p">(</span><span class="n">N</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+    <span class="c1">// initialize every node to point to themselves</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">N</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="kt">int</span> <span class="n">findSet</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">){</span> <span class="k">return</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">i</span><span class="p">)</span> <span class="o">?</span> <span class="n">i</span> <span class="o">:</span> <span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">findSet</span><span class="p">(</span><span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]));</span> <span class="p">}</span>
+
+  <span class="kt">bool</span> <span class="n">isSameSet</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">j</span><span class="p">){</span><span class="k">return</span> <span class="n">findSet</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">==</span> <span class="n">findSet</span><span class="p">(</span><span class="n">j</span><span class="p">);</span> <span class="p">}</span>
+
+  <span class="kt">void</span> <span class="n">unionSet</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">j</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">isSameSet</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)){</span>
+      <span class="c1">// find their representatives</span>
+      <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="n">findSet</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">y</span> <span class="o">=</span> <span class="n">findSet</span><span class="p">(</span><span class="n">j</span><span class="p">);</span>
+      <span class="c1">// compare ranks and prefer higher one</span>
+      <span class="k">if</span><span class="p">(</span><span class="n">rank</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">rank</span><span class="p">[</span><span class="n">y</span><span class="p">])</span> <span class="n">p</span><span class="p">[</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">;</span>
+      <span class="k">else</span><span class="p">{</span>
+        <span class="n">p</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span>
+        <span class="c1">// if they have the same rank, increment the root's rank</span>
+        <span class="k">if</span> <span class="p">(</span> <span class="n">rank</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">==</span> <span class="n">rank</span><span class="p">[</span><span class="n">y</span><span class="p">]</span> <span class="p">){</span>
+          <span class="n">rank</span><span class="p">[</span><span class="n">y</span><span class="p">]</span><span class="o">++</span><span class="p">;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">};</span>
+
+<span class="cp">#endif
+</span>
+</code></pre></div></div>
+
+:ET

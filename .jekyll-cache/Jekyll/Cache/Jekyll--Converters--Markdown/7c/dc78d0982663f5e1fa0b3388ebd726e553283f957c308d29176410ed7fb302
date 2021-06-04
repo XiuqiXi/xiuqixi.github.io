@@ -1,0 +1,160 @@
+I"L<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#initializing-the-core-stack" id="markdown-toc-initializing-the-core-stack">Initializing The Core Stack</a>    <ul>
+      <li><a href="#what-is-core-stack" id="markdown-toc-what-is-core-stack">What is Core Stack?</a></li>
+      <li><a href="#nsmanagedobjectmodel" id="markdown-toc-nsmanagedobjectmodel"><span style="color: white; background-color: #8866ff; padding:0.3em 0.5em 0.3em; border-radius: 10px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);">NSManagedObjectModel</span></a></li>
+      <li><a href="#nspersistentstorecoordinator" id="markdown-toc-nspersistentstorecoordinator"><span style="color: white; background-color: #4499ee; padding:0.3em 0.5em 0.3em; border-radius: 10px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">NSPersistentStoreCoordinator</span></a></li>
+      <li><a href="#nsmanagedobjectcontext" id="markdown-toc-nsmanagedobjectcontext"><span style="color: white; background-color: #88ccee; padding:0.3em 0.5em 0.3em; border-radius: 10px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">NSManagedObjectContext</span></a></li>
+    </ul>
+  </li>
+  <li><a href="#creating-and-saving-managed-objects" id="markdown-toc-creating-and-saving-managed-objects">Creating and Saving Managed Objects</a>    <ul>
+      <li><a href="#creating-managed-objects" id="markdown-toc-creating-managed-objects">Creating Managed Objects</a>        <ul>
+          <li><a href="#example-create-object" id="markdown-toc-example-create-object"><span style="color:#FFFFFF; background-color:#333333; padding: 0.1em 0.5em 0.1em; border-radius:10px; box-shadow:1px 1px 3px rgba(0, 0, 0, 0.5);">Example</span> <span style="color:#ffffff; background-color:#888888; padding: 0.1em 0.5em 0.1em; border-radius:10px; box-shadow:1px 1px 3px rgba(0, 0, 0, 0.5);">Create Object</span></a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#fetching-objects" id="markdown-toc-fetching-objects">Fetching Objects</a></li>
+</ul>
+
+  </nav>
+</aside>
+
+<h2 id="initializing-the-core-stack">Initializing The Core Stack</h2>
+
+<h3 id="what-is-core-stack">What is Core Stack?</h3>
+<p><strong><span style="display:block; 	float:left; 	font-family:Georgia; 	font-size: 310%; 	font-weight: bold; 	line-height: 90%; 	margin-right: 6px; 	margin-bottom:-2px; 	margin-top: 7px;">A</span> collection of framework objects</strong> that are accessed as part of the initialization of Core Data and that mediate between the objects in your application and external data stores.<br />
+It handles all of the interactions with the external data stores so that your application can focus on its business logic.<br />
+The stack consists of three primary objects:</p>
+
+<ul>
+  <li><span style="color: white; background-color: #88ccee; padding:0.15em 0.5em 0.15em; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">
+  <code class="language-plaintext highlighter-rouge">NSManagedObjectContext</code>
+</span></li>
+  <li><span style="color: white; background-color: #4499ee; padding:0.15em 0.5em 0.15em; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">
+  <code class="language-plaintext highlighter-rouge">NSPersistentStoreCoordinator</code>
+</span></li>
+  <li><span style="color: white; background-color: #8866ff; padding:0.15em 0.5em 0.15em; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">
+  <code class="language-plaintext highlighter-rouge">NSManagedObjectModel</code>
+</span></li>
+</ul>
+
+<p>You need to do the followings to access your application data:</p>
+
+<ol>
+  <li>Create Data</li>
+  <li>Initialize the Core Data stack</li>
+  <li>Access Application Data</li>
+</ol>
+
+<p>Example Core Data stack creation:</p>
+
+<figure class="highlight"><pre><code class="language-objc" data-lang="objc"><span class="k">@interface</span> <span class="nc">MyDataController</span> <span class="p">:</span> <span class="nc">NSObject</span>
+ 
+<span class="k">@property</span> <span class="p">(</span><span class="n">strong</span><span class="p">)</span> <span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="n">managedObjectContext</span><span class="p">;</span>
+ 
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">initializeCoreData</span><span class="p">;</span>
+ 
+<span class="k">@end</span>
+ 
+<span class="k">@implementation</span> <span class="nc">MyDataController</span>
+ 
+<span class="k">-</span> <span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="n">init</span>
+<span class="p">{</span>
+    <span class="n">self</span> <span class="o">=</span> <span class="p">[</span><span class="n">super</span> <span class="nf">init</span><span class="p">];</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">self</span><span class="p">)</span> <span class="k">return</span> <span class="nb">nil</span><span class="p">;</span>
+ 
+    <span class="p">[</span><span class="n">self</span> <span class="nf">initializeCoreData</span><span class="p">];</span>
+ 
+    <span class="k">return</span> <span class="n">self</span><span class="p">;</span>
+<span class="p">}</span>
+ 
+<span class="k">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">initializeCoreData</span>
+<span class="p">{</span>
+	<span class="c1">//concatenate the data file name, 'DataModel.momd'</span>
+	<span class="n">NSURL</span> <span class="o">*</span><span class="n">modelURL</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSBundle</span> <span class="nf">mainBundle</span><span class="p">]</span> <span class="nf">URLForResource</span><span class="p">:</span><span class="s">@"DataModel"</span> <span class="nf">withExtension</span><span class="p">:</span><span class="s">@"momd"</span><span class="p">];</span>
+	<span class="c1">//use the URL to create a managed object model</span>
+	<span class="n">NSManagedObjectModel</span> <span class="o">*</span><span class="n">mom</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSManagedObjectModel</span> <span class="nf">alloc</span><span class="p">]</span> <span class="nf">initWithContentsOfURL</span><span class="p">:</span><span class="n">modelURL</span><span class="p">];</span>
+	<span class="n">NSAssert</span><span class="p">(</span><span class="n">mom</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">,</span> <span class="s">@"Error initializing Managed Object Model"</span><span class="p">);</span>
+ 
+	<span class="c1">//create NSPersistentStoreCoordinator</span>
+	<span class="n">NSPersistentStoreCoordinator</span> <span class="o">*</span><span class="n">psc</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSPersistentStoreCoordinator</span> <span class="nf">alloc</span><span class="p">]</span> <span class="nf">initWithManagedObjectModel</span><span class="p">:</span><span class="n">mom</span><span class="p">];</span>
+	<span class="c1">//initiate the Managed Object Context</span>
+	<span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="n">moc</span> <span class="o">=</span> <span class="p">[[</span><span class="n">NSManagedObjectContext</span> <span class="nf">alloc</span><span class="p">]</span> <span class="nf">initWithConcurrencyType</span><span class="p">:</span><span class="n">NSMainQueueConcurrencyType</span><span class="p">];</span>
+	
+	<span class="c1">//set Coordinator for the context</span>
+	<span class="p">[</span><span class="n">moc</span> <span class="nf">setPersistentStoreCoordinator</span><span class="p">:</span><span class="n">psc</span><span class="p">];</span>
+	
+	<span class="c1">//set the instance's context with moc</span>
+	<span class="p">[</span><span class="n">self</span> <span class="nf">setManagedObjectContext</span><span class="p">:</span><span class="n">moc</span><span class="p">];</span>
+	
+	<span class="n">NSFileManager</span> <span class="o">*</span><span class="n">fileManager</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSFileManager</span> <span class="nf">defaultManager</span><span class="p">];</span>
+	<span class="n">NSURL</span> <span class="o">*</span><span class="n">documentsURL</span> <span class="o">=</span> <span class="p">[[</span><span class="n">fileManager</span> <span class="nf">URLsForDirectory</span><span class="p">:</span><span class="n">NSDocumentDirectory</span> <span class="nf">inDomains</span><span class="p">:</span><span class="nf">NSUserDomainMask</span><span class="p">]</span> <span class="n">lastObject</span><span class="p">];</span>
+	<span class="n">NSURL</span> <span class="o">*</span><span class="n">storeURL</span> <span class="o">=</span> <span class="p">[</span><span class="n">documentsURL</span> <span class="nf">URLByAppendingPathComponent</span><span class="p">:</span><span class="s">@"DataModel.sqlite"</span><span class="p">];</span>
+ 
+ 	<span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_global_queue</span><span class="p">(</span> <span class="n">DISPATCH_QUEUE_PRIORITY_DEFAULT</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">^</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+		<span class="n">NSPersistentStoreCoordinator</span> <span class="o">*</span><span class="n">psc</span> <span class="o">=</span> <span class="p">[[</span><span class="n">self</span> <span class="nf">managedObjectContext</span><span class="p">]</span> <span class="nf">persistentStoreCoordinator</span><span class="p">];</span>
+		<span class="n">NSPersistentStore</span> <span class="o">*</span><span class="n">store</span> <span class="o">=</span> <span class="p">[</span><span class="n">psc</span> <span class="nf">addPersistentStoreWithType</span><span class="p">:</span><span class="n">NSSQLiteStoreType</span> <span class="nf">configuration</span><span class="p">:</span><span class="nb">nil</span> <span class="n">URL</span><span class="o">:</span><span class="n">storeURL</span> <span class="n">options</span><span class="o">:</span><span class="nb">nil</span> <span class="n">error</span><span class="o">:&amp;</span><span class="n">error</span><span class="p">];</span>
+		<span class="n">NSAssert</span><span class="p">(</span><span class="n">store</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">,</span> <span class="s">@"Error initializing PSC: %@</span><span class="se">\n</span><span class="s">%@"</span><span class="p">,</span> <span class="p">[</span><span class="n">error</span> <span class="nf">localizedDescription</span><span class="p">],</span> <span class="p">[</span><span class="n">error</span> <span class="nf">userInfo</span><span class="p">]);</span>
+	<span class="p">});</span>
+<span class="p">}</span></code></pre></figure>
+
+<h3 id="nsmanagedobjectmodel"><span style="color: white; background-color: #8866ff; padding:0.3em 0.5em 0.3em; border-radius: 10px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);">NSManagedObjectModel</span></h3>
+<p>NSManagedObjectModel defines the structure of the data, which is going to be accessed by the Core Data stack. In the sample code, <code class="language-plaintext highlighter-rouge">mom</code> is one instance of this kind, which is loaded into memory as the first step in the creation of the stack. The <code class="language-plaintext highlighter-rouge">NSURL</code> from the main application bundle using a known filename (in this example <code class="language-plaintext highlighter-rouge">DataModel.momd</code>) for the NSManagedObjectModel.</p>
+
+<p>Once the <span style="color: #f0f0f0; background-color: #8866ff; padding:0.06em 0.5em 0.06em; border-radius: 6px;">NSManagedObjectModel</span> object is intialized, the <span style="color: #f0f0f0; background-color: #4499ee; padding:0.06em 0.5em 0.06em; border-radius: 6px;">NSPersistentStoreCoordinator</span> object is constructed.</p>
+
+<h3 id="nspersistentstorecoordinator"><span style="color: white; background-color: #4499ee; padding:0.3em 0.5em 0.3em; border-radius: 10px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">NSPersistentStoreCoordinator</span></h3>
+<p>The <span style="color: #f0f0f0; background-color: #4499ee; padding:0.06em 0.5em 0.06em; border-radius: 6px;">NSPersistentStoreCoordinator</span> sits in the middle of the Core Data stack, which is responsible for realizing instances of entities that are defined inside of the model. It creates new instances of the entities in the model, and it retrieves existing instances from a persistent store (<em style="color: #ff6666">NSPersistentStore</em>).</p>
+
+<p>The persistent store can be on disk or in memory. Depending on the structure of the application, it is possible, although uncommon, to have more than one persistent store being coordinated by the <span style="color: #f0f0f0; background-color: #4499ee; padding:0.06em 0.5em 0.06em;border-radius: 6px;">NSPersistentStoreCoordinator</span>.</p>
+
+<p>Whereas the <span style="color: #f0f0f0; background-color: #8866ff; padding:0.06em 0.5em 0.06em;border-radius: 6px;">NSManagedObjectModel</span> defines the structure of the data, the <span style="color: #f0f0f0; background-color: #4499ee; padding:0.06em 0.5em 0.06em;border-radius: 6px;">NSPersistentStoreCoordinator</span> realizes objects from the data in the persistent store and passes those objects off to the requesting <span style="color: #f0f0f0; background-color: #88ccee; padding:0.06em 0.5em 0.06em;border-radius: 6px;">NSManagedObjectContext</span>.</p>
+
+<h3 id="nsmanagedobjectcontext"><span style="color: white; background-color: #88ccee; padding:0.3em 0.5em 0.3em; border-radius: 10px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">NSManagedObjectContext</span></h3>
+<p>The managed object context (
+<span style="color: #f0f0f0; background-color: #88ccee; padding:0.06em 0.5em 0.06em;border-radius: 6px;">
+	NSManagedObjectContext
+</span>
+) is the object that your application will be interacting with the most, and therefore it is the one that is exposed to the rest of your application.</p>
+
+<p>It is just like an intelligent scratch pad. When you fetch objects from a persistent store, you bring temporary copies onto the scratch pad where they form an object graph (or a collection of object graphs). You can then modify those objects however you like. Unless you actually save those changes, however, the persistent store remains unaltered.</p>
+
+<p>All managed objects must be registered with a managed object context. You use the context to add objects to the object graph and remove objects from the object graph. The context tracks the changes you make, both to individual objects’ attributes and to the relationships between objects. By tracking changes, the context is able to provide undo and redo support for you. It also ensures that if you change relationships between objects, the integrity of the object graph is maintained.</p>
+
+<p>If you choose to save the changes you have made, the context ensures that your objects are in a valid state. If they are, the changes are written to the persistent store (or stores), new records are added for objects you created, and records are removed for objects you deleted.</p>
+
+<h2 id="creating-and-saving-managed-objects">Creating and Saving Managed Objects</h2>
+<p><span style="display:block; 	float:left; 	font-family:Georgia; 	font-size: 310%; 	font-weight: bold; 	line-height: 90%; 	margin-right: 6px; 	margin-bottom:-2px; 	margin-top: 7px;">O</span>nce you have defined your managed object model and initialized the Core Data stack within your application, you are ready to start creating objects for data storage.</p>
+
+<h3 id="creating-managed-objects">Creating Managed Objects</h3>
+<p>An <span style="color:#f0f0f0; background-color:#ff5555; padding:0.06em 0.5em 0.06em; border-radius:6px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">
+NSManagedObject</span> instance implements the basic behavior required of a Core Data model object.
+The <span style="color:#f0f0f0; background-color:#ff5555; padding:0.06em 0.5em 0.06em; border-radius:6px;">
+NSManagedObject</span> instance requires two elements:</p>
+
+<ul>
+  <li>An Entity Description (<span style="color:#f0f0f0; background-color:#ff8844; padding:0.06em 0.5em 0.06em; border-radius:6px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">NSEntityDescription</span>)<br />
+The entity description includes the name of the entity that the object represents and its attributes and relationships.</li>
+  <li>A Managed Object Context (<span style="color:#f0f0f0; background-color:#ff55aa; padding:0.06em 0.5em 0.06em; border-radius:6px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5)">NSManagedObjectContext</span>)<br />
+The managed object context represents a scratch pad where you create the managed objects. The context tracks changes to and relationships between objects.</li>
+</ul>
+
+<h4 id="example-create-object"><span style="color:#FFFFFF; background-color:#333333; padding: 0.1em 0.5em 0.1em; border-radius:10px; box-shadow:1px 1px 3px rgba(0, 0, 0, 0.5);">Example</span> <span style="color:#ffffff; background-color:#888888; padding: 0.1em 0.5em 0.1em; border-radius:10px; box-shadow:1px 1px 3px rgba(0, 0, 0, 0.5);">Create Object</span></h4>
+
+<h2 id="fetching-objects">Fetching Objects</h2>
+
+<figure class="highlight"><pre><code class="language-objc" data-lang="objc"><span class="n">NSManagedObjectContext</span> <span class="o">*</span><span class="n">moc</span> <span class="o">=</span> <span class="err">…</span><span class="p">;</span>
+<span class="n">NSFetchRequest</span> <span class="o">*</span><span class="n">request</span> <span class="o">=</span> <span class="p">[</span><span class="n">NSFetchRequest</span> <span class="nf">fetchRequestWithEntityName</span><span class="p">:</span><span class="s">@"Employee"</span><span class="p">];</span>
+ 
+<span class="n">NSError</span> <span class="o">*</span><span class="n">error</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+<span class="n">NSArray</span> <span class="o">*</span><span class="n">results</span> <span class="o">=</span> <span class="p">[</span><span class="n">moc</span> <span class="nf">executeFetchRequest</span><span class="p">:</span><span class="n">request</span> <span class="nf">error</span><span class="p">:</span><span class="o">&amp;</span><span class="n">error</span><span class="p">];</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">results</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">NSLog</span><span class="p">(</span><span class="s">@"Error fetching Employee objects: %@</span><span class="se">\n</span><span class="s">%@"</span><span class="p">,</span> <span class="p">[</span><span class="n">error</span> <span class="nf">localizedDescription</span><span class="p">],</span> <span class="p">[</span><span class="n">error</span> <span class="nf">userInfo</span><span class="p">]);</span>
+    <span class="n">abort</span><span class="p">();</span>
+<span class="p">}</span></code></pre></figure>
+
+:ET

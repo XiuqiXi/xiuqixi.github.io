@@ -1,0 +1,38 @@
+I"¬<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#functional-programming" id="markdown-toc-functional-programming">Functional Programming</a></li>
+  <li><a href="#clojure" id="markdown-toc-clojure">Clojure</a>    <ul>
+      <li><a href="#basic-functions" id="markdown-toc-basic-functions">Basic functions:</a></li>
+      <li><a href="#arithmetic" id="markdown-toc-arithmetic">Arithmetic</a></li>
+    </ul>
+  </li>
+</ul>
+
+  </nav>
+</aside>
+
+<h1 id="functional-programming">Functional Programming</h1>
+
+<h1 id="clojure">Clojure</h1>
+<h2 id="basic-functions">Basic functions:</h2>
+<div class="language-clojure highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nb">println</span><span class="w"> </span><span class="s">"Hello, Clarice"</span><span class="p">)</span><span class="w">
+</span><span class="p">(</span><span class="nb">str</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="s">" "</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="s">" "</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="s">" "</span><span class="w"> </span><span class="s">"Blast off!"</span><span class="p">)</span><span class="w"> </span><span class="c1">; Fly to the moon</span><span class="w">
+</span><span class="p">(</span><span class="nb">count</span><span class="w"> </span><span class="s">"Hello, Clarice"</span><span class="p">)</span><span class="w"> </span><span class="c1">; 12</span><span class="w">
+</span><span class="p">(</span><span class="nb">println</span><span class="w"> </span><span class="n">true</span><span class="p">)</span><span class="w">
+</span><span class="p">(</span><span class="nb">println</span><span class="w"> </span><span class="n">false</span><span class="p">)</span><span class="w">
+</span><span class="p">(</span><span class="nb">println</span><span class="w"> </span><span class="s">"Home:"</span><span class="w"> </span><span class="n">nil</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="arithmetic">Arithmetic</h2>
+<div class="language-clojure highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nb">+</span><span class="w"> </span><span class="mi">1900</span><span class="w"> </span><span class="mi">84</span><span class="p">)</span><span class="w"> </span><span class="c1">;1984</span><span class="w">
+</span><span class="p">(</span><span class="nb">*</span><span class="w"> </span><span class="mi">16</span><span class="w"> </span><span class="mi">124</span><span class="p">)</span><span class="w">  </span><span class="c1">;1984</span><span class="w">
+</span><span class="p">(</span><span class="nb">-</span><span class="w"> </span><span class="mi">2000</span><span class="w"> </span><span class="mi">16</span><span class="p">)</span><span class="w"> </span><span class="c1">;1984</span><span class="w">
+</span><span class="p">(</span><span class="nb">/</span><span class="w"> </span><span class="mi">25792</span><span class="w"> </span><span class="mi">13</span><span class="p">)</span><span class="c1">;1984</span><span class="w">
+</span><span class="p">(</span><span class="nb">/</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w">     </span><span class="c1">; will get 8/3</span><span class="w">
+</span><span class="p">(</span><span class="nb">quot</span><span class="w"> </span><span class="mi">8</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w">  </span><span class="c1">; will get 2</span><span class="w">
+</span></code></pre></div></div>
+<p>By default, Clojure turns unadorned numeric literals into integers.</p>
+
+:ET

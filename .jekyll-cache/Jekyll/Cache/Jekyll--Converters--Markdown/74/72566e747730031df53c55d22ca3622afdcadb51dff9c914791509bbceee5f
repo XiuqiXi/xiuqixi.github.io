@@ -1,0 +1,46 @@
+I"+
+<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#managing-threads" id="markdown-toc-managing-threads">Managing Threads</a>    <ul>
+      <li><a href="#ways-to-launch-a-thread" id="markdown-toc-ways-to-launch-a-thread">Ways to Launch a Thread</a></li>
+    </ul>
+  </li>
+  <li><a href="#sharing-data-between-threads" id="markdown-toc-sharing-data-between-threads">Sharing Data Between Threads</a></li>
+  <li><a href="#synchronizing-concurrent-operations" id="markdown-toc-synchronizing-concurrent-operations">Synchronizing Concurrent Operations</a></li>
+  <li><a href="#the-c-memory-model-and-operations-on-atomic-types" id="markdown-toc-the-c-memory-model-and-operations-on-atomic-types">The C++ Memory Model and Operations on Atomic Types</a></li>
+  <li><a href="#designing-lock-based-concurrent-ds" id="markdown-toc-designing-lock-based-concurrent-ds">Designing Lock-based Concurrent DS</a></li>
+  <li><a href="#design-lock-free-concurrent-ds" id="markdown-toc-design-lock-free-concurrent-ds">Design Lock-free Concurrent DS</a></li>
+  <li><a href="#design-concurrent-code" id="markdown-toc-design-concurrent-code">Design Concurrent Code</a></li>
+  <li><a href="#advanced-thread-management" id="markdown-toc-advanced-thread-management">Advanced Thread Management</a></li>
+  <li><a href="#testing-and-debugging-multithreaded-applications" id="markdown-toc-testing-and-debugging-multithreaded-applications">Testing and Debugging Multithreaded Applications</a></li>
+</ul>
+
+  </nav>
+</aside>
+
+<h1 id="managing-threads">Managing Threads</h1>
+<h2 id="ways-to-launch-a-thread">Ways to Launch a Thread</h2>
+<ol>
+  <li>Function Pointers</li>
+  <li>Callable Objects</li>
+  <li>Lambda Expression (This is actually a special case of callable objects, only workable in C++11)</li>
+</ol>
+
+<h1 id="sharing-data-between-threads">Sharing Data Between Threads</h1>
+
+<h1 id="synchronizing-concurrent-operations">Synchronizing Concurrent Operations</h1>
+
+<h1 id="the-c-memory-model-and-operations-on-atomic-types">The C++ Memory Model and Operations on Atomic Types</h1>
+
+<h1 id="designing-lock-based-concurrent-ds">Designing Lock-based Concurrent DS</h1>
+
+<h1 id="design-lock-free-concurrent-ds">Design Lock-free Concurrent DS</h1>
+
+<h1 id="design-concurrent-code">Design Concurrent Code</h1>
+
+<h1 id="advanced-thread-management">Advanced Thread Management</h1>
+
+<h1 id="testing-and-debugging-multithreaded-applications">Testing and Debugging Multithreaded Applications</h1>
+:ET

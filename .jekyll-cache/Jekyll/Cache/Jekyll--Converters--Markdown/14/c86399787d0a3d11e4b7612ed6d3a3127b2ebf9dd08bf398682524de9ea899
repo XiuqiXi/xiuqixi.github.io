@@ -1,0 +1,66 @@
+I"�<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#possible-cause" id="markdown-toc-possible-cause">Possible Cause</a></li>
+  <li><a href="#solution" id="markdown-toc-solution">Solution</a></li>
+</ul>
+
+  </nav>
+</aside>
+
+<h2 id="possible-cause">Possible Cause</h2>
+<p>This problem is highly possible to be caused by this settings in init files:</p>
+
+<figure class="highlight"><pre><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="c1">;;auto load languages</span>
+<span class="p">(</span><span class="nv">org-babel-do-load-languages</span>
+ <span class="ss">'org-babel-load-languages</span>
+ <span class="o">'</span><span class="p">(</span>
+   <span class="p">(</span><span class="nv">sh</span> <span class="o">.</span> <span class="no">t</span><span class="p">)</span>
+   <span class="p">(</span><span class="nv">python</span> <span class="o">.</span> <span class="no">t</span><span class="p">)</span>
+   <span class="p">(</span><span class="nv">R</span> <span class="o">.</span> <span class="no">t</span><span class="p">)</span>
+   <span class="p">(</span><span class="nv">ruby</span> <span class="o">.</span> <span class="no">t</span><span class="p">)</span>
+   <span class="p">(</span><span class="nv">ditaa</span> <span class="o">.</span> <span class="no">t</span><span class="p">)</span>
+   <span class="p">(</span><span class="nv">dot</span> <span class="o">.</span> <span class="no">t</span><span class="p">)</span>
+   <span class="p">(</span><span class="nv">octave</span> <span class="o">.</span> <span class="no">t</span><span class="p">)</span>
+   <span class="p">(</span><span class="nv">sqlite</span> <span class="o">.</span> <span class="no">t</span><span class="p">)</span>
+   <span class="p">(</span><span class="nv">perl</span> <span class="o">.</span> <span class="no">t</span><span class="p">)</span>
+   <span class="p">(</span><span class="nv">C</span> <span class="o">.</span> <span class="no">t</span><span class="p">)</span>
+   <span class="p">))</span></code></pre></figure>
+
+<p>There are many people who encountered with exactly the same problem because of <span style="color: #f0f0f0; background-color: #6495ED; padding:0.06em 0.5em 0.06em;border-radius: 6px;box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);">org</span> and <span style="color: #f0f0f0; background-color: #1E90FF; padding:0.06em 0.5em 0.06em;border-radius: 6px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);">org-plus-contrib</span>. So I thought this could be the root cause. But shortly it was found that I didn’t have <span style="color: #f0f0f0; background-color: #1E90FF; padding:0.06em 0.5em 0.06em;border-radius: 6px;">org-plus-contrib</span> at all. So the real cause remained unclear. I would appreciate it if you are willing to share what you find about this error in comments.</p>
+
+<h2 id="solution">Solution</h2>
+<p>You can simply comment this configuration out to get rid of the launch error. The final solution is provided in <a href="https://lists.gnu.org/archive/html/emacs-orgmode/2015-08/msg00280.html">this email</a>.</p>
+
+<p>The upshot was run 
+<span style="color: #f0f0f0; background-color: #FF69B4; padding:0.06em 0.5em 0.06em;border-radius: 6px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);">
+<code class="language-plaintext highlighter-rouge">M-x</code></span>
+<strong><em>byte-compile-file</em></strong>  on file 
+<span style="color: #f0f0f0; background-color: #7B68EE; padding:0.06em 0.5em 0.06em;border-radius: 6px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5);">
+ob-R.el.
+</span></p>
+
+<p>If you don’t know where the file <code class="language-plaintext highlighter-rouge">ob-R.el</code> is, just search in your emacs configuration folder. After compiled, if everything goes fine, the error should have go away.</p>
+
+<p>However, some may encounter new errors while compiling. Refer to <a href="https://lists.gnu.org/archive/html/emacs-orgmode/2015-08/msg00316.html">this email</a> for a temporary fix. In case the link could be expired, I copied the email contents here:</p>
+<blockquote>
+  <p>Unfortunately I now can’t reproduce the problem, so I can’t check if my suggestion to byte compile ob-R.el works or not. When I did observe the issue you describe that seemed to fix it, and at least one other person confirmed that it worked for them as well.</p>
+
+  <p>Since it doesn’t work for you I suggest removing org-plus-contrib (or org), starting emacs with <code class="language-plaintext highlighter-rouge">emacs -Q</code> and running something like</p>
+</blockquote>
+
+<figure class="highlight"><pre><code class="language-emacs-lisp" data-lang="emacs-lisp"><span class="p">(</span><span class="nb">require</span> <span class="ss">'package</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">add-to-list</span> <span class="ss">'package-archives</span>
+             <span class="o">'</span><span class="p">(</span><span class="s">"org"</span> <span class="o">.</span> <span class="s">"http://orgmode.org/elpa/"</span><span class="c1">;) t)</span>
+<span class="p">(</span><span class="nv">package-initialize</span><span class="p">)</span>
+<span class="p">(</span><span class="nv">package-install</span> <span class="ss">'org-plus-contrib</span><span class="p">)</span>
+<span class="c1">;; or (package-install 'org)</span></code></pre></figure>
+
+<blockquote>
+  <p>Best,</p>
+
+  <p>Ista</p>
+</blockquote>
+
+:ET

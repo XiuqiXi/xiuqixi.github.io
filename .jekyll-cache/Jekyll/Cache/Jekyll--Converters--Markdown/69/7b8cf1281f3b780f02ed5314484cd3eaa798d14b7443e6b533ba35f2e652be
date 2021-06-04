@@ -1,0 +1,25 @@
+I"!<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#solution-change-linguist-vendor-attribute" id="markdown-toc-solution-change-linguist-vendor-attribute">Solution: Change Linguist Vendor Attribute</a></li>
+</ul>
+
+  </nav>
+</aside>
+<h2 id="solution-change-linguist-vendor-attribute">Solution: Change Linguist Vendor Attribute</h2>
+<p><span style="display:block; 	float:left; 	font-family:Georgia; 	font-size: 310%; 	font-weight: bold; 	line-height: 90%; 	margin-right: 6px; 	margin-bottom:-2px; 	margin-top: 7px;">G</span>ithub sometimes marks one repo’s language wrong because of Linguist Library behavior. Here is a quick fix.</p>
+
+<ol>
+  <li>First, create file <code class="language-plaintext highlighter-rouge">.gitattributes</code> in the root folder of the repository you want to fix.</li>
+  <li>Write following lines into this file, and stage, commit, push to github.
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>* linguist-vendored
+*.cpp linguist-vendored=false
+*.hpp linguist-vendored=false
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p>After doing this, the Linguist now only takes <code class="language-plaintext highlighter-rouge">.cpp</code> and <code class="language-plaintext highlighter-rouge">.hpp</code> files into consideration for deciding your repo’s language. Change the lines according to which language you want it to recognize.</p>
+
+:ET

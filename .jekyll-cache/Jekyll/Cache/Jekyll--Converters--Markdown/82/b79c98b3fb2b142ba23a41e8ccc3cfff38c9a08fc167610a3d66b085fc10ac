@@ -1,0 +1,73 @@
+I"�<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#enviroment-setting" id="markdown-toc-enviroment-setting">Enviroment Setting</a></li>
+  <li><a href="#neighbor-coordinate-changes" id="markdown-toc-neighbor-coordinate-changes">Neighbor Coordinate Changes</a></li>
+  <li><a href="#validate-coordinate" id="markdown-toc-validate-coordinate">Validate Coordinate</a></li>
+  <li><a href="#application-flood-fill" id="markdown-toc-application-flood-fill">Application: Flood Fill</a></li>
+</ul>
+
+  </nav>
+</aside>
+
+<h1 id="enviroment-setting">Enviroment Setting</h1>
+<p>Say we have a 2D grid with $R$ rows and $C$ columns. Assume $(r,c)$ represents the current cell we are processing.
+There are many cases where we need to find out all neighbors of this cell and loop them into a subroutine. What will
+be a quick and precise way to loop through all of them and at the mean time testing if a coordinate is valid?</p>
+
+<h1 id="neighbor-coordinate-changes">Neighbor Coordinate Changes</h1>
+<p>First, we use two array to store the relative change of all neighbors.</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">dr</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span>  <span class="mi">1</span><span class="p">};</span>
+<span class="kt">int</span> <span class="n">dc</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">};</span>
+<span class="c1">// (dr[i], dc[i]) pair gives one possible neighbor relative coordinate.</span>
+<span class="c1">// ordered: S, SE, E, NE, N, NW, W, SW</span>
+</code></pre></div></div>
+
+<table>
+  <tbody>
+    <tr>
+      <td>-1,-1</td>
+      <td>-1,0</td>
+      <td>-1,1</td>
+    </tr>
+    <tr>
+      <td>0,-1</td>
+      <td>r,c</td>
+      <td>0,1</td>
+    </tr>
+    <tr>
+      <td>1,-1</td>
+      <td>1,0</td>
+      <td>1,1</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>given this setting, we can easily loop through all possible neighbors. Next we will get to how to quickly check if within bounds.</p>
+
+<h1 id="validate-coordinate">Validate Coordinate</h1>
+<p>Assume $(r, c)$ now contains the new coordinate of a possible neighbor, which is calculated base on above relative neighbor position.
+We can use the following function to quickly test if it is still valid:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">bool</span> <span class="nf">validate_coordinate</span><span class="p">(</span><span class="k">const</span> <span class="kt">int</span> <span class="n">R</span><span class="p">,</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">C</span><span class="p">,</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">r</span><span class="p">,</span> <span class="k">const</span> <span class="kt">int</span> <span class="n">c</span><span class="p">){</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">r</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">r</span> <span class="o">&gt;</span> <span class="n">R</span> <span class="o">||</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">c</span> <span class="o">&gt;</span> <span class="n">C</span><span class="p">)</span> <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h1 id="application-flood-fill">Application: Flood Fill</h1>
+<p>This is a very common problem of finding and counting the number of connected parts. The following approach is a depth first one. A bfs one works
+very similarly. It is also called coloring in CS terminology. It is also known as “flood fill” and usually performed on implicit graphs.</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">floodfill</span><span class="p">(</span><span class="kt">int</span> <span class="n">r</span><span class="p">,</span> <span class="kt">int</span> <span class="n">c</span><span class="p">,</span> <span class="kt">char</span> <span class="n">c1</span><span class="p">,</span> <span class="kt">char</span> <span class="n">c2</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// returns the size of CC</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">r</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">r</span> <span class="o">&gt;=</span> <span class="n">R</span> <span class="o">||</span> <span class="n">c</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">c</span> <span class="o">&gt;=</span> <span class="n">C</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// outside grid</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">grid</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">c</span><span class="p">]</span> <span class="o">!=</span> <span class="n">c1</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// does not have color c1</span>
+  <span class="kt">int</span> <span class="n">ans</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// adds 1 to ans because vertex (r, c) has c1 as its color</span>
+  <span class="n">grid</span><span class="p">[</span><span class="n">r</span><span class="p">][</span><span class="n">c</span><span class="p">]</span> <span class="o">=</span> <span class="n">c2</span><span class="p">;</span> <span class="c1">// now recolors vertex (r, c) to c2 to avoid cycling!</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">d</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">d</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="n">d</span><span class="o">++</span><span class="p">)</span>
+    <span class="n">ans</span> <span class="o">+=</span> <span class="n">floodfill</span><span class="p">(</span><span class="n">r</span> <span class="o">+</span> <span class="n">dr</span><span class="p">[</span><span class="n">d</span><span class="p">],</span> <span class="n">c</span> <span class="o">+</span> <span class="n">dc</span><span class="p">[</span><span class="n">d</span><span class="p">],</span> <span class="n">c1</span><span class="p">,</span> <span class="n">c2</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">ans</span><span class="p">;</span> <span class="c1">// the code is neat due to dr[] and dc[]</span>
+<span class="p">}</span>
+</code></pre></div></div>
+:ET

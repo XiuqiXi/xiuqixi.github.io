@@ -1,0 +1,18 @@
+I"`<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#initializing-the-core-stack" id="markdown-toc-initializing-the-core-stack">Initializing The Core Stack</a>    <ul>
+      <li><a href="#what-is-core-stack" id="markdown-toc-what-is-core-stack">What is Core Stack?</a></li>
+    </ul>
+  </li>
+</ul>
+
+  </nav>
+</aside>
+
+<h2 id="initializing-the-core-stack">Initializing The Core Stack</h2>
+
+<h3 id="what-is-core-stack">What is Core Stack?</h3>
+<p><span style="display:block; 	float:left; 	font-family:Georgia; 	font-size: 310%; 	font-weight: bold; 	line-height: 90%; 	margin-right: 6px; 	margin-bottom:-2px; 	margin-top: 7px;">P</span>yMySql is a python package for connecting mysql, which can be download from github.</p>
+:ET

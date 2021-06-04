@@ -1,0 +1,24 @@
+I"Œ<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#run-lisp" id="markdown-toc-run-lisp">Run Lisp</a></li>
+  <li><a href="#experimenting-with-lispccl" id="markdown-toc-experimenting-with-lispccl">Experimenting with Lisp(CCL)</a></li>
+</ul>
+
+  </nav>
+</aside>
+<h1 id="run-lisp">Run Lisp</h1>
+<p>In Emacs, <code class="language-plaintext highlighter-rouge">M-x run-lisp</code> would bring <code class="language-plaintext highlighter-rouge">*inferior-lisp*</code> buffer. In a lisp mode buffer, you can put the cursor behind the line or region you want to evaluate, and press <code class="language-plaintext highlighter-rouge">C-M-x</code>. The content would be sent to <code class="language-plaintext highlighter-rouge">*inferior-lisp*</code> buffer.</p>
+
+<h1 id="experimenting-with-lispccl">Experimenting with Lisp(CCL)</h1>
+
+<div class="language-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="nb">+</span> <span class="mi">2</span> <span class="mi">3</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><strong>Anything in parentheses is a list</strong>. First element is treated as the name of a function and the rest of the elements as expressions to be evaluated to yield the arguments to the function.</p>
+
+<div class="language-lisp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">"hello, world"</span>
+</code></pre></div></div>
+<p>The printer tries to print objects in the same syntax the reader understands.</p>
+:ET

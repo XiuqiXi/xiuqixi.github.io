@@ -1,0 +1,99 @@
+I"�<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#dynamics" id="markdown-toc-dynamics">Dynamics</a>    <ul>
+      <li><a href="#newtons-laws" id="markdown-toc-newtons-laws">Newton’s Laws</a></li>
+      <li><a href="#eulers-equation-written-in-the-form-of-newtons-2nd-law" id="markdown-toc-eulers-equation-written-in-the-form-of-newtons-2nd-law">Euler’s Equation written in the form of Newton’s 2nd Law</a></li>
+      <li><a href="#construction-of-the-inertia-tensor" id="markdown-toc-construction-of-the-inertia-tensor">Construction of the inertia tensor</a></li>
+      <li><a href="#the-parallel-axis-theorem" id="markdown-toc-the-parallel-axis-theorem">The Parallel Axis Theorem</a></li>
+      <li><a href="#rotating-the-inertia-tensor" id="markdown-toc-rotating-the-inertia-tensor">Rotating the Inertia Tensor</a></li>
+      <li><a href="#computed-torque-equation" id="markdown-toc-computed-torque-equation">Computed Torque Equation</a></li>
+    </ul>
+  </li>
+</ul>
+
+  </nav>
+</aside>
+
+<h1 id="dynamics">Dynamics</h1>
+
+<p><strong>how force act on bodies to create accelerations</strong></p>
+
+<ol>
+  <li>the moment of inertia and how it depends on the geometry of motion</li>
+  <li><em>computed-torque equation</em></li>
+</ol>
+
+<h2 id="newtons-laws">Newton’s Laws</h2>
+
+<ul>
+  <li><strong>1st Law:</strong> A particle remains in a state of constant rectilinear motion unless acted on by an external force</li>
+  <li><strong>2nd Law:</strong> The time-rate-of-change in the momentum(mv) of the particle is proportional to the externally applied forces, $\mathbf{f} = \frac{d}{dt}(m\mathbf{v})$</li>
+  <li><strong>3rd Law:</strong> Any force imposed on body $A$ by body $B$ is reciprocated by an equal and opposite reaction force on body $B$ by body $A$</li>
+</ul>
+
+<h2 id="eulers-equation-written-in-the-form-of-newtons-2nd-law">Euler’s Equation written in the form of Newton’s 2nd Law</h2>
+
+\[\mathbf{\tau} = \frac{d}{dt}[\mathbf{J}\omega] = \mathbf{J}\ddot{\theta}\]
+
+<h2 id="construction-of-the-inertia-tensor">Construction of the inertia tensor</h2>
+
+<p>A inertia tensor is derived by summing the contribution of each lamina to the total moment of inertia of the body.
+\(\begin{align*}
+^A\mathbf{J} &amp;=
+	\begin{bmatrix}
+	(y^2+z^2) &amp;-xy &amp;-xz\\
+	-yx &amp;(x^2 + z^2) &amp;-yz\\
+	-zx &amp;-zy &amp;(x^2+y^2)
+	\end{bmatrix}\\
+&amp;=
+	\begin{bmatrix}
+		\mathbf{J}_{xx} &amp;-\mathbf{J}_{xy} &amp;-\mathbf{J}_{xz}\\
+		-\mathbf{J}_{yx} &amp;\mathbf{J}_{yy} &amp;-\mathbf{J}_{yz}\\
+		-\mathbf{J}_{zx} &amp;-\mathbf{J}_{zy} &amp;-\mathbf{J}_{zz}
+	\end{bmatrix}
+\end{align*}\)</p>
+
+<h2 id="the-parallel-axis-theorem">The Parallel Axis Theorem</h2>
+
+<p>Given an arbitrary choice for frame $A$, the center of mass of the body is defined:
+\(\mathbf{r}_{cm} = \frac{\sum m_i \mathbf{r}_i}{\sum m_i}\)</p>
+
+<p>For a body with a known inertia tensor at the center of mass $^{CM}\mathbf{I}$, the parallel axis theorem states that the inertia tensor at any other parallel frame is computed:
+\(\begin{equation}
+^A\mathbf{J} = ^{CM}J +
+\begin{bmatrix}
+m(r_y^2 + r_z^2) &amp;-m(r_x r_y) &amp;-m(r_xr_z)\\
+-m(r_y r_x) &amp;m(r_x^2+r_z^2) &amp;-m(r_y r_z)\\
+-m(r_z r_x) &amp;-m(r_z r_y) &amp;m(r_x^2 + r_y^2)
+\end{bmatrix}
+\end{equation}\)</p>
+
+<h2 id="rotating-the-inertia-tensor">Rotating the Inertia Tensor</h2>
+
+<p>The angular momentum vector $\mathbf{J\omega}$ of a rotating body is conserved during the rotation of coordinates, therefore</p>
+
+\[\begin{align}
+\mathbf{J}_1 \mathbf{\omega}_1  &amp;=_1\mathbf{R}_0 (\mathbf{J}_0\mathbf{\omega}_0) \\
+	&amp;=_1\mathbf{R}_0 \mathbf{J}_0 ({_1\mathbf{R}_0}^T _1\mathbf{R}_0)\mathbf{\omega}_0\\
+	&amp;= (_1\mathbf{R}_0 \;\mathbf{J}_0 \;{_1\mathbf{R}_0}^T)\mathbf{\omega_1}
+\end{align}\]
+
+<h2 id="computed-torque-equation">Computed Torque Equation</h2>
+
+<p>[
+\tau = M(q)\ddot{q} + V(q,\dot{q}) + G(q) + F
+]</p>
+
+<p>For a $n$ degree of freedom robot:</p>
+
+<ul>
+  <li><strong>$q$:</strong> $n\times 1$ vector the configuration variables</li>
+  <li><strong>$\tau$:</strong> $n\times1$ vector of forces and/or torques</li>
+  <li><strong>$M(q)$:</strong> $n\times n$ configuration dependent generalized inertia matrix, it is positive definite and symmetric and is therefore, always invertible</li>
+  <li><strong>$V(q,\dot{q})$:</strong> $n\times 1$ vector depends on both positions $q$ and velocities $\dot{q}$ which represents centripetal and Coriolis forces.</li>
+  <li><strong>$G(q)$:</strong> $n\times 1$ vector of gravitational forces and/or torques.</li>
+  <li><strong>$F$:</strong> the forces and torques in the mechanism from these types of “external” forces</li>
+</ul>
+:ET

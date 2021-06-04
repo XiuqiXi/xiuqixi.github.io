@@ -1,0 +1,44 @@
+I"Š<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+
+  </nav>
+</aside>
+<p><span style="display:block; 	float:left; 	font-family:Georgia; 	font-size: 310%; 	font-weight: bold; 	line-height: 90%; 	margin-right: 6px; 	margin-bottom:-2px; 	margin-top: 7px;">I</span> was trying to embed <code class="language-plaintext highlighter-rouge">tikzpicture</code> code in my org files. But fount that whenever I want to output the latex source code written to generate a picture, I was only able to do it when the <code class="language-plaintext highlighter-rouge">:file</code> option is set to <code class="language-plaintext highlighter-rouge">svg</code>. It will give not authorized error for <code class="language-plaintext highlighter-rouge">png</code> files.</p>
+
+<p>For example, I have the following code blocks in my org file:</p>
+<div class="language-latex highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#+name: 2.24-list-tree
+#+header: :results value file
+#+header: :file images/2.24-tree.png 
+#+header: :imagemagick yes :headers '("<span class="k">\usepackage</span><span class="p">{</span>tikz<span class="p">}</span>") 
+#+header: :fit yes :iminoptions -density 600 :imoutoptions -geometry 400
+#+begin<span class="p">_</span>src latex :file ./images/2.24-tree.png
+  <span class="nt">\begin{tikzpicture}</span>
+    <span class="k">\node</span> <span class="p">{</span>root<span class="p">}</span>
+      child <span class="p">{</span>node <span class="p">{</span>1<span class="p">}}</span>
+      child <span class="p">{</span>node <span class="p">{</span>(2 (3 4))<span class="p">}</span>
+        child <span class="p">{</span>node <span class="p">{</span>2<span class="p">}}</span>
+        child <span class="p">{</span>node <span class="p">{</span>(3 4)<span class="p">}</span>
+          child <span class="p">{</span>node <span class="p">{</span>3<span class="p">}}</span>
+          child <span class="p">{</span>node <span class="p">{</span>4<span class="p">}}</span>
+        <span class="p">}</span>
+      <span class="p">}</span>;
+  <span class="nt">\end{tikzpicture}</span>
+#+end<span class="p">_</span>src
+</code></pre></div></div>
+
+<p>and it never generates the file. Later I found that the issue is with the debian version of the package <code class="language-plaintext highlighter-rouge">imagemagick</code>. In order to re-enable us to generate <code class="language-plaintext highlighter-rouge">png</code> files, do the following:</p>
+<ol>
+  <li>Switch to root user</li>
+  <li>Edit file <code class="language-plaintext highlighter-rouge">/etc/ImageMagic-6/policy.xml</code></li>
+  <li>Replace <code class="language-plaintext highlighter-rouge">&lt;policy domain="coder" rights="none" pattern="PDF" /&gt;</code> with</li>
+</ol>
+<p>&lt;policy domain="coder" rights="read|write" pattern="PDF" /&gt;</p>
+<ol>
+  <li>Save it.</li>
+</ol>
+
+<p>Now we should be able to generate <code class="language-plaintext highlighter-rouge">png</code> files just fine.</p>
+
+<p>I found the solution <a href="https://emacs-china.org/t/org-tikz/8891/19" title="Draw pictures in Org Mode with Tikz">here</a>.</p>
+:ET

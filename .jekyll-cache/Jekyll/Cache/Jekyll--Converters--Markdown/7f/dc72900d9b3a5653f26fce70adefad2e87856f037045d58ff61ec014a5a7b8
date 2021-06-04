@@ -1,0 +1,76 @@
+I" <aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#fully-convolutional-networks-for-semantic-segmentation" id="markdown-toc-fully-convolutional-networks-for-semantic-segmentation">Fully Convolutional Networks for Semantic Segmentation</a>    <ul>
+      <li><a href="#introduction" id="markdown-toc-introduction">Introduction</a></li>
+      <li><a href="#fully-convolutional-networks" id="markdown-toc-fully-convolutional-networks">Fully Convolutional Networks</a>        <ul>
+          <li><a href="#adapting-classifiers-for-dense-prediction" id="markdown-toc-adapting-classifiers-for-dense-prediction">Adapting classifiers for dense prediction</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+  </nav>
+</aside>
+
+<h1 id="fully-convolutional-networks-for-semantic-segmentation">Fully Convolutional Networks for Semantic Segmentation</h1>
+
+<h2 id="introduction">Introduction</h2>
+
+<p>End-to-end</p>
+
+<ol>
+  <li>pixelwise prediction</li>
+  <li>superwised learning</li>
+</ol>
+
+<p>Dense feedforward computation and backpropagation. Upsampling layers enable pixelwise prediction and learning.</p>
+
+<h2 id="fully-convolutional-networks">Fully Convolutional Networks</h2>
+
+<p>Each layer of data in a convnet has size of $h\times w\times d$.</p>
+
+<ul>
+  <li><strong>$w$ and $h$:</strong> spatial dimensions</li>
+  <li><strong>$d$:</strong> feature or channel dimension</li>
+  <li><strong>Receptive Fields:</strong> Locations in higher layers correspond to the locations in the image they are path-connected to.</li>
+</ul>
+
+<p>Convnets are built on translation invariance. Their basic components (convolution, pooling, and activation function) operate on local input regions and depend only relative spatial coordinates.</p>
+
+<ul>
+  <li><strong>$x_{ij}$:</strong> data vector at location $(i,j)$ in a particular layer</li>
+  <li><strong>$y_{ij}$:</strong> following layer computed by:</li>
+</ul>
+
+\[y_{ji} = f_{ks} (\{ \mathbf{x}_{si+\delta i, sj+\delta j} \}_{0\leq \delta i, \delta j \leq k})\]
+
+<ul>
+  <li><strong>$k$:</strong> kernel size</li>
+  <li><strong>$s$:</strong> stride or subsampling factor</li>
+  <li><strong>$f_{ks}$:</strong> layer type: a matrix multiplication for convolution or average pooling, a spatial max for max pooling, or an elementwise nonlinearity for an activation function.</li>
+</ul>
+
+<p>Kernel size and stride obeying the <strong>transformation rule</strong>:
+[
+f_{ks}\circ g_{k^\prime s^\prime} = (f\circ g)_{k^\prime + (k-1)s^\prime, ss^\prime\cdot}
+]
+It computes a <em>nonlinear filter</em>, which is called deep filter or fully convolutional network. Thus FCN operates on an input of any size and produces an output of corresponding spatial dimensions.</p>
+
+<p>Loss function is a sum over the spatial dimentions of the final layer:
+[
+\ell(\mathbf{x};\theta) = \sum_{ij}\ell^\prime (\mathbf{x}_{ij};\theta)
+]
+its gradient will be a sum over the gradients of each of its spatial components. Thus stochastic gradient descent on $\ell$ computed on whole images will be the same as stochastic gradient descent on $\ell^\prime$, taking all of the final layer receptive fields as a minibatch.</p>
+
+<p>When receptive fields overlap significantly, feedforward computation and backprop are much more efficient when computed layer-by-layer over an entire image instead of independently patch-by-patch.</p>
+
+<h3 id="adapting-classifiers-for-dense-prediction">Adapting classifiers for dense prediction</h3>
+
+<p>Fully connected layers throw away spatial coordinates. These fully connected layers can also be viewed as convolutions with kernels that cover their entire input regions.</p>
+
+<p>While the resulting maps are equivalent to the evaluation of the original net on particular input patches.</p>
+
+:ET

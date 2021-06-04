@@ -1,0 +1,188 @@
+I"8/<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#introduction" id="markdown-toc-introduction">Introduction</a></li>
+  <li><a href="#some-basic-information" id="markdown-toc-some-basic-information">Some Basic Information</a>    <ul>
+      <li><a href="#pregel-a-system-for-large-scale-graph-processing" id="markdown-toc-pregel-a-system-for-large-scale-graph-processing">Pregel: A System for Large-Scale Graph Processing</a></li>
+      <li><a href="#pagerank" id="markdown-toc-pagerank">PageRank</a></li>
+      <li><a href="#message-queue" id="markdown-toc-message-queue">Message Queue</a></li>
+      <li><a href="#review-for-java-threads" id="markdown-toc-review-for-java-threads">Review for Java Threads</a></li>
+      <li><a href="#important-details-about-pregel" id="markdown-toc-important-details-about-pregel">Important Details about Pregel</a>        <ul>
+          <li><a href="#vertex" id="markdown-toc-vertex">Vertex</a></li>
+          <li><a href="#message-passing" id="markdown-toc-message-passing">Message Passing</a></li>
+          <li><a href="#aggregators" id="markdown-toc-aggregators">Aggregators</a></li>
+          <li><a href="#worker-implementation" id="markdown-toc-worker-implementation">Worker Implementation</a></li>
+          <li><a href="#master-implementation" id="markdown-toc-master-implementation">Master Implementation</a></li>
+          <li><a href="#aggregator-implementation" id="markdown-toc-aggregator-implementation">Aggregator Implementation</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#my-thoughts" id="markdown-toc-my-thoughts">My Thoughts</a>    <ul>
+      <li><a href="#structures" id="markdown-toc-structures">Structures</a></li>
+      <li><a href="#pagerank-class" id="markdown-toc-pagerank-class">PageRank Class</a></li>
+      <li><a href="#vertices" id="markdown-toc-vertices">Vertices</a></li>
+      <li><a href="#message-class" id="markdown-toc-message-class">Message Class</a></li>
+      <li><a href="#compute-function" id="markdown-toc-compute-function"><code class="language-plaintext highlighter-rouge">Compute()</code> function</a></li>
+    </ul>
+  </li>
+</ul>
+
+  </nav>
+</aside>
+
+<h1 id="introduction">Introduction</h1>
+<p>This is a project I am doing for a <a href="https://emeryberger.com/systems-for-data-science-compsci-590s/">course</a>. The project’s goal is to simulate computing PageRank in a Pregel like system with multithreading in Java.</p>
+
+<h1 id="some-basic-information">Some Basic Information</h1>
+
+<h2 id="pregel-a-system-for-large-scale-graph-processing">Pregel: A System for Large-Scale Graph Processing</h2>
+<p><a href="https://kowshik.github.io/JPregel/pregel_paper.pdf">Pregel Paper</a></p>
+
+<h2 id="pagerank">PageRank</h2>
+<p><a href="https://infolab.stanford.edu/pub/papers/google.pdf">PageRank Original Paper</a>, and 
+<a href="https://en.wikipedia.org/wiki/PageRank">PageRank Wikipedia</a></p>
+
+<h2 id="message-queue">Message Queue</h2>
+<p><a href="https://web.mit.edu/6.005/www/fa14/classes/20-queues-locks/message-passing/">Message Passing with Threads &amp; Queues</a></p>
+
+<h2 id="review-for-java-threads">Review for Java Threads</h2>
+<p><a href="https://www.ibm.com/developerworks/java/tutorials/j-threads/j-threads.html">Java Threads</a></p>
+
+<h2 id="important-details-about-pregel">Important Details about Pregel</h2>
+
+<h3 id="vertex">Vertex</h3>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">compute()</code> woule be executed at each active vertex in every superstep.</li>
+  <li><code class="language-plaintext highlighter-rouge">compute()</code> is allowed to query information about the current vertex and its edges and to send messages to other vertices.</li>
+  <li><code class="language-plaintext highlighter-rouge">compute()</code> can inspect and modify the values of out-edges using methods supplied by the out-edge iterator.</li>
+  <li>The values associated with the vertex and its edges are the only pre-vertex state that persists across supersteps.</li>
+</ul>
+
+<h3 id="message-passing">Message Passing</h3>
+<ul>
+  <li>Vertices communicate <strong>directly</strong> with one another by sending messages.</li>
+  <li>A message consists of <strong>a message value</strong> and the <strong>name of the destination vertex</strong>.</li>
+  <li>Messages sent to vertex $$V$$ in superstep $$S$$ are available via an <strong>iterator</strong>, at superstep $$S+1$$.</li>
+  <li>There is no guarantee on order of messages in the iterator, but it is guaranteed that messages will be delivered and that they will not be duplicated.</li>
+</ul>
+
+<h3 id="aggregators">Aggregators</h3>
+<ul>
+  <li>Each vertex can provide a value to an aggregator in superstep $$S$$, the system combines those values using a reduction operator.</li>
+  <li>Resulting value is made available to all vertices in superstep $$S+1$$.</li>
+  <li>Define a new aggregator by creating a subclass of <code class="language-plaintext highlighter-rouge">Aggregator</code>, which is a predefined class. And specify how the aggregated value is initialized from the first input value and how multiple partially aggregated values are reduced to one.</li>
+</ul>
+
+<p>In PageRank task, I am considering using <code class="language-plaintext highlighter-rouge">Aggregator</code>’s subclass instance(maybe a function is enough for this project) to aggregate message values sent to the same vertex.</p>
+
+<h3 id="worker-implementation">Worker Implementation</h3>
+<ul>
+  <li>The <strong>state of each vertex</strong> contains:
+    <ul>
+      <li>current <em>value</em></li>
+      <li>a list of <em>outgoing edges</em></li>
+      <li>a <em>queue</em> containing <em>incoming messages</em></li>
+      <li>a flag specifying whether the vertex is <em>active</em></li>
+      <li></li>
+    </ul>
+  </li>
+</ul>
+
+<p>When the worker performs a superstep it loops through all vertices and calls <code class="language-plaintext highlighter-rouge">compute()</code>, passing it the current value, an iterator to the incoming messages, and an iterator to the outgoing edges.</p>
+
+<ul>
+  <li><strong>Two</strong> copies of the active vertex <strong>flags</strong> and the <strong>incoming message queue</strong> exist: one for the current superstep and one for the next superstep</li>
+</ul>
+
+<h3 id="master-implementation">Master Implementation</h3>
+<p>Primarily, the master is responsible for coordinating the activities of workers. Most master operations, including input, output, computation, and saving and resuming from checkpoints, are terminated at <code class="language-plaintext highlighter-rouge">barriers</code>.</p>
+
+<h3 id="aggregator-implementation">Aggregator Implementation</h3>
+<p>An aggregator computes a single global value by applying an aggregation function to a set of values that the user supplies. When a worker executes a superstep for any partition of the graph, the worker combines all of the values supplied to an aggregator instance into a single value.</p>
+
+<h1 id="my-thoughts">My Thoughts</h1>
+
+<h2 id="structures">Structures</h2>
+<p><img src="/assets/images/590sproject2archi.JPG" alt="structure" /></p>
+
+<h2 id="pagerank-class">PageRank Class</h2>
+<ul>
+  <li>Initialize edges; create <code class="language-plaintext highlighter-rouge">vertices</code>; set <code class="language-plaintext highlighter-rouge">superstep</code> to zero</li>
+  <li>Start all vertices’ <code class="language-plaintext highlighter-rouge">threads</code></li>
+  <li>While number of vertices that voting to halt is smaller than <code class="language-plaintext highlighter-rouge">size</code>
+    <ul>
+      <li>clear <code class="language-plaintext highlighter-rouge">votes</code>; clear <code class="language-plaintext highlighter-rouge">rawMessageQueue</code>; clear <code class="language-plaintext highlighter-rouge">AggregatedMessageQueue</code></li>
+      <li><code class="language-plaintext highlighter-rouge">superstep += 1</code></li>
+      <li>Send message to all vertices for starting next <code class="language-plaintext highlighter-rouge">superstep</code></li>
+      <li>while <code class="language-plaintext highlighter-rouge">voteCount</code> is smaller than <code class="language-plaintext highlighter-rouge">size</code>
+        <ul>
+          <li>Count votes received and add it to <code class="language-plaintext highlighter-rouge">voteCount</code></li>
+        </ul>
+      </li>
+      <li>Aggregate <code class="language-plaintext highlighter-rouge">rawMessageQueue</code> into <code class="language-plaintext highlighter-rouge">AggregatedMessageQueue</code></li>
+      <li>Count number of -1 in <code class="language-plaintext highlighter-rouge">votes</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="vertices">Vertices</h2>
+<ul>
+  <li>Up on start, halt</li>
+  <li>waiting for a message from Master that indicates starting of next <code class="language-plaintext highlighter-rouge">superstep</code></li>
+  <li>get the aggregated message from the in-message-queue.</li>
+  <li>Tall<code class="language-plaintext highlighter-rouge">compute()</code>, where the <code class="language-plaintext highlighter-rouge">new weight</code>, <code class="language-plaintext highlighter-rouge">messages' value</code>,<code class="language-plaintext highlighter-rouge">error</code>, <code class="language-plaintext highlighter-rouge">vote message</code> would be computed or generated.</li>
+  <li>Pause thread and wait for next superstep to start</li>
+</ul>
+
+<h2 id="message-class">Message Class</h2>
+<p>Class <code class="language-plaintext highlighter-rouge">Message</code> is used for holding message information. It has several attributes:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">type</code>: Int</li>
+  <li><code class="language-plaintext highlighter-rouge">from</code>: Integer</li>
+  <li><code class="language-plaintext highlighter-rouge">to</code>: Integer</li>
+  <li><code class="language-plaintext highlighter-rouge">value</code>: Double</li>
+  <li><code class="language-plaintext highlighter-rouge">isVote</code>: boolean</li>
+  <li><code class="language-plaintext highlighter-rouge">vote</code>: Int</li>
+</ul>
+
+<p>where, <code class="language-plaintext highlighter-rouge">type</code> indicates that if this message is a vote or a message that passing weight; <code class="language-plaintext highlighter-rouge">from</code>, <code class="language-plaintext highlighter-rouge">to</code> marks the sender and receiver of this message; <code class="language-plaintext highlighter-rouge">value</code> holds the weight, would be null if message is a vote; <code class="language-plaintext highlighter-rouge">isVote</code> is a flag for marking votes message; <code class="language-plaintext highlighter-rouge">vote</code> indicates whether the vertex is voting to halt or not.</p>
+
+<h2 id="compute-function"><code class="language-plaintext highlighter-rouge">Compute()</code> function</h2>
+<ul>
+  <li>Calculate new weight:</li>
+</ul>
+
+<p>$$R = \frac{0.15}{n}+0.85 \sum_{j\in N_{in(i)}} M[j]$$</p>
+
+<ul>
+  <li>Calculate message value:</li>
+</ul>
+
+<table>
+  <tbody>
+    <tr>
+      <td>$$M = \frac{R}{\left</td>
+      <td>N_{out}\right</td>
+      <td>}$$</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>Send $$M$$ to all its outgoing edges’ destination</li>
+  <li>Calculate error:</li>
+</ul>
+
+<p>$$error = R - R_{previous}$$</p>
+
+<ul>
+  <li>Vote to halt (<code class="language-plaintext highlighter-rouge">1</code> for voting to halt, <code class="language-plaintext highlighter-rouge">-1</code> otherwise)</li>
+  <li>Wait on <code class="language-plaintext highlighter-rouge">superstep</code></li>
+</ul>
+
+<p>Note that initially, every vertex’s weight would be set to $$\frac{1}{#vertices}$$. Also, in the very first <code class="language-plaintext highlighter-rouge">superstep</code>, the <code class="language-plaintext highlighter-rouge">error</code> shouldn’t be computed because there
+are no $$R_{previous}$$ value available.</p>
+
+:ET

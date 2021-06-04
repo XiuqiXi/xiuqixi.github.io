@@ -1,0 +1,527 @@
+I"ۅ<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#概要说明" id="markdown-toc-概要说明">概要说明</a></li>
+  <li><a href="#项目代码的运行" id="markdown-toc-项目代码的运行">项目代码的运行</a>    <ul>
+      <li><a href="#安装nodejs" id="markdown-toc-安装nodejs">安装Node.js</a></li>
+      <li><a href="#下载node-webkit" id="markdown-toc-下载node-webkit">下载Node Webkit</a></li>
+      <li><a href="#项目下载和运行" id="markdown-toc-项目下载和运行">项目下载和运行</a>        <ul>
+          <li><a href="#安装依赖" id="markdown-toc-安装依赖">安装依赖</a></li>
+          <li><a href="#运行" id="markdown-toc-运行">运行</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><a href="#文件结构" id="markdown-toc-文件结构">文件结构</a></li>
+  <li><a href="#html界面详细说明" id="markdown-toc-html界面详细说明">Html界面详细说明</a>    <ul>
+      <li><a href="#第一遍迭代" id="markdown-toc-第一遍迭代">第一遍迭代</a></li>
+      <li><a href="#第二遍迭代" id="markdown-toc-第二遍迭代">第二遍迭代</a></li>
+      <li><a href="#第三遍迭代" id="markdown-toc-第三遍迭代">第三遍迭代</a></li>
+    </ul>
+  </li>
+  <li><a href="#css样式文件详细说明" id="markdown-toc-css样式文件详细说明">CSS样式文件详细说明</a></li>
+  <li><a href="#js文件详细说明" id="markdown-toc-js文件详细说明">JS文件详细说明</a>    <ul>
+      <li><a href="#其他补充说明" id="markdown-toc-其他补充说明">其他补充说明</a></li>
+    </ul>
+  </li>
+  <li><a href="#前端swig模板结构说明" id="markdown-toc-前端swig模板结构说明">前端Swig模板结构说明</a>    <ul>
+      <li><a href="#数据样例" id="markdown-toc-数据样例">数据样例</a></li>
+      <li><a href="#swig模板样例" id="markdown-toc-swig模板样例">Swig模板样例</a></li>
+    </ul>
+  </li>
+  <li><a href="#说明视频" id="markdown-toc-说明视频">说明视频</a>    <ul>
+      <li><a href="#项目运行和基本配置" id="markdown-toc-项目运行和基本配置">项目运行和基本配置</a></li>
+      <li><a href="#swig模板" id="markdown-toc-swig模板">Swig模板</a></li>
+      <li><a href="#页面路由" id="markdown-toc-页面路由">页面路由</a></li>
+      <li><a href="#后端交互" id="markdown-toc-后端交互">后端交互</a></li>
+      <li><a href="#目前进度" id="markdown-toc-目前进度">目前进度</a></li>
+      <li><a href="#潜在问题和bug" id="markdown-toc-潜在问题和bug">潜在问题和bug</a></li>
+    </ul>
+  </li>
+  <li><a href="#git操作" id="markdown-toc-git操作">Git操作</a>    <ul>
+      <li><a href="#fork-and-clone" id="markdown-toc-fork-and-clone">Fork and Clone</a></li>
+      <li><a href="#git-merge" id="markdown-toc-git-merge">Git Merge</a></li>
+    </ul>
+  </li>
+</ul>
+
+  </nav>
+</aside>
+
+<h2 id="概要说明">概要说明</h2>
+<p><strong><span style="display:block; 	float:left; 	font-family:Georgia; 	font-size: 310%; 	font-weight: bold; 	line-height: 90%; 	margin-right: 6px; 	margin-bottom:-2px; 	margin-top: 7px;">斗</span></strong>牛电竞前端的实现，样式采用的是<a href="https://materializecss.com/">Materializecss的框架</a>，页面布局通过该框架的Grid布局预定义类来完成，页面元素主要使用到其中的以下一些内容，其中从第7个开始，是需要使用js进行初始化的一些页面元素。</p>
+<ul>
+  <li>Buttons</li>
+  <li>Cards</li>
+  <li>Chips</li>
+  <li>Collections</li>
+  <li>Navbar</li>
+  <li>Pagination</li>
+  <li>Modal</li>
+  <li>Carousel</li>
+  <li>Collapsible</li>
+  <li>Dropdown</li>
+  <li>Sidenav</li>
+  <li>Tabs</li>
+</ul>
+
+<p>在数据注入方面，采用的是<a href="https://node-swig.github.io/swig-templates/">Swig Template</a>模板，其基本原理是在页面嵌入控制语句，根据后端所获取到的数据，来进行页面内容的渲染。</p>
+
+<h2 id="项目代码的运行">项目代码的运行</h2>
+<h3 id="安装nodejs">安装Node.js</h3>
+<p>参考<a href="https://nodejs.org/en/">Node.js Official Website</a></p>
+<h3 id="下载node-webkit">下载Node Webkit</h3>
+<p>参考<a href="https://nwjs.io/">Node Webkit Official Website</a></p>
+<h3 id="项目下载和运行">项目下载和运行</h3>
+<h4 id="安装依赖">安装依赖</h4>
+<p>因为页面使用到了node的一些包，所以需要在ForK和Clone下<a href="https://github.com/guojingming/bullup5v5">Bullup斗牛仓库</a>后，使用</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm install
+</code></pre></div></div>
+<p>先安装<code class="language-plaintext highlighter-rouge">package.json</code>中的依赖包。之后参考<a href="https://nwjs.io/">Node Webkit Official Website</a>文档中的运行方法进行运行。</p>
+
+<p>如果在后续的运行过程中有报错包缺失，使用</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>npm install [package name]
+</code></pre></div></div>
+
+<h4 id="运行">运行</h4>
+<p>在命令行中：</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd /path/to/your/app
+/path/to/nw .
+</code></pre></div></div>
+<p>其中<code class="language-plaintext highlighter-rouge">/path/to/nw</code>是下载的nwjs的二进制运行文件，在Windows系统下，对应的是<code class="language-plaintext highlighter-rouge">nw.exe</code>；在Linux系统下，为<code class="language-plaintext highlighter-rouge">nw</code>；在MacOS下，为<code class="language-plaintext highlighter-rouge">nwjs.app/Contents/MacOS/nwjs</code>.</p>
+
+<p>在windows系统下，可以通过直接拖拽<code class="language-plaintext highlighter-rouge">SPAFront</code>文件夹，到<code class="language-plaintext highlighter-rouge">nw.exe</code>程序上，来运行前端界面。</p>
+
+<h2 id="文件结构">文件结构</h2>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>SPAFront/
+|   AJAX_SPA.org
+|   battlepage.html
+|   chatbox.html
+|   chatroom.html
+|   dataquery.html
+|   DouNiu.html
+|   dropdown_menu.html
+|   filetree.txt
+|   home.html
+|   index.html
+|   mhome.html
+|   package-lock.json
+|   package.json
+|   personalInfo.html
+|   rank.html
+|   readme.md
+|   searchusr.html
+|   spa_battle.html
+|   spa_battleres.html
+|   spa_chat.html
+|   spa_dataquery.html
+|   spa_fight.html
+|   spa_home.html
+|   spa_myroom.html
+|   spa_personal.html
+|   spa_queryres.html
+|   spa_rank.html
+|   swig_battle.html
+|   swig_battleres.html
+|   swig_dataquery.html
+|   swig_fight.html
+|   swig_friend_list.html
+|   swig_friend_list_head.html
+|   swig_home.html
+|   swig_matches.html
+|   swig_match_detail.html
+|   swig_menu.html
+|   swig_myroom_frame.html
+|   swig_myroom_info.html
+|   swig_myroon_friends.html
+|   swig_pagination.html
+|   swig_personal_basic.html
+|   swig_queryres.html
+|   swig_rank.html
+|   swig_starter.html
+|   swig_team_detail.html
+|   swig_test.html
+|   swig_tournament.html
+|   userinfo.html
+|           
++---css
+|       battle.css
+|       battleres.css
+|       boxstyle.css
+|       form.css
+|       friendbox.css
+|       history.html
+|       main.css
+|       materialize.min.css
+|       mhome.css
+|       modal.css
+|       myroom.css
+|       normalize.css
+|       personalInfo.css
+|       queryres.css
+|       rank.css
+|       searchbox.css
+|       searchusr.css
+|       set1.css
+|       spa_fight.css
+|       starter.css
+|       tournament.css
+|       validation_pop.css
+|       
++---d3
+|       
++---flipclock
+|       flipclock.css
+|       flipclock.js
+|       
++---font-awesome-4.7.0
+|           
++---fonts
+|           
++---js
+|       carousel.js
+|       change_page.js
+|       Chart.bundle.js
+|       classie.js
+|       close_modal.js
+|       create_room.js
+|       draw_chats.js
+|       draw_radar.js
+|       emoticon.js
+|       find_team.js
+|       game_history_query.js
+|       genRadar.js
+|       global.js
+|       home.js
+|       HudsonJoe@HudsonJoe-PC.local.1280
+|       initial_pagination.js
+|       jkanban.min.css
+|       jkanban.min.js
+|       jquery-2.2.4.js
+|       jquery.validate.min.js
+|       login.js
+|       lolcfg.js
+|       lolutil.js
+|       main.js
+|       materialize-pagination.js
+|       materialize-pagination.min.js
+|       materialize.min.js
+|       modal.js
+|       query_res.js
+|       request_rank_list.js
+|       router.js
+|       socket_util.js
+|       spa.js
+|       starter_router.js
+|       swig.js
+|       testData.js
+|       validate_log.js
+|       validate_roominfo.js
+|       validate_sign.js
+|
++---media
+|   +---imgs
+|   |       
+|   +---item_imgs
+|   |       
+|   +---lol_champions
+|   |       
+|   \---user_icon
+|           1.png
+|           2.png
+|           3.png
+|           
+\---node_modules
+</code></pre></div></div>
+
+<h2 id="html界面详细说明">Html界面详细说明</h2>
+<p>斗牛前端代码经过三次迭代更新，分别是：</p>
+<h3 id="第一遍迭代">第一遍迭代</h3>
+<p>第一遍迭代纯Html页面，不考虑跳转和数据逻辑，文件命名无前缀。第一版本迭代文件已不再使用。以下为第一版本迭代页面及其作用：</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">battlepage.html</code> 战队列表</li>
+  <li><code class="language-plaintext highlighter-rouge">chatbox.html</code> 旧版竖排聊天和好友列表</li>
+  <li><code class="language-plaintext highlighter-rouge">chatroom.html</code> 横版聊天和好友列表</li>
+  <li><code class="language-plaintext highlighter-rouge">dataquery.html</code> 旧版个人主页</li>
+  <li><code class="language-plaintext highlighter-rouge">DouNiu.html</code> 第一次迭代最终主页</li>
+  <li><code class="language-plaintext highlighter-rouge">dropdown_menu.html</code> 导航栏右侧下拉菜单</li>
+  <li><code class="language-plaintext highlighter-rouge">home.html</code> 旧版主页</li>
+  <li><code class="language-plaintext highlighter-rouge">index.html</code> 旧版战队列表</li>
+  <li><code class="language-plaintext highlighter-rouge">mhome.html</code> 旧版主页</li>
+  <li><code class="language-plaintext highlighter-rouge">personalInfo.html</code> 个人主页（带雷达图）</li>
+  <li><code class="language-plaintext highlighter-rouge">rank.html</code> 排行榜</li>
+  <li><code class="language-plaintext highlighter-rouge">searchusr.html</code> 搜索用户页面</li>
+</ul>
+
+<h3 id="第二遍迭代">第二遍迭代</h3>
+<p>斗牛前端第二次迭代，该次迭代是为了提升页面的性能，并同时解决socket-io经过页面跳转无法保存的问题，而采用单页面跳转的实现代码，当前版本已经弃用：</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">spa_battle.html</code> 单页面战队列表</li>
+  <li><code class="language-plaintext highlighter-rouge">spa_battleres.html</code> 对战结果页面</li>
+  <li><code class="language-plaintext highlighter-rouge">spa_chat.html</code> 聊天室</li>
+  <li><code class="language-plaintext highlighter-rouge">spa_dataquery.html</code> 数据查询</li>
+  <li><code class="language-plaintext highlighter-rouge">spa_fight.html</code> 战斗准备页面</li>
+  <li><code class="language-plaintext highlighter-rouge">spa_home.html</code> 单页面主页</li>
+  <li><code class="language-plaintext highlighter-rouge">spa_myroom.html</code> 约战个人战队页面</li>
+  <li><code class="language-plaintext highlighter-rouge">spa_personal.html</code> 个人中心</li>
+  <li><code class="language-plaintext highlighter-rouge">spa_queryres.html</code>战绩查询结果</li>
+  <li><code class="language-plaintext highlighter-rouge">spa_rank.html</code> 排行榜</li>
+</ul>
+
+<h3 id="第三遍迭代">第三遍迭代</h3>
+<p>第三遍迭代是目前前端正在使用的页面版本，其结构为：<code class="language-plaintext highlighter-rouge">主页面框架</code>&lt;–<code class="language-plaintext highlighter-rouge">swig模板</code>&lt;–<code class="language-plaintext highlighter-rouge">swig子模板（如果有）</code></p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">swig_battle.html</code> 战队列表（需要修改，从导航栏去除，加入主页约战和匹配逻辑）</li>
+  <li><code class="language-plaintext highlighter-rouge">swig_battleres.html</code> 战斗结果页面</li>
+  <li><code class="language-plaintext highlighter-rouge">swig_dataquery.html</code> 数据查询入口页面</li>
+  <li><code class="language-plaintext highlighter-rouge">swig_fight.html</code> 战斗准备页面</li>
+  <li><code class="language-plaintext highlighter-rouge">swig_friend_list.html</code> 战队全部好友列表</li>
+  <li><code class="language-plaintext highlighter-rouge">swig_friend_list_head.html</code> 战队界面好友列表头部信息</li>
+  <li><code class="language-plaintext highlighter-rouge">swig_home.html</code> swig模板主界面框架</li>
+  <li><code class="language-plaintext highlighter-rouge">swig_matches.html</code> 战绩查询结果界面左边栏比赛记录</li>
+  <li><code class="language-plaintext highlighter-rouge">swig_match_detail.html</code> 战绩查询结果界面右边栏比赛详情</li>
+  <li><code class="language-plaintext highlighter-rouge">swig_menu.html</code> 导航栏下拉菜单</li>
+  <li><code class="language-plaintext highlighter-rouge">swig_myroom_frame.html</code> 我的战队房间框架</li>
+  <li><code class="language-plaintext highlighter-rouge">swig_myroom_info.html</code> 我的战队房间</li>
+  <li><code class="language-plaintext highlighter-rouge">swig_myroon_friends.html</code> 我的战队已经邀请好友列表</li>
+  <li><code class="language-plaintext highlighter-rouge">swig_pagination.html</code> swig模板通用分页控件</li>
+  <li><code class="language-plaintext highlighter-rouge">swig_personal_basic.html</code> 个人中心基本信息</li>
+  <li><code class="language-plaintext highlighter-rouge">swig_queryres.html</code> 战绩查询结果页面</li>
+  <li><code class="language-plaintext highlighter-rouge">swig_rank.html</code> 排行榜</li>
+  <li><code class="language-plaintext highlighter-rouge">swig_starter.html</code> 主页初始页面</li>
+  <li><code class="language-plaintext highlighter-rouge">swig_team_detail.html</code> 战队详细信息Modal基本信息模板</li>
+  <li><code class="language-plaintext highlighter-rouge">swig_test.html</code> 测试用（删除）</li>
+  <li><code class="language-plaintext highlighter-rouge">swig_tournament.html</code> 赛事界面</li>
+</ul>
+
+<h2 id="css样式文件详细说明">CSS样式文件详细说明</h2>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">battle.css</code> 战队详情页面样式</li>
+  <li><code class="language-plaintext highlighter-rouge">battleres.css</code> 战斗结果页面样式</li>
+  <li><code class="language-plaintext highlighter-rouge">boxstyle.css</code> 聊天框样式</li>
+  <li><code class="language-plaintext highlighter-rouge">form.css</code> 自建表单样式（已弃用）</li>
+  <li><code class="language-plaintext highlighter-rouge">friendbox.css</code> 聊天室好友列表样式</li>
+  <li><code class="language-plaintext highlighter-rouge">main.css</code> 旧版页面使用的主框架</li>
+  <li><code class="language-plaintext highlighter-rouge">materialize.min.css</code> materializecss样式文件</li>
+  <li><code class="language-plaintext highlighter-rouge">mhome.css</code> 当前使用的主框架样式</li>
+  <li><code class="language-plaintext highlighter-rouge">modal.css</code> 旧版已经弃用的弹出框样式</li>
+  <li><code class="language-plaintext highlighter-rouge">myroom.css</code> 我的战队主页</li>
+  <li><code class="language-plaintext highlighter-rouge">normalize.css</code> (I don’t know what is this either…)</li>
+  <li><code class="language-plaintext highlighter-rouge">personalInfo.css</code> 个人主页样式</li>
+  <li><code class="language-plaintext highlighter-rouge">queryres.css</code> 数据查询结果样式</li>
+  <li><code class="language-plaintext highlighter-rouge">rank.css</code> 排行榜样式</li>
+  <li><code class="language-plaintext highlighter-rouge">searchbox.css</code> 聊天室好友列表搜索框样式</li>
+  <li><code class="language-plaintext highlighter-rouge">searchusr.css</code> 搜索用户搜索框样式</li>
+  <li><code class="language-plaintext highlighter-rouge">set1.css</code> 网上找来的搜索框样式（未使用）</li>
+  <li><code class="language-plaintext highlighter-rouge">spa_fight.css</code> 战斗计时界面样式</li>
+  <li><code class="language-plaintext highlighter-rouge">starter.css</code> 主页内容样式</li>
+  <li><code class="language-plaintext highlighter-rouge">tournament.css</code> 赛事主页样式</li>
+  <li><code class="language-plaintext highlighter-rouge">validation_pop.css</code> 表单验证弹出框样式（新版本中尚未添加使用）</li>
+</ul>
+
+<h2 id="js文件详细说明">JS文件详细说明</h2>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">change_page.js</code></li>
+  <li><code class="language-plaintext highlighter-rouge">Chart.bundle.js</code> 绘图工具类</li>
+  <li><code class="language-plaintext highlighter-rouge">classie.js</code></li>
+  <li><code class="language-plaintext highlighter-rouge">close_modal.js</code> 解决materializecss框架modal弹出以后overlay无法自行关闭的文件，当有新的modal出现类似问题时，参考此文件中的解决办法</li>
+  <li><code class="language-plaintext highlighter-rouge">create_room.js</code> 创建房时，获取当前时间的逻辑</li>
+  <li><code class="language-plaintext highlighter-rouge">draw_chats.js</code> 画图实验类</li>
+  <li><code class="language-plaintext highlighter-rouge">draw_radar.js</code> 绘制雷达图封装类</li>
+  <li><code class="language-plaintext highlighter-rouge">emoticon.js</code> 预留文件，填入聊天框表情按钮载入和选择表情逻辑</li>
+  <li><code class="language-plaintext highlighter-rouge">find_team.js</code> 预留文件，填入查找战队并发送约战请求逻辑</li>
+  <li><code class="language-plaintext highlighter-rouge">game_history_query.js</code> 战绩查询页面搜索框点击搜索逻辑</li>
+  <li><code class="language-plaintext highlighter-rouge">genRadar.js</code> 根据传入数据，向目标画板中绘制雷达图</li>
+  <li><code class="language-plaintext highlighter-rouge">global.js</code> 全局文件，用于页面元素的初始化</li>
+  <li><code class="language-plaintext highlighter-rouge">home.js</code> 看板(弃用)</li>
+  <li><code class="language-plaintext highlighter-rouge">initial_pagination.js</code> 预留方法：向页面中载入页码模板内容（参数需要修改）</li>
+  <li><code class="language-plaintext highlighter-rouge">jkanban.min.css</code> 看板样式（删除）</li>
+  <li><code class="language-plaintext highlighter-rouge">jkanban.min.js</code> 看板动态效果（删除）</li>
+  <li><code class="language-plaintext highlighter-rouge">jquery-2.2.4.js</code></li>
+  <li><code class="language-plaintext highlighter-rouge">jquery.validate.min.js</code> 表单验证包</li>
+  <li><code class="language-plaintext highlighter-rouge">login.js</code> 登录逻辑</li>
+  <li><code class="language-plaintext highlighter-rouge">lolcfg.js</code> lol英雄代码和代码对应名称</li>
+  <li><code class="language-plaintext highlighter-rouge">lolutil.js</code> lolapi通用类</li>
+  <li><code class="language-plaintext highlighter-rouge">main.js</code> （删除）</li>
+  <li><code class="language-plaintext highlighter-rouge">materialize-pagination.js</code> 第三方页码类（先前使用时有样式BUG，原因不明，遂暂时弃用)</li>
+  <li><code class="language-plaintext highlighter-rouge">materialize-pagination.min.js</code></li>
+  <li><code class="language-plaintext highlighter-rouge">materialize.min.js</code></li>
+  <li><code class="language-plaintext highlighter-rouge">modal.js</code> 各类弹出框打开关闭逻辑（打开新的弹出框时关闭其它弹出框）</li>
+  <li><code class="language-plaintext highlighter-rouge">query_res.js</code> 预留文件：可删除，查询结果逻辑已经在<code class="language-plaintext highlighter-rouge">game_history_query.js</code>中实现</li>
+  <li><code class="language-plaintext highlighter-rouge">request_rank_list.js</code> 读取排行榜逻辑</li>
+  <li><code class="language-plaintext highlighter-rouge">router.js</code> 主页面框架路由</li>
+  <li><code class="language-plaintext highlighter-rouge">socket_util.js</code> socket通用类</li>
+  <li><code class="language-plaintext highlighter-rouge">spa.js</code> （弃用）页面第二版迭代使用的单页面跳转类</li>
+  <li><code class="language-plaintext highlighter-rouge">starter_router.js</code> 主页面内容路由预留文件</li>
+  <li><code class="language-plaintext highlighter-rouge">swig.js</code> 模板通用类</li>
+  <li><code class="language-plaintext highlighter-rouge">testData.js</code> 渲染模板页面测试数据存放处</li>
+  <li><code class="language-plaintext highlighter-rouge">validate_log.js</code> （需要更新）第二版本网页 登录表单验证类</li>
+  <li><code class="language-plaintext highlighter-rouge">validate_roominfo.js</code> （需要更新）第二版本网页 队伍信息表单验证类</li>
+  <li><code class="language-plaintext highlighter-rouge">validate_sign.js</code> （需要更新）第二版本网页 注册表单验证类</li>
+</ul>
+
+<h3 id="其他补充说明">其他补充说明</h3>
+<p>在项目开始，原有<span style="color:#f0f0f0; background-color:#ff5555; padding:0.06em 0.5em 0.06em; border-radius:6px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5); margin-left: 2px; margin-right: 2px;">
+房间</span>的概念，再后来的逻辑梳理中，将该概念更改成为了<span style="color:#f0f0f0; background-color:#ff5555; padding:0.06em 0.5em 0.06em; border-radius:6px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5); margin-left: 2px; margin-right: 2px;">战队</span>，故在文件名中，<code class="language-plaintext highlighter-rouge">room</code>实际指代与战队有关的内容。</p>
+
+<p>因为目前代码未经过系统整理，所以控件对应的js逻辑可能散落在各处，建议安装<a href="https://github.com/ggreer/the_silver_searcher">ag(silver-search)</a>（不支持windows，但可以使用<a href="https://www.msys2.org">msys2</a>在window模拟Linux命令终端）或者其他拥有类似搜索功能的编辑器(<a href="https://atom.io">Atom</a>, <a href="https://code.visualstudio.com">VSCode</a>, <a href="https://brackets.io">Brackets</a>等)，配合git来进行项目内的全局搜索，来定位页面上某个id或者class的元素的所有被使用的位置。</p>
+
+<h2 id="前端swig模板结构说明">前端Swig模板结构说明</h2>
+<p><span style="color:#f0f0f0; background-color:#f50057; padding:0.06em 0.5em 0.06em; border-radius:6px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5); margin-left: 2px; margin-right: 2px;">数据</span> ——&gt;
+<span style="color:#f0f0f0; background-color:#9575cd; padding:0.06em 0.5em 0.06em; border-radius:6px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5); margin-left: 2px; margin-right: 2px;">Swig模板文件</span> ——&gt;
+<span style="color:#f0f0f0; background-color:#ff9800; padding:0.06em 0.5em 0.06em; border-radius:6px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5); margin-left: 2px; margin-right: 2px;">最终页面</span></p>
+
+<p>几乎所有界面，都需要与后台数据相融合，然后再加载到主页面框架中的<code class="language-plaintext highlighter-rouge">div.content</code>中去。为了实现这一个流程，在文件<code class="language-plaintext highlighter-rouge">swig.js</code>中封装了两个函数：</p>
+
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre></td><td class="code"><pre><span class="kd">var</span> <span class="nx">douniu</span> <span class="o">=</span> <span class="p">{};</span>
+
+<span class="c1">//Render file(pageRef) with data(data).</span>
+<span class="nx">douniu</span><span class="p">.</span><span class="nx">loadSwigView</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">pageRef</span><span class="p">,</span> <span class="nx">data</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span>	<span class="nx">swig</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="dl">'</span><span class="s1">swig</span><span class="dl">'</span><span class="p">);</span>
+	<span class="k">return</span> <span class="nx">swig</span><span class="p">.</span><span class="nx">renderFile</span><span class="err">\</span><span class="p">(</span><span class="nx">pageRef</span><span class="p">,</span> <span class="nx">data</span> <span class="err">\</span><span class="o">||</span> <span class="p">{});</span>
+<span class="p">};</span> <span class="c1">// Loading views/swigTemplate.html </span>
+
+<span class="c1">//Render file(pageRef) with data(data)</span>
+<span class="c1">//and load them into target div(target) with its id(target).</span>
+<span class="nx">douniu</span><span class="p">.</span><span class="nx">loadTemplateIntoTarget</span> <span class="o">=</span> <span class="kd">function</span><span class="p">(</span><span class="nx">pageRef</span><span class="p">,</span> <span class="nx">data</span><span class="p">,</span> <span class="nx">target</span><span class="p">){</span>
+	<span class="kd">var</span> <span class="nx">template</span> <span class="o">=</span> <span class="nx">douniu</span><span class="p">.</span><span class="nx">loadSwigView</span><span class="p">(</span><span class="nx">pageRef</span><span class="p">,</span> <span class="nx">data</span><span class="p">);</span>
+	<span class="nx">$</span><span class="p">(</span><span class="dl">'</span><span class="s1">#</span><span class="dl">'</span> <span class="o">+</span> <span class="nx">target</span><span class="p">).</span><span class="nx">html</span><span class="p">(</span><span class="nx">template</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+
+<p>其中第一个方法<code class="language-plaintext highlighter-rouge">douniu.loadSwigView</code>仅为将数据加载到文件名为<code class="language-plaintext highlighter-rouge">pageRef</code>的模板文件中去的方法，其返回结果为字符串类型，需要存放在变量中，然后再用<code class="language-plaintext highlighter-rouge">html</code>方法加载到页面中去； 第二个方法<code class="language-plaintext highlighter-rouge">douniu.loadTemplateIntoTarget</code>则是直接将数据封装进模板并且加载到<code class="language-plaintext highlighter-rouge">id</code>为<code class="language-plaintext highlighter-rouge">target</code>的页面标签中去。</p>
+
+<h3 id="数据样例">数据样例</h3>
+<p>以下为主页内容中需要展示的<span style="color:#f0f0f0; background-color:#f44336; padding:0.06em 0.5em 0.06em; border-radius:6px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5); margin-left: 2px; margin-right: 2px;">赛事模拟数据</span>，为了简化示例，其中包括了赛事的名称和赛事说明：</p>
+
+<figure class="highlight"><pre><code class="language-js" data-lang="js"><table class="rouge-table"><tbody><tr><td class="gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre></td><td class="code"><pre><span class="kd">var</span> <span class="nx">starter_data</span> <span class="o">=</span> <span class="p">{</span>
+		<span class="na">tournaments</span><span class="p">:[</span>
+			<span class="p">{</span>
+				<span class="na">name</span><span class="p">:</span><span class="dl">'</span><span class="s1">S7 Championship</span><span class="dl">'</span><span class="p">,</span>
+				<span class="na">description</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Starting at October</span><span class="dl">'</span>
+			<span class="p">},</span>
+			<span class="p">{</span>
+				<span class="na">name</span><span class="p">:</span><span class="dl">'</span><span class="s1">MSI Championship</span><span class="dl">'</span><span class="p">,</span>
+				<span class="na">description</span><span class="p">:</span> <span class="dl">'</span><span class="s1">Starting at May</span><span class="dl">'</span>
+			<span class="p">}</span>
+			
+		<span class="p">]</span>
+		<span class="p">...</span>
+	<span class="p">};</span>
+</pre></td></tr></tbody></table></code></pre></figure>
+
+<h3 id="swig模板样例">Swig模板样例</h3>
+<figure class="">
+  <img src="/assets/images/swig_template.png" alt="Swig模板" />
+  
+    <figcaption>Swig模板
+</figcaption>
+  
+</figure>
+
+<h2 id="说明视频">说明视频</h2>
+<h3 id="项目运行和基本配置">项目运行和基本配置</h3>
+<iframe width="320" height="200" src="https://www.youtube.com/embed/rEGYzdQ0MYw" frameborder="0" allowfullscreen=""></iframe>
+
+<h3 id="swig模板">Swig模板</h3>
+<iframe width="320" height="200" src="https://www.youtube.com/embed/uGBolJHGqSk" frameborder="0" allowfullscreen=""></iframe>
+
+<h3 id="页面路由">页面路由</h3>
+<p>页面路由通过为页面元素添加点击事件，来进行路由，动态加载主页框架中的内容。</p>
+<iframe width="320" height="200" src="" frameborder="0" allowfullscreen=""></iframe>
+
+<h3 id="后端交互">后端交互</h3>
+
+<h3 id="目前进度">目前进度</h3>
+
+<h3 id="潜在问题和bug">潜在问题和bug</h3>
+
+<h2 id="git操作">Git操作</h2>
+<h3 id="fork-and-clone">Fork and Clone</h3>
+<p>我们先找一个仓库，在这个仓库点击Fork
+有两种方式，第一种是安装一个Github的图形界面，然后选择Open In Desktop
+另一种是使用命令行
+第一种比较简单，我演示一下第二种</p>
+<ol>
+  <li>先复制项目的链接
+https://github.com/Sort-Care/2048.git
+注意结尾是<code class="language-plaintext highlighter-rouge">.git</code>
+不要复制地址栏的，那个后面是没有<code class="language-plaintext highlighter-rouge">.git</code>的<br />
+然后在命令行：
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone [address]
+</code></pre></div>    </div>
+    <p>这样就会把包含.git文件的仓库复制到本地了，和github上的是一样的。之后使用你熟悉的编辑器，来进行更改，我在此使用Emacs，尝试加一行注释，保存之后，git就会记录你所做的更改</p>
+  </li>
+</ol>
+
+<p>使用</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git diff
+</code></pre></div></div>
+<p>能够看到哪里更改了<br />
+确认要提交这些更改后进行下一节的操作。</p>
+
+<h3 id="git-merge">Git Merge</h3>
+<p>显示当前状态
+我们的项目，最外层是DoUNiu5v5的文件夹，里层的SPAFront是前端的，在操作git之前
+先cd到bullup5v5文件夹下，然后开始操作：</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git status
+</code></pre></div></div>
+<p>显示当前项目的状态，有哪些文件添加了，删除了等等</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git add .
+</code></pre></div></div>
+<p>一般用add命令去添加文件到git的追踪下，被追踪的文件会被commit到网络上去</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git commit -m 'commit comment'
+</code></pre></div></div>
+<p>之后</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git push
+</code></pre></div></div>
+<p>将你的更改上传到github</p>
+
+<p>注意，只有clone下来的仓库才能进行git操作，直接下载的不行。</p>
+
+<p>然后是和后端的合并：
+本项目的后端，目前主要的仓库是
+<code class="language-plaintext highlighter-rouge">guojingming/bullup5v5</code>
+在GitHub上，自己fork的项目中，点击pull request。如果没有冲突，显示Able to merge，如果有冲突，会提示；</p>
+<ul>
+  <li>第一种情况下，直接点击 <code class="language-plaintext highlighter-rouge">Create Pull Request</code>，添加一些说明以后，就可以确定了。之后就到了这个界面，未被后端Merge的代码，显示该Pull Request为<span style="color:#f0f0f0; background-color:#f50057; padding:0.06em 0.5em 0.06em; border-radius:6px; box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.5); margin-left: 2px; margin-right: 2px;">open</span>状态;只需要等待后端Merge就可以了；</li>
+  <li>第二种情况下，仍然点击 <code class="language-plaintext highlighter-rouge">Create Pull Request</code>，之后会显示一个处理冲突的编辑器，在编辑器中，将冲突处理完毕之后，就可以点击确定了，之后继续等待后端的Merge；</li>
+</ul>
+
+<p>注意：
+在操作之前，确定已经将本地的内容push到github</p>
+
+<p>另一个重要的操作是将后端的新的代码pull到我们自己的Fork下来的仓库里。因为后端的仓库是主仓库，我们的是复制来的，所以我们需要自己给自己一个pull request然后自己Merge一下：<br />
+任意在一个仓库里点击Compare，然后再Base Fork这里，也就是前一个按钮，这里代表的是Merge的方向，是从后端Merge到我们的仓库。
+当点击了Pull Request之后，出现了Merge Pull Request按钮，Merge完毕的会显示Merged</p>
+
+:ET

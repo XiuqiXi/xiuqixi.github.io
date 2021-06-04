@@ -1,0 +1,125 @@
+I"?<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#generating-prime-numbers" id="markdown-toc-generating-prime-numbers">Generating Prime Numbers</a></li>
+  <li><a href="#refresher-of-gcd-and-lcm" id="markdown-toc-refresher-of-gcd-and-lcm">Refresher of GCD and LCM</a></li>
+  <li><a href="#factorial" id="markdown-toc-factorial">Factorial</a></li>
+</ul>
+
+  </nav>
+</aside>
+
+<h1 id="generating-prime-numbers">Generating Prime Numbers</h1>
+<p>The following program generats prime numbers under a upperbound.
+The key structure maintained is the <code class="language-plaintext highlighter-rouge">bitset&lt;10000010&gt; bs</code>, where
+<code class="language-plaintext highlighter-rouge">bs[i] == 1</code> means number $i$ is a prime number.
+The algorithm’s idea is to do an up-going scan and cross out all multiples of
+a prime number that are smaller than the upperbound.</p>
+
+<p>Also a good enough algorithm for determining if a number is prime is also listed. For small prime numbers, with the help of the bitset we maintained, we can decide the answer in constant time by checking the corresponding bit in <code class="language-plaintext highlighter-rouge">bs</code>.</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/**
+   prime.cpp
+   Purpose: Generating prime numbers and more.
+
+   @author hji
+   @version 1.0, 03/22/2019
+*/</span>
+
+<span class="cp">#include &lt;bitset&gt;
+#include &lt;vector&gt;
+#include &lt;iostream&gt;
+</span>
+<span class="kt">long</span> <span class="kt">long</span> <span class="n">_sieve_size</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">bitset</span><span class="o">&lt;</span><span class="mi">10000010</span><span class="o">&gt;</span> <span class="n">bs</span><span class="p">;</span>
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">primes</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">sieve</span><span class="p">(</span><span class="kt">long</span> <span class="kt">long</span> <span class="n">upperbound</span><span class="p">){</span>
+  <span class="n">_sieve_size</span> <span class="o">=</span> <span class="n">upperbound</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+  <span class="n">bs</span><span class="p">.</span><span class="n">set</span><span class="p">();</span>
+  <span class="n">bs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">bs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">long</span> <span class="kt">long</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">_sieve_size</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">){</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">bs</span><span class="p">[</span><span class="n">i</span><span class="p">]){</span>
+      <span class="c1">// cross out multiples of i starting from i*i</span>
+      <span class="k">for</span> <span class="p">(</span><span class="kt">long</span> <span class="kt">long</span> <span class="n">j</span> <span class="o">=</span> <span class="n">i</span> <span class="o">*</span> <span class="n">i</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;=</span> <span class="n">_sieve_size</span><span class="p">;</span> <span class="n">j</span><span class="o">+=</span> <span class="n">i</span><span class="p">)</span> <span class="n">bs</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+      <span class="n">primes</span><span class="p">.</span><span class="n">push_back</span><span class="p">((</span><span class="kt">int</span><span class="p">)</span><span class="n">i</span><span class="p">);</span> <span class="c1">// add this prime to the list</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="nf">isPrime</span><span class="p">(</span><span class="kt">long</span> <span class="kt">long</span> <span class="n">N</span><span class="p">){</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">N</span> <span class="o">&lt;=</span> <span class="n">_sieve_size</span><span class="p">)</span> <span class="k">return</span> <span class="n">bs</span><span class="p">[</span><span class="n">N</span><span class="p">];</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">primes</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">N</span> <span class="o">%</span> <span class="n">primes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[]){</span>
+
+  <span class="n">sieve</span><span class="p">(</span><span class="mi">10000000</span><span class="p">);</span>
+  <span class="c1">// print out the first 52 prime numbers</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">52</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">){</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">primes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// testing is prime number:</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">isPrime</span><span class="p">(</span><span class="mi">2147483647</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">isPrime</span><span class="p">(</span><span class="mi">136117223861LL</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h1 id="refresher-of-gcd-and-lcm">Refresher of GCD and LCM</h1>
+<p>Greatest common divisor and least common multiple are two commonly seen problems that has one-line solution.</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">gcd</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">b</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="n">a</span> <span class="o">:</span> <span class="n">gcd</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="o">%</span><span class="n">b</span><span class="p">);</span> <span class="p">}</span>
+<span class="kt">int</span> <span class="nf">lcm</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="n">b</span> <span class="o">/</span> <span class="n">gcd</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">));</span> <span class="p">}</span>
+</code></pre></div></div>
+
+<h1 id="factorial">Factorial</h1>
+
+<p>In the following code, the main idea is Divide and Conquer but with an iterative approach(using a while loop). An integer $N$ can be expressed as:</p>
+
+\[N = PF \times N^{\prime}\]
+
+<p>where $PF$ is a prime factor and $N^{\prime}$ is another number which is $N/PF$. Thus the whole algorithm is reducing the size of N by taking out its prime factor PF. Keep doing it until eventually $N^{\prime}$ is 1. And to speed up the process, we stop when $PF$ is greater than $\sqrt{N}$.</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">primeFactors</span><span class="p">(</span><span class="kt">long</span> <span class="kt">long</span> <span class="n">N</span><span class="p">){</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">factors</span><span class="p">;</span>
+  <span class="kt">long</span> <span class="kt">long</span> <span class="n">PF_idx</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">PF</span> <span class="o">=</span> <span class="n">primes</span><span class="p">[</span><span class="n">PF_idx</span><span class="p">];</span> <span class="c1">// using primes produced by sieve</span>
+  <span class="k">while</span> <span class="p">(</span><span class="n">PF</span> <span class="o">*</span> <span class="n">PF</span> <span class="o">&lt;=</span> <span class="n">N</span><span class="p">){</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">N</span> <span class="o">%</span> <span class="n">PF</span> <span class="o">==</span> <span class="mi">0</span><span class="p">){</span> <span class="n">N</span> <span class="o">/=</span> <span class="n">PF</span><span class="p">;</span> <span class="n">factors</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">PF</span><span class="p">);</span> <span class="p">}</span> <span class="c1">// remove PF</span>
+    <span class="n">PF</span> <span class="o">=</span> <span class="n">primes</span><span class="p">[</span><span class="o">++</span><span class="n">PF_idx</span><span class="p">];</span>
+  <span class="p">}</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">N</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">)</span> <span class="n">factors</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">N</span><span class="p">);</span> <span class="c1">// special case if N is prime itself</span>
+  <span class="k">return</span> <span class="n">factors</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// following is inside main(), assuming sieve(10000000) has been called before</span>
+<span class="c1">// factorials</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">r</span> <span class="o">=</span> <span class="n">primeFactors</span><span class="p">(</span><span class="mi">2147483647</span><span class="p">);</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"2147483647 = "</span> <span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">:</span> <span class="n">r</span><span class="p">){</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">" x "</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+  <span class="n">r</span> <span class="o">=</span> <span class="n">primeFactors</span><span class="p">(</span><span class="mi">136117223861LL</span><span class="p">);</span> <span class="c1">// slow (104729 * 1299709)</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"136117223861LL = "</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">:</span> <span class="n">r</span><span class="p">){</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">" x "</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+  <span class="n">r</span> <span class="o">=</span> <span class="n">primeFactors</span><span class="p">(</span><span class="mi">142391208960LL</span><span class="p">);</span> <span class="c1">// faster</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"142391208960LL = "</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">:</span> <span class="n">r</span><span class="p">){</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">" x "</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+</code></pre></div></div>
+:ET

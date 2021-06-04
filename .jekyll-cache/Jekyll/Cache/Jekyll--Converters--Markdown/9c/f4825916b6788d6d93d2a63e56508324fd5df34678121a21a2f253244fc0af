@@ -1,0 +1,123 @@
+I"<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#introduction" id="markdown-toc-introduction">Introduction</a>    <ul>
+      <li><a href="#basic-operations" id="markdown-toc-basic-operations">Basic Operations</a></li>
+      <li><a href="#comparison-with-binary-heap" id="markdown-toc-comparison-with-binary-heap">Comparison with Binary Heap</a></li>
+      <li><a href="#fibonacci-heaps-in-theory-and-practice" id="markdown-toc-fibonacci-heaps-in-theory-and-practice">Fibonacci Heaps in Theory and Practice</a></li>
+      <li><a href="#structure-of-fibonacci-heaps" id="markdown-toc-structure-of-fibonacci-heaps">Structure of Fibonacci Heaps</a></li>
+    </ul>
+  </li>
+</ul>
+
+  </nav>
+</aside>
+
+<h1 id="introduction">Introduction</h1>
+<p>The Fibonacci heap data structure serves a dual purpose.</p>
+<ol>
+  <li>It supports a set of operations that constitutes what is known as a “mergeable heap”</li>
+  <li>Several Fibonacci-heap operations run in constant amortized time.</li>
+</ol>
+
+<h2 id="basic-operations">Basic Operations</h2>
+<ol>
+  <li><strong>$MAKE-HEAP()$</strong>: creates and returns a new heap containing no elements</li>
+  <li><strong>$INSERT(H, x)$</strong>: inserts element $x$, whose key has already been filled in, into heap $H$.</li>
+  <li><strong>$MINIMUM(H)$</strong>: returns a pointer to the element in heap $H$ whose key is minimum</li>
+  <li><strong>$EXTRACT-MIN(H)$</strong>: deletes the element from heap $H$ whose key is minimum, returning a pointer to the elements.</li>
+  <li><strong>$UNION(H_1, H_2)$</strong>: creates and returns a new heap that contains all the elements of heaps $H_1$ and $H_2$. Heaps $H_1$ and $H_2$ are “destroyed” by this operation.</li>
+  <li><strong>$DECREASE-KEY(H, x, k)$</strong>: assigns to element $x$ within heap $H$ the new key value $k$, which we assume to be no greater than its current key value.</li>
+  <li><strong>$DELETE(H, x)$</strong>: deletes element $x$ from heap $H$.</li>
+</ol>
+
+<h2 id="comparison-with-binary-heap">Comparison with Binary Heap</h2>
+
+<table>
+  <tbody>
+    <tr>
+      <td>Procedure</td>
+      <td>Binary Heap</td>
+      <td>Fibonacci Heap</td>
+    </tr>
+    <tr>
+      <td>$MAKE-HEAP()$</td>
+      <td>$\Theta(1)$</td>
+      <td>$\Theta(1)$</td>
+    </tr>
+    <tr>
+      <td>$INSERT(H, x)$</td>
+      <td>$\Theta(\lg n)$</td>
+      <td>$\Theta(1)$</td>
+    </tr>
+    <tr>
+      <td>$MINIMUM(H)$</td>
+      <td>$\Theta(1)$</td>
+      <td>$\Theta(1)$</td>
+    </tr>
+    <tr>
+      <td>$EXTRACT-MIN(H)$</td>
+      <td>$\Theta(\lg n)$</td>
+      <td>$O(\lg n)$</td>
+    </tr>
+    <tr>
+      <td>$UNION(H_1, H_2)$</td>
+      <td>$\Theta(n)$</td>
+      <td>$\Theta(i)$</td>
+    </tr>
+    <tr>
+      <td>$DECREASE-KEY(H, x, k)$</td>
+      <td>$\Theta(\lg n)$</td>
+      <td>$\Theta(1)$</td>
+    </tr>
+    <tr>
+      <td>$DELETE(H, x)$</td>
+      <td>$\Theta(\lg n)$</td>
+      <td>$O(\lg n)$</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>From the above table, we can conclude that Binary heap works fairly well if $UNION$ operation is not needed. But in cases $UNION$ operation is necessary, normal binary heap 
+starts to perform poorly.</p>
+
+<p>Fibonacci heaps, on the other hand, have better asymptotic time bounds than binary heaps for the $INSERT$, $UNION$, and $DECREASE-KEY$ operations. Note that all running time
+in the above table are <strong>amortized time bounds</strong> instead of worst-case per-operation time bounds.</p>
+
+<h2 id="fibonacci-heaps-in-theory-and-practice">Fibonacci Heaps in Theory and Practice</h2>
+<p>Theoretically speaking, Fibonacci heaps are especially desirable when the number of $EXTRACT-MIN$ and $DELETE$ operations is small relative to the number of other operations performed.
+Such situation arises in many applications. For example, some algorithms for graph problems may call $DECREASE-KEY$ once per edge. For dense graphs, which have many edges,
+the $\Theta(1)$ amortized time of each call of $DECREASE-KEY$ adds up to a big improvement over the $\Theta(\lg n)$ worst-case time of binary heaps.
+Fast algorithms for problems such as computing minimum spanning trees and finding single-source shortest paths make essential use of Fibonacci heaps.</p>
+
+<p>From a practical point of view, however, the constant factors and programming complexity of Fibonacci heaps make them less desirable than ordinary binary (or k-ary) heaps for most applications,
+except for certain applications that manage large amounts of data. Thus, Fibonacci heaps are predominantly of theoretical interest.</p>
+
+<p>Both binary heaps and Fibonacci heaps are inefficient in $SEARCH$ operation; it can take a while to find an element with a given key. For this reason, operations such as $DECREASE-KEY$ and $DELETE$
+that refer to a given element require a pointer to that element as part of their input.</p>
+
+<p>Like several other data structures that we have seen, Fibonacci heaps are based on rooted trees. We represent each element by a node within a tree, and each node has a key attribute.</p>
+
+<h2 id="structure-of-fibonacci-heaps">Structure of Fibonacci Heaps</h2>
+<p>A <strong>Fibonacci heap</strong> is a collection of rooted trees that are <strong>min-heap ordered</strong>. That is, each tree obeys the <strong>min-heap property</strong>: the key of a node is greater than or equal to the key of its parent.
+The following is the figure from <em>Introduction to Algorithms, Third edition</em>.</p>
+
+<figure class="">
+  <img src="/assets/images/fibonacci.png" alt="Fibonacci" />
+  
+    <figcaption>
+</figcaption>
+  
+</figure>
+
+<p>As the figure shows, each node $x$ contains a pointer $x.p$ to its parent and a pointer $x.child$ to any one of its children. The children of $x$ are linked together in a circular doubly linked list, which
+we call the $child list$ of $x$. Each child $y$ in a child list has pointers $y.left$ and y.right that point to $y$’s left and right siblings, respectively. If node $y$ is an only child, then $y.left=y$, $y.right=y$. Siblings may appear in a child list in any order.</p>
+
+<p>With the help of circular, doubly linked lists, we are able to:</p>
+<ol>
+  <li>Insert a node into any location or remove a node from anywhere in $O(1)$ time.</li>
+  <li>Concatenate any two given lists into one circular, doubly linked list in $O(1)$ time.</li>
+</ol>
+
+:ET

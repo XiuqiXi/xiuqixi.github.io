@@ -1,0 +1,1634 @@
+I"[0<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#building-abstractions-with-procedures" id="markdown-toc-building-abstractions-with-procedures">Building Abstractions with Procedures</a>    <ul>
+      <li><a href="#programming-in-lisp" id="markdown-toc-programming-in-lisp">Programming in Lisp</a></li>
+      <li><a href="#the-elements-of-programming" id="markdown-toc-the-elements-of-programming">The elements of programming</a>        <ul>
+          <li><a href="#113-evaluating-combinations" id="markdown-toc-113-evaluating-combinations">1.1.3 Evaluating Combinations</a></li>
+          <li><a href="#114-compound-procedures" id="markdown-toc-114-compound-procedures">1.1.4 Compound Procedures</a></li>
+          <li><a href="#115-the-substitution-model-for-procedure-application" id="markdown-toc-115-the-substitution-model-for-procedure-application">1.1.5 The Substitution Model for Procedure Application</a></li>
+        </ul>
+      </li>
+      <li><a href="#conditional-expressions-and-predicate" id="markdown-toc-conditional-expressions-and-predicate">Conditional Expressions and Predicate</a></li>
+      <li><a href="#example-square-roots-by-newtons-method" id="markdown-toc-example-square-roots-by-newtons-method">Example: Square Roots by Newton’s Method</a></li>
+      <li><a href="#procedures-as-black-box-abstractions" id="markdown-toc-procedures-as-black-box-abstractions">Procedures as Black-Box Abstractions</a>        <ul>
+          <li><a href="#local-names" id="markdown-toc-local-names">Local Names</a></li>
+          <li><a href="#internal-definitions-and-block-structure" id="markdown-toc-internal-definitions-and-block-structure">Internal Definitions and Block Structure</a></li>
+        </ul>
+      </li>
+      <li><a href="#procedures-and-processes-they-generate" id="markdown-toc-procedures-and-processes-they-generate">Procedures and Processes They Generate</a>        <ul>
+          <li><a href="#linear-recursion-and-iteration" id="markdown-toc-linear-recursion-and-iteration">Linear Recursion and Iteration</a></li>
+        </ul>
+      </li>
+      <li><a href="#tree-recursion" id="markdown-toc-tree-recursion">Tree Recursion</a>        <ul>
+          <li><a href="#example-counting-change" id="markdown-toc-example-counting-change">Example: Counting Change</a></li>
+          <li><a href="#orders-of-growth" id="markdown-toc-orders-of-growth">Orders of Growth</a></li>
+          <li><a href="#exponentiation" id="markdown-toc-exponentiation">Exponentiation</a></li>
+          <li><a href="#greatest-common-divisors" id="markdown-toc-greatest-common-divisors">Greatest Common Divisors</a></li>
+          <li><a href="#example-testing-for-primality" id="markdown-toc-example-testing-for-primality">Example: Testing for Primality</a></li>
+        </ul>
+      </li>
+      <li><a href="#formulating-abstractions-with-higher-order-procedures" id="markdown-toc-formulating-abstractions-with-higher-order-procedures">Formulating Abstractions with Higher-Order Procedures</a>        <ul>
+          <li><a href="#procedures-as-arguments" id="markdown-toc-procedures-as-arguments">Procedures as Arguments</a></li>
+          <li><a href="#constructing-procedures-using-lambda" id="markdown-toc-constructing-procedures-using-lambda">Constructing Procedures Using <code class="language-plaintext highlighter-rouge">lambda</code></a></li>
+          <li><a href="#using-let-to-create-local-variables" id="markdown-toc-using-let-to-create-local-variables">Using <code class="language-plaintext highlighter-rouge">let</code> to create local variables</a></li>
+          <li><a href="#procedures-as-general-methods" id="markdown-toc-procedures-as-general-methods">Procedures as General Methods</a></li>
+          <li><a href="#procedures-as-returned-values" id="markdown-toc-procedures-as-returned-values">Procedures as Returned Values</a></li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+  </nav>
+</aside>
+
+<h1 id="building-abstractions-with-procedures">Building Abstractions with Procedures</h1>
+
+<p>Acts of mind:</p>
+
+<ol>
+  <li>Combining simple ones into a compound one</li>
+  <li>Compare and see the relationship</li>
+  <li>Abstraction</li>
+</ol>
+
+<p>Real-world programming, requires care, expertise, and wisdom.</p>
+
+<p>Master software engineers have the ability to organize programs so that they can
+be reasonably sure that the resulting processes will perform the tasks intended. 
+They can visualize the behavior of their systems in advance.</p>
+
+<p>Well-designed computational systems, are designed in a modular manner, so that
+the parts can be constructed, replaced and debugged separately.</p>
+
+<p><a id="org63faea8"></a></p>
+
+<h2 id="programming-in-lisp">Programming in Lisp</h2>
+
+<p>Lisp = LISt Processing, was designed to provide symbol-manipulating capabilities
+for attacking programming problems such as symbolic differentiation and integration
+of algebraic expression.</p>
+
+<p>The most significant of these features is the fact that Lisp descriptions of process,
+called procedures, can themselves be represented and manipulated as Lisp data.</p>
+
+<p>The importance of this is that there are powerful program-design techniques
+that rely on the ability to blur the traditional distinction between “passive”
+data and “active” processes.</p>
+
+<p>The ability to represent procedures as data also makes Lisp an excellent language for 
+writing programs that must manipulate other programs as data, such as in interpreters and
+compilers that support computer languages.</p>
+
+<p><a id="orgcc0c6fc"></a></p>
+
+<h2 id="the-elements-of-programming">The elements of programming</h2>
+
+<p>The language serves as a framework within which we organize our ideas about processes.
+Every powerful language has 3 mechanisms for accomplishing this:</p>
+
+<ol>
+  <li>primitive expressions</li>
+  <li>means of combination</li>
+  <li>means of abstraction</li>
+</ol>
+
+<p>Procedures and data.</p>
+
+<p>Prefix notation advantage:</p>
+
+<ol>
+  <li>accommodate procedures that may take an arbitrary number of arguments</li>
+  <li>extends in a straight-forward way to allow combinations to be nested, to 
+have combinations whose elements are themselves combinations</li>
+</ol>
+
+<p><code class="language-plaintext highlighter-rouge">read-eval-print</code> loop.</p>
+
+<p><a id="orgf02f966"></a></p>
+
+<h3 id="113-evaluating-combinations">1.1.3 Evaluating Combinations</h3>
+
+<p>To evaluate a combination, do the following:</p>
+
+<ol>
+  <li>Evaluate the subexpressions of the combination</li>
+  <li>Apply the procedure that is the value of the leftmost subexpression (the operator)
+to the arguments that are the values of the other subexpressions (the operands)</li>
+</ol>
+
+<p>Repeated application of the first step bring us to the point where we need to evaluate
+primitive expressions such as, numerals, built-in operators, or other names.
+We take care of the primitive cases by stipulating that:</p>
+
+<ul>
+  <li>the values of numerals are the numbers that they name.</li>
+  <li>the values of built-in operators are the machine instruction sequences
+that carry out the corresponding operations</li>
+  <li>the values of other names are the objects associated with those names in 
+the environment.</li>
+</ul>
+
+<p>The general notion of the environment as providing a context in which evaluation takes
+place will play an important role in our understanding of program execution.</p>
+
+<p>Special forms: where the evaluation rule doesn’t apply. For example, <code class="language-plaintext highlighter-rouge">define</code>.
+Each special form have their own evaluation rules.</p>
+
+<p>In comparison with most other programming languages, Lisp has a very simple syntax;
+that is, the evaluation rule for expressions can be described by a simple general rule
+together with specialized rules for a small number of special forms.</p>
+
+<p><a id="org6202fbb"></a></p>
+
+<h3 id="114-compound-procedures">1.1.4 Compound Procedures</h3>
+
+<ul>
+  <li>Numbers and arithmetic operations are primitive data and procedures.</li>
+  <li>Nesting of combinations provides a means of combining operations</li>
+  <li>Definitions that associate names with values provide a limited means of abstraction.</li>
+</ul>
+
+<p>It is possible, indeed important, to be able to separate procedure and the name.
+We can create procedures without naming then, and we can also give names to procedures 
+that have already been created.</p>
+
+<p><a id="org17eb8e6"></a></p>
+
+<h3 id="115-the-substitution-model-for-procedure-application">1.1.5 The Substitution Model for Procedure Application</h3>
+
+<p>To apply a compound procedure to arguments, evaluate the body of the procedure with each
+formal parameter replaced by the corresponding argument.</p>
+
+<p>Substitution model for procedure application. It can be taken as a model that determines the 
+“meaning” of procedure application, insofar as the procedures in this chapter are concerned.
+However, there are two points that should be stressed:</p>
+
+<ul>
+  <li>The purpose of the substitution is to help us think about procedure application, not to 
+provide a description of how the interpreter really works. In practice, the “substitution”
+is accomplished by using a local environment for the formal parameters.</li>
+  <li>The substitution model is only a way to get started thinking formally about the evaluation
+process. When we get to the use of procedures with “mutable data”, we will see that the 
+substitution model breaks down and must be replaced by a more complicated model of procedure
+application.
+In general, when modeling phenomena in science and engineering, we begin with simplified,
+incomplete models. As we examine things in greater detail, these simple models become
+inadequate and must be replaced by more refined models.</li>
+</ul>
+
+<ol>
+  <li>
+    <p>Applicative order versus normal order</p>
+
+    <p>According to the description of evaluation given in 1.1.3, the interpreter first evaluates
+the operator and operands and then applies the resulting procedure to the resulting arguments.
+This is not the only way to perform evaluation.</p>
+
+    <p>An alternative evaluation model would not evaluate the operands until their values were needed. 
+Instead it would first substitute operand expressions for parameters until it obtained an 
+expression involving only primitive operators, and would then perform the evaluation.</p>
+
+    <p>“Fully expand and then reduce” evaluation method is known as <strong>normal-order</strong> evaluation,
+in contrast to the “evaluate the arguments and then apply” method that the interpreter actually
+uses, which is called <strong>applicative-order</strong> evaluation.</p>
+
+    <p>Lisp uses applicative-order evaluation, partly because of the addtional <strong>efficiency</strong> obtained from
+avoiding multiple evaluations of expressions. 
+Normal-order evaluation becomes much more complicated to deal with when we leave the realm of
+procedures that can be modeled by substitution.
+On the other hand, normal-order evaluation can be an extremely valuable
+tool, and we will investigate some of its implications in latter chapters.</p>
+  </li>
+</ol>
+
+<p><a id="orgf427a47"></a></p>
+
+<h2 id="conditional-expressions-and-predicate">Conditional Expressions and Predicate</h2>
+
+<p>But by far, we lack ways of doing case analysis. So we will introduce them in the follow section.</p>
+
+<p>The general form of a conditional expression is</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">cond</span> <span class="p">(</span><span class="nf">p1</span> <span class="nv">e1</span><span class="p">)</span>
+          <span class="p">(</span><span class="nf">p2</span> <span class="nv">e2</span><span class="p">)</span>
+          <span class="p">(</span><span class="nf">p3</span> <span class="nv">e3</span><span class="p">))</span>
+</code></pre></div></div>
+<p>the symbol <code class="language-plaintext highlighter-rouge">cond</code> is followed by parenthesized pairs of expressions called clauses.
+The first pair is predicate, whose value is interpreted as either true or false.</p>
+
+<p>Conditional expressions are evaluated as follows. The predicate is evaluated first.
+If the value is false, then next predicate is evaluated. This keeps going until one
+predicate’s value is found to be true, in which case the interpreter returns the value 
+of the corresponding consequent expression of the clause as the value of the corresponding
+consequent expression of the clause as the value of the conditional expression.
+If none of the predicates is found to be true, the value of the cond is undefined.</p>
+
+<p>The word predicate is used for procedures that return true or false, as well as for expressions 
+that evaluate to true or false. The absolute-value procedure <code class="language-plaintext highlighter-rouge">abs</code> makes use of the primitive 
+predicates &lt;, &gt; and =.</p>
+
+<p>Here is one way to write the absolute-value procedure:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nb">abs</span> <span class="nv">x</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">cond</span> <span class="p">((</span><span class="nb">&lt;</span> <span class="nv">x</span> <span class="mi">0</span><span class="p">)</span> <span class="p">(</span><span class="nb">-</span> <span class="nv">x</span><span class="p">))</span>
+            <span class="p">(</span><span class="k">else</span> <span class="nv">x</span><span class="p">)))</span>
+</code></pre></div></div>
+<p><code class="language-plaintext highlighter-rouge">else</code> is a special symbol that can be in place of the <code class="language-plaintext highlighter-rouge">&lt;p&gt;</code> in the final clause of a <code class="language-plaintext highlighter-rouge">cond</code>.</p>
+
+<p>And the following is another way to write the absolute-value procedure:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nb">abs</span> <span class="nv">x</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nb">&lt;</span> <span class="nv">x</span> <span class="mi">0</span><span class="p">)</span>
+          <span class="p">(</span><span class="nb">-</span> <span class="nv">x</span><span class="p">)</span>
+          <span class="nv">x</span><span class="p">))</span>
+</code></pre></div></div>
+<p>This uses the special form <code class="language-plaintext highlighter-rouge">if</code>, a restricted type of conditional that can be used when there
+are precisely two cases in the case analysis. The general form of an <code class="language-plaintext highlighter-rouge">if</code> expression is:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">if</span> <span class="nv">&lt;predicate&gt;</span> <span class="nv">&lt;consequent&gt;</span> <span class="nv">&lt;alternative&gt;</span><span class="p">)</span>
+</code></pre></div></div>
+<p>To evaluate an <code class="language-plaintext highlighter-rouge">if</code> expression, the interpreter starts by evaluating the <code class="language-plaintext highlighter-rouge">&lt;predicate&gt;</code> part of
+expression. If the <code class="language-plaintext highlighter-rouge">&lt;predicate&gt;</code> evaluates to a true value, the interpreter then evaluates the
+<code class="language-plaintext highlighter-rouge">&lt;consequent&gt;</code> and returns its value. Otherwise it evaluates the <code class="language-plaintext highlighter-rouge">&lt;alternative&gt;</code> and returns 
+its value.</p>
+
+<p>In addition to primitive predicates such as &lt;, = and &gt;, there are logical composition operations,
+which enable us to construct compound predicates. The three frequently used are these:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">and</span> <span class="nv">&lt;e1&gt;</span> <span class="o">...</span> <span class="nv">&lt;en&gt;</span><span class="p">)</span>
+    <span class="p">(</span><span class="k">or</span>  <span class="nv">&lt;e1&gt;</span> <span class="o">...</span> <span class="nv">&lt;en&gt;</span><span class="p">)</span>
+    <span class="p">(</span><span class="nb">not</span> <span class="nv">&lt;e&gt;</span><span class="p">)</span>
+</code></pre></div></div>
+<p>For <code class="language-plaintext highlighter-rouge">and</code>, the interpreter evaluates the expressions one at a time, from left to right, if any
+is false, the value of the <code class="language-plaintext highlighter-rouge">and</code> expression is false, and the rest of the <code class="language-plaintext highlighter-rouge">&lt;e&gt;</code> are not evaluated.</p>
+
+<p>Notice that <code class="language-plaintext highlighter-rouge">and</code> and <code class="language-plaintext highlighter-rouge">or</code> are special forms, not procedures, because the subexpressions are not 
+necessarily all evaluated. <code class="language-plaintext highlighter-rouge">Not</code> is an ordinary procedure.</p>
+
+<p>We can define a predicate to test whether one number is greater than or equal to another as:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nb">&gt;=</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">or</span> <span class="p">(</span><span class="nb">&gt;</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">)</span>
+          <span class="p">(</span><span class="nb">=</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">)))</span>
+</code></pre></div></div>
+<p>Or, alternatively, as</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nb">&gt;=</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">)</span>
+      <span class="p">(</span><span class="nb">not</span> <span class="p">(</span><span class="nb">&lt;</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">)))</span>
+</code></pre></div></div>
+
+<p><a id="org3482d59"></a></p>
+
+<h2 id="example-square-roots-by-newtons-method">Example: Square Roots by Newton’s Method</h2>
+
+<p>There is an important difference between mathematical functions and computer procedures.
+<strong>Procedures must be effective</strong>.</p>
+
+<p>The contrast between function and procedure is a reflection of the general distinction between describing 
+properties of things and describing how to do things.</p>
+
+<p>The definition of a square root is:</p>
+
+<p>\(\sqrt{x}\) = the \(y\) such that \(y \geq 0\) and \(y^2 = x\)</p>
+
+<p>The definition does not describe a procedure. Indeed, it tells us almost nothing about how to find the square
+root of a given number. It will not help matters to rephrase this definition in pseudo-Lisp:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nb">sqrt</span> <span class="nv">x</span><span class="p">)</span>
+      <span class="p">(</span><span class="nf">the</span> <span class="nv">y</span> <span class="p">(</span><span class="k">and</span> <span class="p">(</span><span class="nb">&gt;=</span> <span class="nv">y</span> <span class="mi">0</span><span class="p">)</span>
+                  <span class="p">(</span><span class="nb">=</span> <span class="p">(</span><span class="nf">square</span> <span class="nv">y</span><span class="p">)</span> <span class="nv">x</span><span class="p">))))</span>
+</code></pre></div></div>
+<p>The mathematical knowledge is used usually to define the problem of “what is”.
+But the real thing we are most concerned in computer science is “how to”, the imperative knowledge.</p>
+
+<p>The declarative and imperative knowledge are intimately related, as indeed are mathematics and computer
+science.There is a large number of research aimed at establishing techniques for proving the correctness
+of a program, and much of the difficulty of this subject has to do with negotiating the transition
+between imperative statements (from which programs are constructed) and declarative statements (which
+can be used to deduce things).</p>
+
+<p>In a related vein, an important current area in programming-language design is the exploration of so-called
+very high-level languages, in which one actually programs in terms of declarative statements. The idea is to
+make interpreters sophisticated enough, so that, given “what is” knowledge specified by the programmer, they
+can generate “how to” knowledge automatically. This cannot be done in general, but there are important areas
+where progress has been made.</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nb">sqrt</span> <span class="nv">x</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">good-enough?</span> <span class="nv">guess</span> <span class="nv">x</span><span class="p">)</span>
+        <span class="p">(</span><span class="nb">&lt;</span> <span class="p">(</span><span class="nb">abs</span> <span class="p">(</span><span class="nb">-</span> <span class="p">(</span><span class="nf">square</span> <span class="nv">guess</span><span class="p">)</span> <span class="nv">x</span><span class="p">))</span> <span class="nv">tolerance</span><span class="p">))</span>
+      <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">improve</span> <span class="nv">guess</span> <span class="nv">x</span><span class="p">)</span>
+        <span class="p">(</span><span class="nf">average</span> <span class="nv">guess</span> <span class="p">(</span><span class="nb">/</span> <span class="nv">x</span> <span class="nv">guess</span><span class="p">)))</span>
+      <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">sqrt-iter</span> <span class="nv">guess</span> <span class="nv">x</span><span class="p">)</span>
+        <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nf">good-enough?</span> <span class="nv">guess</span> <span class="nv">x</span><span class="p">)</span>
+            <span class="nv">guess</span>
+            <span class="p">(</span><span class="nf">sqrt-iter</span> <span class="p">(</span><span class="nf">improve</span> <span class="nv">guess</span> <span class="nv">x</span><span class="p">)</span> <span class="nv">x</span><span class="p">)))</span>
+      <span class="p">(</span><span class="nf">sqrt-iter</span> <span class="mf">1.0</span> <span class="nv">x</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p><a id="orgc1ebed7"></a></p>
+
+<h2 id="procedures-as-black-box-abstractions">Procedures as Black-Box Abstractions</h2>
+
+<p>Each procedure accomplishes an identifiable task that can be used as a module in defining other procedures.</p>
+
+<p><strong>Procedure Abstraction</strong>: A procedure definition should be able to suppress detail. A user should not need
+to know how the procedure is implemented in order to use it.</p>
+
+<p><a id="org871a322"></a></p>
+
+<h3 id="local-names">Local Names</h3>
+
+<p><strong>Principle</strong>: The meaning of a procedure should be independent of the parameter names used by its author.</p>
+
+<p>A formal parameter of a procedure has a very special role in the procedure definition, in that it doesn’t matter
+what name the formal parameter has. Such a name is called a <strong>bound variable</strong>, and we say that the procedure definition
+binds its formal parameters.</p>
+
+<p>If a variable is not bound, we say that it is <strong>free</strong>.</p>
+
+<p>The set of expressions for which a binding defines a name is called the <em>scope</em> of that name.</p>
+
+<p><a id="orgaafc9ce"></a></p>
+
+<h3 id="internal-definitions-and-block-structure">Internal Definitions and Block Structure</h3>
+
+<p>As shown in the code above, all of the sub-procedures are all included in the definition of <code class="language-plaintext highlighter-rouge">sqrt</code>. This is 
+basically the right solution to the simplest name-packaging problem. But we can do more.</p>
+
+<p>Since <code class="language-plaintext highlighter-rouge">x</code> is bound in the definition of sqrt, the procedures <code class="language-plaintext highlighter-rouge">good-enough?</code>, <code class="language-plaintext highlighter-rouge">improve</code>, and <code class="language-plaintext highlighter-rouge">sqrt-iter</code>, which
+are defined internally to <code class="language-plaintext highlighter-rouge">sqrt</code>, are in the scope of <code class="language-plaintext highlighter-rouge">x</code>. Thus, it is not necessary to pass <code class="language-plaintext highlighter-rouge">x</code> explicitly 
+to each of these procedures. Instead, we allow <code class="language-plaintext highlighter-rouge">x</code> to be a free variable in the internal definitions.</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nb">sqrt</span> <span class="nv">x</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">define</span> <span class="nv">tolerance</span> <span class="mf">0.0001</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">good-enough?</span> <span class="nv">guess</span><span class="p">)</span>
+        <span class="p">(</span><span class="nb">&lt;</span> <span class="p">(</span><span class="nb">abs</span> <span class="p">(</span><span class="nb">-</span> <span class="p">(</span><span class="nf">square</span> <span class="nv">guess</span><span class="p">)</span> <span class="nv">x</span><span class="p">))</span> <span class="nv">tolerance</span><span class="p">))</span>
+      <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">improve</span> <span class="nv">guess</span><span class="p">)</span>
+        <span class="p">(</span><span class="nf">average</span> <span class="nv">guess</span> <span class="p">(</span><span class="nb">/</span> <span class="nv">x</span> <span class="nv">guess</span><span class="p">)))</span>
+      <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">sqrt-iter</span> <span class="nv">guess</span><span class="p">)</span>
+        <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nf">good-enough?</span> <span class="nv">guess</span><span class="p">)</span>
+            <span class="nv">guess</span>
+            <span class="p">(</span><span class="nf">sqrt-iter</span> <span class="p">(</span><span class="nf">improve</span> <span class="nv">guess</span><span class="p">)</span> <span class="nv">x</span><span class="p">)))</span>
+      <span class="p">(</span><span class="nf">sqrt-iter</span> <span class="mf">1.0</span><span class="p">))</span>
+</code></pre></div></div>
+<p>Then <code class="language-plaintext highlighter-rouge">x</code> gets its value from the argument with which the enclosing procedure <code class="language-plaintext highlighter-rouge">sqrt</code> is called.
+This discipline is called <strong>lexical scoping</strong>.</p>
+
+<p>We will use block structure extensively to help us break up large programs into tractable pieces.</p>
+
+<p><a id="org2934af8"></a></p>
+
+<h2 id="procedures-and-processes-they-generate">Procedures and Processes They Generate</h2>
+
+<p>The ability to visualize the consequences of the actions under consideration is crucial to becoming an expert programmer,
+just as it is in any synthetic, creative activity.</p>
+
+<p>A procedure is a pattern for the local evolution of a computational process. It specifies how each stage of the process 
+is built upon the previous stage.</p>
+
+<p>We would like to be able to make statements about the overall, or global, behavior of a process whose local evolution has 
+been specified by a procedure.</p>
+
+<p>In this section we will examine some common “shapes” for processes generated by simple procedures. We will also investigate
+the rates at which these processes consume the important computational resources of time and space.</p>
+
+<p><a id="orgc915185"></a></p>
+
+<h3 id="linear-recursion-and-iteration">Linear Recursion and Iteration</h3>
+
+<p>Factorial function:
+[
+n! = n\cdot (n-1) \cdot (n-2) \cdots 3 \cdot 2 \cdot 1
+]</p>
+
+<p>Linear recursion approach:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">factorial</span> <span class="nv">n</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nb">=</span> <span class="nv">n</span> <span class="mi">1</span><span class="p">)</span>
+          <span class="mi">1</span>
+          <span class="p">(</span><span class="nb">*</span> <span class="nv">n</span> <span class="p">(</span><span class="nf">factorial</span> <span class="p">(</span><span class="nb">-</span> <span class="nv">n</span> <span class="mi">1</span><span class="p">)))))</span>
+</code></pre></div></div>
+
+<p>A different way of computing it is, we maintain a running product, together with a counter that counts from 1 up to \(n\).</p>
+
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">factorial</span> <span class="nv">n</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">iter</span> <span class="nv">product</span> <span class="nv">counter</span><span class="p">)</span>
+        <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nb">&gt;</span> <span class="nv">counter</span> <span class="nv">n</span><span class="p">)</span>
+            <span class="nv">product</span>
+            <span class="p">(</span><span class="nf">iter</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">counter</span> <span class="nv">product</span><span class="p">)</span>
+                  <span class="p">(</span><span class="nb">+</span> <span class="nv">counter</span> <span class="mi">1</span><span class="p">))))</span>
+      <span class="p">(</span><span class="nf">iter</span> <span class="mi">1</span> <span class="mi">1</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p>When we consider the “shapes” of the two processes, we find that they evolve quite differently.</p>
+
+<p>The first process builds up a chain of <em>deferred operations</em>. The contraction occurs as the operations are actually 
+performed. This type of process, characterized by a chain of deferred operations, is called a <em>recursive process</em>.</p>
+
+<p>Carrying out this process requires that the interpreter keep track of the operations to be performed later on.</p>
+
+<p>In the computation of factorial, the length of the chain of deferred multiplications, and hence the amount of information
+needed to keep track of it, grows linearly with \(n\), just like the number of steps. Such a process is called a 
+<strong>linear recursive process</strong>.</p>
+
+<p>By contrast, the second process does not grow and shrink. At each step, all we need to keep track of, for any \(n\),
+are the current values of the variables <code class="language-plaintext highlighter-rouge">product</code>, <code class="language-plaintext highlighter-rouge">counter</code>, and <code class="language-plaintext highlighter-rouge">max-count</code>. We call this <strong>iterative process</strong>.</p>
+
+<p>In general, an iterative process is one whose state can be summarized by a fixed number of <strong>state variables</strong>,
+together with a fixed rule that describes how the state variables should be updated as the process moves from 
+state to state and an (optional) end test that specifies conditions under which the process should terminate.</p>
+
+<p>In computing \(n!\), the number of steps required grows linearly with \(n\). Such a process is called a <strong>linear iterative process</strong>.</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col class="org-left" />
+
+<col class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">Differences</td>
+<td class="org-left">&#xa0;</td>
+</tr>
+
+
+<tr>
+<td class="org-left">Iterative</td>
+<td class="org-left">variables provide a complete description of the state of the process at any point</td>
+</tr>
+
+
+<tr>
+<td class="org-left">Recursive</td>
+<td class="org-left">there is some additional information maintained by the interpreter</td>
+</tr>
+</tbody>
+</table>
+
+<p>The hidden information are not contained in the program variables, which indicates “where the process is” in negotiating
+the chain of deferred operations. The longer the chain, the more information must be maintained.</p>
+
+<p>In contrasting iteration and recursion, we must be careful not to confuse the notion of a 
+<em>recursive process</em> with the notion of a <em>recursive procedure</em>.
+When we describe a procedure as recursive, we are referring to the syntactic fact that the procedure definition refers
+(either directly or indirectly) to the procedure itself. But when we describe a process as following a pattern that is,
+say, linearly recursive, we are speaking about how the process evolves, not about the syntax of how a procedure is written.</p>
+
+<p>It may seen disturbing that we refer to a recursive procedure such as <code class="language-plaintext highlighter-rouge">iter</code> in the factorial as generating an iterative process.
+However, the process really is iterative: Its state is captured completely by its three state variables, and an interpreter
+need keep track of only three variables in order to execute the process.</p>
+
+<p>One reason that the distinction between process and procedure may be confusing is that most implementations of common languages
+(including Ada, Pascal, and C) are designed in such a way that the interpretation of any recursive procedure consumes an amount
+of memory that grows with the number of procedure calls, even when the process described is, in principle, iterative.</p>
+
+<p>As a consequence, these languages can describe iterative processes only by resorting to special purpose “looping-constructs”
+such as <code class="language-plaintext highlighter-rouge">do</code>, <code class="language-plaintext highlighter-rouge">repeat</code>, <code class="language-plaintext highlighter-rouge">until</code>, <code class="language-plaintext highlighter-rouge">for</code>, and <code class="language-plaintext highlighter-rouge">while</code>. But the Scheme we shall consider does not share this defect.
+It will execute an iterative process in constant space, even if the iterative process is described by a recursive procedure.
+An implementation with this property is called <strong>tail-recursive</strong>.</p>
+
+<p>When we discuss the implementation of procedures on register machines in chapter 5, we will see that any iterative process 
+can be realized “in hardware” as machine that has a fixed set of registers and no auxiliary memory. 
+In contrast, realizing a recursive process requires a machine that uses an auxiliary data structure known as stack.</p>
+
+<p>With tail recursive implementation, iteration can be expressed using the ordinary procedure call mechanism, so that
+special iteration constructs are useful only as syntactic sugar.</p>
+
+<p><a id="orge2aec7d"></a></p>
+
+<h2 id="tree-recursion">Tree Recursion</h2>
+
+<p>Fibonacci numbers:</p>
+
+\[Fib(n) = 
+
+\begin{cases}
+0 &amp; \text{if } n=0 \\
+1 &amp; \text{if } n=1 \\
+Fib(n-1) + Fib(n-2) &amp; \text{otherwise}
+\end{cases}\]
+
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">fib</span> <span class="nv">n</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">cond</span> <span class="p">((</span><span class="nb">=</span> <span class="nv">n</span> <span class="mi">0</span><span class="p">)</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="p">((</span><span class="nb">=</span> <span class="nv">n</span> <span class="mi">1</span><span class="p">)</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="p">(</span><span class="k">else</span> <span class="p">(</span><span class="nb">+</span> <span class="p">(</span><span class="nf">fib</span> <span class="p">(</span><span class="nb">-</span> <span class="nv">n</span> <span class="mi">1</span><span class="p">))</span>
+                     <span class="p">(</span><span class="nf">fib</span> <span class="p">(</span><span class="nb">-</span> <span class="nv">n</span> <span class="mi">2</span><span class="p">))))))</span>
+</code></pre></div></div>
+
+<p>This procedure is instructive as a prototypical tree recursion, but it is a terrible way to compute
+Fibonacci numbers because it does so much redundant computation.
+In fact, it is not hard to show that the number of times the procedure will compute <code class="language-plaintext highlighter-rouge">(fib 1)</code> or <code class="language-plaintext highlighter-rouge">(fib 0)</code>
+(the number of leaves) is precisely \(Fib(n+1)\).</p>
+
+<p>To show how bad this is, one can show that the value of \(Fib(n)\) grows exponentially with \(n\). More
+precisely, \(Fib(n)\) is the closet integer to \(\phi^n/ \sqrt{5}\) where</p>
+
+<p>[
+\phi = (1 + \sqrt{5}) / 2 \approx 1.6180
+]</p>
+
+<p>is the golden ratio, which satisfies the equation</p>
+
+<p>[
+\phi^2 = \phi + 1
+]</p>
+
+<p>Thus, the process uses a number of steps that grows exponentially with the input.
+On the other hand, the space required grows only linearly with the input, because we need keep track only 
+of which nodes are above us in the tree at any point in the computation.</p>
+
+<p>**In general, the number of steps required by a tree-recursive process will be proportional to the 
+number of nodes in the tree, while the space required will be proportional to the maximum depth of
+the tree.**</p>
+
+<p>We can also formulate an iterative process for computing the Fibonacci numbers.</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">fib</span> <span class="nv">n</span><span class="p">)</span>
+      <span class="p">(</span><span class="nf">fib-iter</span> <span class="mi">1</span> <span class="mi">0</span> <span class="nv">n</span><span class="p">))</span>
+    
+    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">fib-iter</span> <span class="nv">a</span> <span class="nv">b</span> <span class="nv">count</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nb">=</span> <span class="nv">count</span> <span class="mi">0</span><span class="p">)</span>
+          <span class="nv">b</span>
+          <span class="p">(</span><span class="nf">fib-iter</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)</span> <span class="nv">a</span> <span class="p">(</span><span class="nb">-</span> <span class="nv">count</span> <span class="mi">1</span><span class="p">))))</span>
+</code></pre></div></div>
+<p>It is not hard to show that, after applying this transformation \(n\) times, \(a\) and \(b\) will hold the
+values of \(Fib(n+1)\) and \(Fib(n)\), respectively.</p>
+
+<p>This method of computing is linear iterative. The difference between the tree-recursive process and
+the linear iterative process is enormous, even for small inputs.</p>
+
+<p>But tree-recursion should not be considered useless. When we consider processes that operate on 
+hierarchically structured data rather numbers, we will find that tree recursion is a natural and 
+powerful tool.</p>
+
+<p>But even in numerical operations, tree-recursive processes can be helpful in helping us to understand
+and design programs.</p>
+
+<p><a id="orgd73066e"></a></p>
+
+<h3 id="example-counting-change">Example: Counting Change</h3>
+
+<p>How many different way can we make change of $1.00, given half-dollars, quarters, dimes, nickles, 
+and pennies?
+More generally, can we write a procedure to compute the number of ways to change any given amount
+of money?</p>
+
+<p>The problem has a simple solution as a recursive procedure.
+Suppose we think of types of coins available as arranged in some order. Then the following relation holds:
+The number of ways to change amount \(a\) using \(n\) kinds of coins equals</p>
+
+<ul>
+  <li>the number of ways to change amount \(a\) using all but the first kind of coin, plus</li>
+  <li>the number of ways to change amount \(a-d\) using all \(n\) kinds of coins, where \(d\) is the denomination of
+the first kind of coin. (force to use at least one of the first kind of coins in the solution)</li>
+</ul>
+
+<p>To see why this is true, observe that the ways to make change can be divided into two groups:
+those that do not use any of the first kind of coins, and those that do.</p>
+
+<p>Thus we can recursively reduce the problem of changing a given amount to the problem of changing smaller
+amounts using fewer kinds of coins. Consider this reduction rule carefully, and convince yourself that we
+can use it to describe an algorithm if we specify the following degenerate cases:</p>
+
+<ol>
+  <li>If \(a\) is exactly 0, we should count that as 1 way to make change</li>
+  <li>If \(a\) is less than 0, we should count that as 0 ways to make change.</li>
+  <li>If \(n\) is 0, we should count that as 0 ways to make change.</li>
+</ol>
+
+<p>We can easily translate this into a recursive procedure</p>
+
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">count-change</span> <span class="nv">amount</span><span class="p">)</span>
+        <span class="p">(</span><span class="nf">cc</span> <span class="nv">amount</span> <span class="mi">5</span><span class="p">))</span>
+    
+      <span class="c1">;; assume that coins are sorted in some order</span>
+      <span class="c1">;; pennies      1</span>
+      <span class="c1">;; nickles      5</span>
+      <span class="c1">;; dimes        10</span>
+      <span class="c1">;; quarters     25</span>
+      <span class="c1">;; half-dollars 50</span>
+   
+   <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">cc</span> <span class="nv">amount</span> <span class="nv">kinds-of-coins</span><span class="p">)</span>
+        <span class="p">(</span><span class="k">cond</span> <span class="p">((</span><span class="nb">=</span> <span class="nv">amount</span> <span class="mi">0</span><span class="p">)</span> <span class="mi">1</span><span class="p">)</span>
+              <span class="p">((</span><span class="nb">&lt;</span> <span class="nv">amount</span> <span class="mi">0</span><span class="p">)</span> <span class="mi">0</span><span class="p">)</span>
+              <span class="p">((</span><span class="nb">=</span> <span class="nv">kinds-of-coins</span> <span class="mi">0</span><span class="p">)</span> <span class="mi">0</span><span class="p">)</span>
+              <span class="p">(</span><span class="k">else</span> <span class="p">(</span><span class="nb">+</span> <span class="p">(</span><span class="nf">cc</span> <span class="nv">amount</span> <span class="c1">;; adding two groups of changing:</span>
+                           <span class="p">(</span><span class="nb">-</span> <span class="nv">kinds-of-coins</span> <span class="mi">1</span><span class="p">))</span> <span class="c1">;; 1. doesn't use the first kind</span>
+                       <span class="p">(</span><span class="nf">cc</span> <span class="p">(</span><span class="nb">-</span> <span class="nv">amount</span>
+                              <span class="p">(</span><span class="nf">first-denomination</span> <span class="nv">kinds-of-coins</span><span class="p">))</span>
+                           <span class="nv">kinds-of-coins</span><span class="p">)))))</span>   <span class="c1">;; 2. use at least one of it.</span>
+    
+      <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">first-denomination</span> <span class="nv">kinds-of-coins</span><span class="p">)</span>
+        <span class="p">(</span><span class="k">cond</span> <span class="p">((</span><span class="nb">=</span> <span class="nv">kinds-of-coins</span> <span class="mi">1</span><span class="p">)</span> <span class="mi">1</span><span class="p">)</span>
+              <span class="p">((</span><span class="nb">=</span> <span class="nv">kinds-of-coins</span> <span class="mi">2</span><span class="p">)</span> <span class="mi">5</span><span class="p">)</span>
+              <span class="p">((</span><span class="nb">=</span> <span class="nv">kinds-of-coins</span> <span class="mi">3</span><span class="p">)</span> <span class="mi">10</span><span class="p">)</span>
+              <span class="p">((</span><span class="nb">=</span> <span class="nv">kinds-of-coins</span> <span class="mi">4</span><span class="p">)</span> <span class="mi">25</span><span class="p">)</span>
+              <span class="p">((</span><span class="nb">=</span> <span class="nv">kinds-of-coins</span> <span class="mi">5</span><span class="p">)</span> <span class="mi">50</span><span class="p">)))</span>
+    
+    <span class="p">(</span><span class="nf">count-change</span> <span class="mi">100</span><span class="p">)</span>
+</code></pre></div></div>
+<p>Here we are thinking of the coins as arranged in order from largest to smallest, but any order will do
+as well.</p>
+
+<p>This procedure generates a tree-recursive process with redundancies similar to the recursive version of <code class="language-plaintext highlighter-rouge">fib</code>.
+And it is not so obvious how to design a better algorithm for computing the result, and we leave that as a challenge.</p>
+
+<ol>
+  <li>
+    <p>Challenge: More Efficient Counting Change Procedure</p>
+
+    <ol>
+      <li>
+        <p>Method 1: DP (tabulation or memorization)</p>
+
+        <p><strong>Top-Down DP</strong>:
+Prerequisites of top-down DP to be applicable:</p>
+
+        <ol>
+          <li>This problem has optimal sub-structures: the solution of the sub-problem is part of the original
+problem.</li>
+          <li>This problem has overlapping sub-problems.
+This is the key characteristic of DP! The search space of this problem is not as big as the 
+rough bound obtained in the naive solution.</li>
+        </ol>
+
+        <p><strong>Bottom-up DP</strong>: 
+the true form of DP, DP was originally known as tabular method.
+The basic steps to build bottom-up DP solution are as follows:</p>
+
+        <ol>
+          <li>Determine the required set of parameters that uniquely describe the problem (the state)</li>
+          <li>If there are \(N\) parameters required to represent the states, prepare an \(N\) dimensional DP table,
+with one entry per state. Then we need to initialize some cells of the DP table with known initial 
+values (the base cases).</li>
+          <li>With the base-case cells/states in the DP table already filled, determine the cells/states
+that can be filled next (the transitions). Repeat this process until the DP table is complete.
+For the bottom-up DP, this part is usually accomplished through iterations, using loops (more details
+about this later)</li>
+        </ol>
+
+        <p>For this challenge, to accomplish the DP method, either top-down or bottom-up, we need to know the way
+of storing a table in scheme.</p>
+        <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1">;; quicker approach for counting change</span>
+    <span class="c1">;; overlapping sub-problems: there is multiple way to reduce the amount</span>
+    <span class="c1">;; to a certain value. And the DP solution is based on that observation.</span>
+    <span class="c1">;; TODO</span>
+    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">count-change</span> <span class="nv">amount</span><span class="p">)</span>
+      <span class="p">)</span>
+</code></pre></div>        </div>
+      </li>
+      <li>
+        <p>Method 2: Iterative</p>
+
+        <p>What should be the iterative approach? Well, strictly speaking, the bottom-up DP is iterative.
+However, what I am looking for is something that is pure iterative and doesn’t need to memorize
+a table for solving the problem. Is that even possible?</p>
+      </li>
+    </ol>
+  </li>
+</ol>
+
+<p><a id="org786a061"></a></p>
+
+<h3 id="orders-of-growth">Orders of Growth</h3>
+
+<p>Let \(n\) be the parameter that measures the size of the problem, and let \(R(n)\) be the amount of resources
+the process requires for a problem of size \(n\).</p>
+
+<p>The meaning behind of the parameter \(n\) can varies. For instance, if our goal is to compute an approximation
+to the square root of a number, we might take \(n\) to be the number of digits accuracy required.
+For matrix multiplication we might take \(n\) to be the number of rows in the matrices.</p>
+
+<p>In general there are a number of properties of the problem with respect to which it will be desirable to 
+analyze a given process.
+Similarly, \(R(n)\) might measure the number of internal storage registers used, the number of elementary machine 
+operations performed, and so on. In computers that do only a fixed number of operations at a time, the time
+required will be proportional to the number of elementary machine operations performed.</p>
+
+<p>We say that \(R(n)\) has order of growth \(\Theta(f(n))\), written \(R(n) = \Theta(f(n))\), if there are positive constants \(k_1\) and
+\(k_2\) independent of \(n\) such that:</p>
+
+<p>[
+k_1 f(n) \leq R(n) \leq k_2 f(n)
+]</p>
+
+<p>for any sufficiently large value of \(n\). (In other words, for large \(n\), the value \(R(n)\) is sandwiched between
+\(k_1f(n)\) and \(k_2f(n)\).)</p>
+
+<p>Order of growth provide only a crude description of the behavior of a process. On the other hand, order
+of growth provides a useful indication of how we may expect the behavior of the process to change as we change the
+size of the problem.</p>
+
+<p><a id="orgac21499"></a></p>
+
+<h3 id="exponentiation">Exponentiation</h3>
+
+<p>Considering computing exponential of a given number:
+[
+b^n
+]
+One way to do this is via recursive definition:</p>
+
+\[\begin{align*}
+b^n &amp;= b\cdot b^{n-1}\\
+b^0 &amp;= 1
+\end{align*}\]
+
+<p>which translates readily into procedure:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nb">expt</span> <span class="nv">b</span> <span class="nv">n</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nb">=</span> <span class="nv">n</span> <span class="mi">0</span><span class="p">)</span>
+          <span class="mi">1</span>
+          <span class="p">(</span><span class="nb">*</span> <span class="nv">b</span> <span class="p">(</span><span class="nb">expt</span> <span class="nv">b</span> <span class="p">(</span><span class="nb">-</span> <span class="nv">n</span> <span class="mi">1</span><span class="p">)))))</span>
+</code></pre></div></div>
+<p>This is linear recursion where both space and number of steps taken are \(\Theta(n)\).</p>
+
+<p>Just as factorial, we can readily formulate an linear iteration version:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nb">expt</span> <span class="nv">b</span> <span class="nv">n</span><span class="p">)</span>
+      <span class="p">(</span><span class="nf">expt-iter</span> <span class="nv">b</span> <span class="nv">n</span> <span class="mi">1</span><span class="p">))</span>
+    
+    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">expt-iter</span> <span class="nv">b</span> <span class="nv">count</span> <span class="nv">product</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nb">=</span> <span class="nv">count</span> <span class="mi">0</span><span class="p">)</span>
+          <span class="nv">product</span>
+          <span class="p">(</span><span class="nf">expt-iter</span> <span class="nv">b</span>
+                     <span class="p">(</span><span class="nb">-</span> <span class="nv">count</span> <span class="mi">1</span><span class="p">)</span>
+                     <span class="p">(</span><span class="nb">*</span> <span class="nv">b</span> <span class="nv">product</span><span class="p">))))</span>
+</code></pre></div></div>
+<p>This version requires \(\Theta(n)\) steps and \(\Theta(1)\) space.</p>
+
+<p>We can compute exponentials in fewer steps by using successive squaring.</p>
+
+\[\begin{align*}
+b^2 &amp;= b\cdot b \\
+b^4 &amp;= b^2 \cdot b^2 \\
+b^8 &amp;= b^4 \cdot b^4
+\end{align*}\]
+
+<p>This method works fine for exponents that are powers of 2. We can also take advantage of 
+successive squaring in computing exponentials in general if we use the rule.</p>
+
+\[\begin{align*}
+b^n &amp;= (b^{n/2})^2 &amp;\text{if}\ n\ \text{is even}\\
+b^n &amp;= b\cdot b^{n-1} &amp;\text{if}\ n\ \text{is odd}
+\end{align*}\]
+
+<p>We can express this method as a procedure:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">fast-expt</span> <span class="nv">b</span> <span class="nv">n</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">cond</span> <span class="p">((</span><span class="nb">=</span> <span class="nv">n</span> <span class="mi">0</span><span class="p">)</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="p">((</span><span class="nb">even?</span> <span class="nv">n</span><span class="p">)</span> <span class="p">(</span><span class="nf">square</span> <span class="p">(</span><span class="nf">fast-expt</span> <span class="nv">b</span> <span class="p">(</span><span class="nb">/</span> <span class="nv">n</span> <span class="mi">2</span><span class="p">))))</span>
+            <span class="p">(</span><span class="k">else</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">b</span>
+                     <span class="p">(</span><span class="nf">fast-expt</span> <span class="nv">b</span> <span class="p">(</span><span class="nb">-</span> <span class="nv">n</span> <span class="mi">1</span><span class="p">))))))</span>
+    
+    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nb">even?</span> <span class="nv">n</span><span class="p">)</span>
+      <span class="p">(</span><span class="nb">=</span> <span class="p">(</span><span class="nb">remainder</span> <span class="nv">n</span> <span class="mi">2</span><span class="p">)</span> <span class="mi">0</span><span class="p">))</span>
+    
+    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">square</span> <span class="nv">x</span><span class="p">)</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">x</span> <span class="nv">x</span><span class="p">))</span>
+</code></pre></div></div>
+<p>The process evolved by <code class="language-plaintext highlighter-rouge">fast-expt</code> grows logarithmically with \(n\) in both space and number of steps.
+The process has \(\Theta(n)\) growth.</p>
+
+<p><a id="orgd51975b"></a></p>
+
+<h3 id="greatest-common-divisors">Greatest Common Divisors</h3>
+
+<p>The greatest common divisor (GCD) of two integers \(a\) and \(b\) is defined to be the
+largest integer that divides both \(a\) and \(b\) with no remainder. We will need a way
+to compute GCD when we investigate how to implement rational number arithmetic in 
+next chapter. (To reduce a rational number to lowest terms).</p>
+
+<p>The idea of the Euclid’s Algorithm is based on the observation that, if \(r\) is the
+remainder when \(a\) is divided by \(b\), then the common divisors of \(a\) and \(b\) are
+precisely the same as the common divisors of \(b\) and \(r\). Thus, we can use the equation:</p>
+
+<p>[
+GCD(a, b) = GCD(b, r)
+]</p>
+
+<p>to successively reduce the problem of computing a GCD to the problem of computing the
+GCD of smaller and smaller pairs of integers.</p>
+
+<p>It is possible to show that starting with any two positive integers and performing 
+repeated reductions will always eventually produce a pair where the second number is 0.
+Then the GCD is the other number in the pair.</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nb">gcd</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)</span>
+        <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nb">=</span> <span class="nv">b</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="nv">a</span>
+            <span class="p">(</span><span class="nb">gcd</span> <span class="nv">b</span> <span class="p">(</span><span class="nb">remainder</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">))))</span>
+    <span class="p">(</span><span class="nb">gcd</span> <span class="mi">206</span> <span class="mi">40</span><span class="p">)</span>
+</code></pre></div></div>
+<p>This generates an iterative process, whose number of steps grows as the logarithm
+of the numbers involved.</p>
+
+<p>The fact that the number of steps required by Euclid’s Algorithm has logarithm growth
+bears an interesting relation to the Fibonacci numbers:</p>
+
+<ul>
+  <li><strong>Lame Theorem</strong>: If Euclid’s Algorithm requires \(k\) steps to compute the GCD of
+some pair, then the smaller number in the pair must be greater than or equal to the $k$th
+Fibonacci number.</li>
+</ul>
+
+<p>We can use this theorem to get an order-of growth estimate fro Euclid’s Algorithm.
+Let \(n\) be the smaller of the two inputs to the procedure. If the process takes \(k\)
+steps, then we must have \(n \geq Fib(k) \approx \phi^k / \sqrt{5}\).
+Notice that the relationship between \(n\) and \(k\), as \(n\) grows, \(k\) grow as the logarithm
+(to the base \(\phi\)) of \(n\), or less. Hence, the order of growth is \(\Theta(\log{n})\).</p>
+
+<p><a id="org22967a9"></a></p>
+
+<h3 id="example-testing-for-primality">Example: Testing for Primality</h3>
+
+<p>This section describes two methods for checking the primality of an integer \(n\), one with 
+order of growth \(\Theta (\sqrt{n})\), and a “probabilistic” algorithm with order of growth
+\(\Theta(\log{n})\).</p>
+
+<ol>
+  <li>
+    <p>Searching for divisors</p>
+
+    <p>One way to test if a number is prime is to find the number’s divisors.
+The following program finds the smallest integral divisor (greater than 1) of a given 
+number \(n\). It does this in a straightforward way, by testing \(n\) for divisibility
+by successive integers starting with 2.</p>
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">smallest-divisor</span> <span class="nv">n</span><span class="p">)</span>
+      <span class="s">"Find the smallest divisor of n that is bigger than 1."</span>
+      <span class="p">(</span><span class="nf">find-divisor</span> <span class="nv">n</span> <span class="mi">2</span><span class="p">))</span>
+        
+    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">find-divisor</span> <span class="nv">n</span> <span class="nv">test-divisor</span><span class="p">)</span>
+      <span class="s">"Find divisor of n, starting from test-divisor."</span>
+      <span class="p">(</span><span class="k">cond</span> <span class="p">((</span><span class="nb">&gt;</span> <span class="p">(</span><span class="nf">square</span> <span class="nv">test-divisor</span><span class="p">)</span> <span class="nv">n</span><span class="p">)</span> <span class="nv">n</span><span class="p">)</span>
+            <span class="p">((</span><span class="nf">divides?</span> <span class="nv">test-divisor</span> <span class="nv">n</span><span class="p">)</span> <span class="nv">test-divisor</span><span class="p">)</span>
+            <span class="p">(</span><span class="k">else</span> <span class="p">(</span><span class="nf">find-divisor</span> <span class="nv">n</span>
+                                <span class="p">(</span><span class="nb">+</span> <span class="nv">test-divisor</span> <span class="mi">1</span><span class="p">)))))</span>
+        
+    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">divides?</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)</span>
+      <span class="s">"Can b be divided by a with remainder 0."</span>
+      <span class="p">(</span><span class="nb">=</span> <span class="p">(</span><span class="nb">remainder</span> <span class="nv">b</span> <span class="nv">a</span><span class="p">)</span>
+         <span class="mi">0</span><span class="p">))</span>
+</code></pre></div>    </div>
+    <p>With this, we can next easily check if a number is prime or not by comparing 
+itself with its smallest divisor.</p>
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">prime?</span> <span class="nv">n</span><span class="p">)</span>
+      <span class="p">(</span><span class="nb">=</span> <span class="p">(</span><span class="nf">smallest-divisor</span> <span class="nv">n</span><span class="p">)</span>
+         <span class="nv">n</span><span class="p">))</span>
+</code></pre></div>    </div>
+    <p>Notice that the quick quitting condition checking in the first clause of <code class="language-plaintext highlighter-rouge">cond</code>.
+It is based on the fact that if \(n\) is not prime, it must have a divisor less
+than or equal to \(\sqrt{n}\). 
+Thus, the number of steps required to identify \(n\) as prime will have order of growth
+\(\Theta(\sqrt{n})\).</p>
+  </li>
+  <li>
+    <p>The Fermat test</p>
+
+    <p>The \(\Theta(\log{n})\) primality test is based on the result from number theory known as
+the following theorem:</p>
+
+    <ul>
+      <li><strong>Fermat’s Little Theorem:</strong> If \(n\) is a prime number and \(a\) is any positive integer
+less than \(n\), then \(a\) raised to the \(n\) th power is congruent to \(a\) modulo \(n\).</li>
+    </ul>
+
+    <p>[
+a^n \equiv a \pmod{n}
+]</p>
+
+    <p>And that is equivalent to saying that \(a^n-a\) is an integer multiple of \(n\).</p>
+
+    <p>(Two numbers are said to be <em>congruent modulo</em> \(n\) if they both have the same 
+remainder when divided by \(n\). The remainder of a number \(a\) when divided by
+\(n\) is also referred to as the <em>remainder of a modulo</em> \(n\), or simply as
+\(a\) <em>modulo</em> \(n\).)</p>
+
+    <p>If \(n\) is not prime, the, in general, most of the numbers \(a&lt;n\) will not satisfy
+the above relations. This leads to the following algorithm for testing primality:
+Given a number \(n\), pick a random number \(a&lt;n\) and compute the remainder of \(a^n\)
+modulo \(n\). If the result is not equal to \(a\), then \(n\) is certainly not prime.
+If it is \(a\), then the chances are good that \(n\) is prime. Now pick another random
+number \(a\) and test it with the same method. If it also satisfies the equation,
+then we can be even more confident that \(n\) is prime. By trying more and more 
+values of \(a\), we can increase our confidence in the result. This algorithm is
+known as the Fermat test.</p>
+
+    <p>To implement the Fermat test, we need a procedure that computes the exponential
+of a number modulo another number:</p>
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1">;; notice that there are some modulo arithmetic used</span>
+    <span class="c1">;; in this procedure</span>
+    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">expmod</span> <span class="nv">base</span> <span class="nv">exp</span> <span class="nv">m</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">cond</span> <span class="p">((</span><span class="nb">=</span> <span class="nv">exp</span> <span class="mi">0</span><span class="p">)</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="p">((</span><span class="nb">even?</span> <span class="nv">exp</span><span class="p">)</span>
+             <span class="p">(</span><span class="nb">remainder</span> <span class="p">(</span><span class="nf">square</span> <span class="p">(</span><span class="nf">expmod</span> <span class="nv">base</span> <span class="p">(</span><span class="nb">/</span> <span class="nv">exp</span> <span class="mi">2</span><span class="p">)</span> <span class="nv">m</span><span class="p">))</span>
+                        <span class="nv">m</span><span class="p">))</span>
+            <span class="p">(</span><span class="k">else</span>
+             <span class="p">(</span><span class="nb">remainder</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">base</span> <span class="p">(</span><span class="nf">expmod</span> <span class="nv">base</span> <span class="p">(</span><span class="nb">-</span> <span class="nv">exp</span> <span class="mi">1</span><span class="p">)</span> <span class="nv">m</span><span class="p">))</span>
+                        <span class="nv">m</span><span class="p">))))</span>
+</code></pre></div>    </div>
+    <p>This is very similar to the <code class="language-plaintext highlighter-rouge">fast-expt</code> procedure of section 1.2.4. It uses
+successive squaring, so that the number of steps grows logarithmically with
+the exponent.</p>
+
+    <p>The Fermat test is performed by choosing at random a number \(a\) between \(1\) and \(n-1\)
+inclusive and checking whether the remainder modulo \(n\) of the \(n\) th power of \(a\)
+is equal to \(a\). The random number \(a\) is chosen using the procedure <code class="language-plaintext highlighter-rouge">random</code>, which
+we assume is included as a primitive in Scheme. <code class="language-plaintext highlighter-rouge">Random</code> returns an non-negative 
+integer less than its integer input. Hence, to obtain a number between \(1\) and \(n-1\),
+we call <code class="language-plaintext highlighter-rouge">random</code> with \(n-1\) and add 1 to the result:</p>
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">fermat-test</span> <span class="nv">n</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">try-it</span> <span class="nv">a</span><span class="p">)</span>
+        <span class="p">(</span><span class="nb">=</span> <span class="p">(</span><span class="nf">expmod</span> <span class="nv">a</span> <span class="nv">n</span> <span class="nv">n</span><span class="p">)</span> <span class="nv">a</span><span class="p">))</span>
+      <span class="p">(</span><span class="nf">try-it</span> <span class="p">(</span><span class="nb">+</span> <span class="mi">1</span> <span class="p">(</span><span class="nf">random</span> <span class="p">(</span><span class="nb">-</span> <span class="nv">n</span> <span class="mi">1</span><span class="p">)))))</span>
+</code></pre></div>    </div>
+    <p>The following procedure runs the test a given number of times. Its value is true if the test
+succeeds every time, and false otherwise.</p>
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">fast-prime?</span> <span class="nv">n</span> <span class="nv">times</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">cond</span> <span class="p">((</span><span class="nb">=</span> <span class="nv">times</span> <span class="mi">0</span><span class="p">)</span> <span class="nv">true</span><span class="p">)</span>
+            <span class="p">((</span><span class="nf">fermat-test</span> <span class="nv">n</span><span class="p">)</span> <span class="p">(</span><span class="nf">fast-prime?</span> <span class="nv">n</span> <span class="p">(</span><span class="nb">-</span> <span class="nv">times</span> <span class="mi">1</span><span class="p">)))</span> 
+            <span class="p">(</span><span class="k">else</span> <span class="nv">false</span><span class="p">)))</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Probabilistic methods</p>
+
+    <p>The Fermat test differs in character from most familiar algorithms, in which one computes
+an answer that is guaranteed to be correct. Here, the answer obtained is only probably
+correct. More precisely, if \(n\) ever fails the Fermat test, we can be certain that \(n\)
+is not prime. But the fact that \(n\) passes the test, while an extremely strong indication,
+is still not a guarantee that \(n\) is prime. What we would like to say is that for any number
+\(n\), if we perform the test enough times and find that \(n\) always passes the test, then
+the probability of error in our primality test can be made as small as we like.</p>
+
+    <p>Unfortunately, this assertion is not quite correct. There do exist numbers that fool
+Fermat test. Such numbers are extremely rare. They are called <em>Carmichael numbers</em>, and
+little is known about them other than that they are extremely rare. There are 255 Carmichael
+numbers below 100,000,000. The smallest few are 561, 1105, 1729, 2465, 2821, and 6601. 
+In testing primality of very large numbers chosen at random, the chance of stumbling upon
+a value that fools Fermat test is less than the chance that cosmic radiation will cause
+the computer to make an error in carrying out a “correct” algorithm.
+Considering an algorithm to be inadequate for the first reason but not for the second
+illustrates the difference between mathematics and engineering.</p>
+
+    <p>So, Fermat test is quite reliable in practice. There are variations of the Fermat test that
+cannot be fooled. In these tests, as with the Fermat method, one tests the primality of an
+integer \(n\) by choosing a random integer \(a&lt;n\) and checking some condition that depends
+upon \(n\) and \(a\). (Exercise 1.28).</p>
+
+    <p>On the other hand, in contrast to the Fermat test, one can prove that, for any \(n\), the 
+condition does not hold for most of the integers \(a&lt;n\) unless \(n\) is prime. Thus, if \(n\)
+passes the test for some random choice of \(a\), the chances are better than even that \(n\)
+is prime. If \(n\) passes the test for two random choices of \(a\), the chances are better 
+than 3 out of 4 that \(n\) is prime. By running the test with more and more randomly chosen
+values of \(a\), we can make the probability of error as small as we like.</p>
+
+    <p>The existence of tests for which one can prove that the chance of error become arbitrarily 
+small has sparked interest in algorithm of this type, which have come to be known as 
+probabilistic algorithms. There is a great deal of research activity in this area, and
+probabilistic algorithm have been fruitfully applied to many fields.</p>
+
+    <p>One of the most striking applications of probabilistic prime testing has been to the field
+of cryptography. Although it is now computationally infeasible to factor an arbitrary
+200-digit number, the primality of such a number can be checked in a few seconds with the 
+Fermat test. This fact forms the basis of a technique for constructing “unbreakable codes”.
+The resulting RSA algorithm has become a widely used technique for enhancing the security
+of electronic communications.</p>
+
+    <p>Because of this and related developments, the study of prime numbers, once considered the 
+epitome of a topic in “pure” mathematics to be studied only for its own sake, now turns
+out to have important practical applications to cryptography, electronic funds transfer,
+and information retrieval.</p>
+  </li>
+</ol>
+
+<p><a id="orgb83f88e"></a></p>
+
+<h2 id="formulating-abstractions-with-higher-order-procedures">Formulating Abstractions with Higher-Order Procedures</h2>
+
+<p>We have seen that procedures are, in effect, abstractions that <strong>describe compound operations on numbers
+independent of the particular numbers</strong>.
+For example, when we</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">cube</span> <span class="nv">x</span><span class="p">)</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">x</span> <span class="nv">x</span> <span class="nv">x</span><span class="p">))</span>
+</code></pre></div></div>
+<p>we are not talking about the cube of a particular number, but rather about a method for obtaining the cube
+of any number. Of course we could get along without ever defining this procedure and never mention <code class="language-plaintext highlighter-rouge">cube</code>
+explicitly. This would place us at a serious disadvantage, forcing us to work always at the level of the
+particular operations that happen to be primitives in the language (multiplication, in this case) rather
+than higher-level operations. Our programs would be able to compute cubes, but our language would lack
+the ability to express the concept of cubing.
+<strong>One of the things we should demand from a powerful programming language is the ability to build 
+abstractions by assigning names to common patterns and then to work in terms of the abstractions directly.</strong>
+Procedures provide this ability. This is why all but the most primitive programming languages include 
+mechanisms for defining procedures.</p>
+
+<p>Yet even in numerical processing we will be severely limited in our ability to create abstractions if we are
+restricted to procedures whose parameters must be numbers. <strong>Often the same programming pattern will be used
+with a number of different procedures.</strong> To express such patterns as concepts, we will need to construct 
+procedures that can accept procedures as arguments or return procedures as values. Procedures that 
+manipulate procedures are called <strong>higher-order procedures</strong>. This section shows how higher-order procedures
+can serve as powerful abstraction mechanisms, vastly increasing the expressive power of our language.</p>
+
+<p><a id="org1eda602"></a></p>
+
+<h3 id="procedures-as-arguments">Procedures as Arguments</h3>
+
+<p>Consider the following three procedures. The first computes the sum of the integers from \(a\) through \(b\),
+the second computes the sum of cubes of the integers in the given range:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">sum-integers</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nb">&gt;</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)</span>
+          <span class="mi">0</span>
+          <span class="p">(</span><span class="nb">+</span> <span class="nv">a</span> <span class="p">(</span><span class="nf">sum-integers</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">a</span> <span class="mi">1</span><span class="p">)</span> <span class="nv">b</span><span class="p">))))</span>
+    
+    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">sum-cubes</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nb">&gt;</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)</span>
+          <span class="mi">0</span>
+          <span class="p">(</span><span class="nb">+</span> <span class="p">(</span><span class="nf">cube</span> <span class="nv">a</span><span class="p">)</span> <span class="p">(</span><span class="nf">sum-cubes</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">a</span> <span class="mi">1</span><span class="p">)</span> <span class="nv">b</span><span class="p">))))</span>
+</code></pre></div></div>
+<p>The third computes the sum of a sequence of terms in the series:
+[
+\frac{1}{1\cdot 3} + \frac{1}{5\cdot 7} + \frac{1}{9 \cdot 11} + \cdots
+]
+which converges to \(\pi/8\) (very slowly):</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">pi-sum</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nb">&gt;</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)</span>
+          <span class="mi">0</span>
+          <span class="p">(</span><span class="nb">+</span> <span class="p">(</span><span class="nb">/</span> <span class="mf">1.0</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">a</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">a</span> <span class="mi">2</span><span class="p">)))</span> <span class="p">(</span><span class="nf">pi-sum</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">a</span> <span class="mi">4</span><span class="p">)</span> <span class="nv">b</span><span class="p">))))</span>
+</code></pre></div></div>
+<p>These three procedures clearly share a common underlying pattern. They are for the most part identical,
+differing only in the name of the procedure, the function of \(a\) used to compute the term to be added,
+and the function that provides the next value of \(a\). We could generate each of the procedures by filling
+in slots in the same template:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">&lt;name&gt;</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nb">&gt;</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)</span>
+          <span class="mi">0</span>
+          <span class="p">(</span><span class="nb">+</span> <span class="p">(</span><span class="nf">&lt;term&gt;</span> <span class="nv">a</span><span class="p">)</span>
+             <span class="p">(</span><span class="nf">&lt;name&gt;</span> <span class="p">(</span><span class="nf">&lt;next&gt;</span> <span class="nv">a</span><span class="p">)</span> <span class="nv">b</span><span class="p">))))</span>
+</code></pre></div></div>
+<p>This is actually the summation of a series:
+[
+\sum_{n=a}^b f(n) = f(a) + \cdots + f(b)
+]</p>
+
+<p>The power of sigma notation is that it allows mathematicians to deal with the concept of summation
+itself rather than only with particular sums.</p>
+
+<p>Similarly, as program designers, we would like our language to be powerful enough so that we can write
+a procedures that expresses the particular sums. We can do so readily in our procedural language
+by taking the common template shown above and transforming the “slots” into formal parameters:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">sum</span> <span class="nv">term</span> <span class="nv">a</span> <span class="nv">next</span> <span class="nv">b</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nb">&gt;</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)</span>
+          <span class="mi">0</span>
+          <span class="p">(</span><span class="nb">+</span> <span class="p">(</span><span class="nf">term</span> <span class="nv">a</span><span class="p">)</span>
+             <span class="p">(</span><span class="nf">sum</span> <span class="nv">term</span> <span class="p">(</span><span class="nf">next</span> <span class="nv">a</span><span class="p">)</span> <span class="nv">next</span> <span class="nv">b</span><span class="p">))))</span>
+</code></pre></div></div>
+<p>Notice that the <code class="language-plaintext highlighter-rouge">sum</code> takes as its arguments the lower and upper bounds \(a\) and \(b\) together with
+the procedures <code class="language-plaintext highlighter-rouge">term</code> and <code class="language-plaintext highlighter-rouge">next</code>. We can use <code class="language-plaintext highlighter-rouge">sum</code> just as we would any procedure.
+For example, we can use it (along with a procedure <code class="language-plaintext highlighter-rouge">inc</code> that increments its argument by 1) to define
+<code class="language-plaintext highlighter-rouge">sum-cubes</code>:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">inc</span> <span class="nv">n</span><span class="p">)</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">n</span> <span class="mi">1</span><span class="p">))</span>
+    
+    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">sum-cubes</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)</span>
+      <span class="p">(</span><span class="nf">sum</span> <span class="nv">cube</span> <span class="nv">a</span> <span class="nv">inc</span> <span class="nv">b</span><span class="p">))</span>
+</code></pre></div></div>
+<p>Using this, we can compute the sum of the cubes of the integers from 1 to 10:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="nf">sum-cubes</span> <span class="mi">1</span> <span class="mi">10</span><span class="p">)</span>
+</code></pre></div></div>
+<p>With the aid of an identity procedure to compute the term, we can define <code class="language-plaintext highlighter-rouge">sum-integers</code> in terms of <code class="language-plaintext highlighter-rouge">sum</code>:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">identity</span> <span class="nv">x</span><span class="p">)</span> <span class="nv">x</span><span class="p">)</span>
+    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">sum-integers</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)</span>
+      <span class="p">(</span><span class="nf">sum</span> <span class="nv">identity</span> <span class="nv">a</span> <span class="nv">inc</span> <span class="nv">b</span><span class="p">))</span>
+</code></pre></div></div>
+<p>We can also define <code class="language-plaintext highlighter-rouge">pi-sum</code> in the same way:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">pi-sum</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">pi-term</span> <span class="nv">x</span><span class="p">)</span>
+        <span class="p">(</span><span class="nb">/</span> <span class="mf">1.0</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">x</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">x</span> <span class="mi">2</span><span class="p">))))</span>
+      <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">pi-next</span> <span class="nv">x</span><span class="p">)</span>
+        <span class="p">(</span><span class="nb">+</span> <span class="nv">x</span> <span class="mi">4</span><span class="p">))</span>
+      <span class="p">(</span><span class="nf">sum</span> <span class="nv">pi-term</span> <span class="nv">a</span> <span class="nv">pi-next</span> <span class="nv">b</span><span class="p">))</span>
+</code></pre></div></div>
+<p>Once we have <code class="language-plaintext highlighter-rouge">sum</code>, we can use it as a building block in formulating further concepts.
+For instance, the definite integral of a function \(f\) between the limits \(a\) and \(b\) can be approximated
+numerically using the formula:</p>
+
+\[\int_a^b f = \left[f(a+\frac{dx}{2}) + f(a+dx+\frac{dx}{2}) + f(a+2dx+\frac{dx}{2}) + \cdots \right]\,dx\]
+
+<p>for small values of \(dx\).
+We can express this directly as a procedure:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">integral</span> <span class="nv">f</span> <span class="nv">a</span> <span class="nv">b</span> <span class="nv">dx</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">add-dx</span> <span class="nv">x</span><span class="p">)</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">x</span> <span class="nv">dx</span><span class="p">))</span>
+      <span class="p">(</span><span class="nb">*</span> <span class="p">(</span><span class="nf">sum</span> <span class="nv">f</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">a</span> <span class="p">(</span><span class="nb">/</span> <span class="nv">dx</span> <span class="mi">2</span><span class="p">))</span> <span class="nv">add-dx</span> <span class="nv">b</span><span class="p">)</span>
+         <span class="nv">dx</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p><a id="org2b885d0"></a></p>
+
+<h3 id="constructing-procedures-using-lambda">Constructing Procedures Using <code class="language-plaintext highlighter-rouge">lambda</code></h3>
+
+<p>In using <code class="language-plaintext highlighter-rouge">sum</code> as in section 1.3.1, it seems terribly awkward to have to define trivial procedures such
+as <code class="language-plaintext highlighter-rouge">pi-term</code> and <code class="language-plaintext highlighter-rouge">pi-next</code> just so we can use them as arguments to our higher-order procedure. Rather
+than define <code class="language-plaintext highlighter-rouge">pi-next</code> and <code class="language-plaintext highlighter-rouge">pi-term</code>, it would be more convenient to have a way to directly specify
+“the procedure that returns its input incremented by 4” and “the procedure that returns the reciprocal
+of its input times its input plus 2.” 
+We can do this by introducing the special form <code class="language-plaintext highlighter-rouge">lambda</code>, which creates procedures. Using <code class="language-plaintext highlighter-rouge">lambda</code> we can
+describe what we want as</p>
+
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">x</span><span class="p">)</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">x</span> <span class="mi">4</span><span class="p">))</span>
+</code></pre></div></div>
+<p>and</p>
+
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">x</span><span class="p">)</span> <span class="p">(</span><span class="nb">/</span> <span class="mf">1.0</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">x</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">x</span> <span class="mi">2</span><span class="p">))))</span>
+</code></pre></div></div>
+
+<p>Then our <code class="language-plaintext highlighter-rouge">pi-sum</code> procedure can be expressed without defining any auxiliary procedures as</p>
+
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">pi-sum</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)</span>
+      <span class="p">(</span><span class="nf">sum</span> <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">x</span><span class="p">)</span> <span class="p">(</span><span class="nb">/</span> <span class="mf">1.0</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">x</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">x</span> <span class="mi">2</span><span class="p">))))</span>
+           <span class="nv">a</span>
+           <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">x</span><span class="p">)</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">x</span> <span class="mi">4</span><span class="p">))</span>
+           <span class="nv">b</span><span class="p">))</span>
+</code></pre></div></div>
+<p>In general, <code class="language-plaintext highlighter-rouge">lambda</code> is used to create procedures in the same way as <code class="language-plaintext highlighter-rouge">define</code>, except that no name is
+specified for the procedure.</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">&lt;formal-parameters&gt;</span><span class="p">)</span> <span class="nv">&lt;body&gt;</span><span class="p">)</span>
+</code></pre></div></div>
+<p>The resulting procedure is just as much a procedure as one that is created using <code class="language-plaintext highlighter-rouge">define</code>. The only
+difference is that it has not been associated with any name in the environment. In fact,</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">plus</span> <span class="mi">4</span><span class="p">)</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">x</span> <span class="mi">4</span><span class="p">))</span>
+</code></pre></div></div>
+<p>is equivalent to</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="nv">plus</span> <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">x</span><span class="p">)</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">x</span> <span class="mi">4</span><span class="p">)))</span>
+</code></pre></div></div>
+<p>We can read the <code class="language-plaintext highlighter-rouge">lambda</code> expression above as: <em>the procedure of an argument \(x\) that adds \(x\) and 4</em>.</p>
+
+<p>Like any expression that has a procedure as its value, a <code class="language-plaintext highlighter-rouge">lambda</code> expression can be used as the operator
+in a combination such as</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">((</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">x</span> <span class="nv">y</span> <span class="nv">z</span><span class="p">)</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">x</span> <span class="nv">y</span> <span class="p">(</span><span class="nf">square</span> <span class="nv">z</span><span class="p">)))</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span><span class="p">)</span>
+</code></pre></div></div>
+<p>or, more generally, in any context where we would normally use a procedure name.</p>
+
+<p><a id="org0357334"></a></p>
+
+<h3 id="using-let-to-create-local-variables">Using <code class="language-plaintext highlighter-rouge">let</code> to create local variables</h3>
+
+<p>Another use of <code class="language-plaintext highlighter-rouge">lambda</code> is in creating local variables. We often need local variables in our procedures 
+other than those that have been bound as formal parameters. For example, suppose we wish to compute the
+function</p>
+
+<p>[
+f(x,y) = x(1+xy)^2 + y(1-y) + (1+xy)(1-y)
+]</p>
+
+<p>which we could also express as:</p>
+
+\[\begin{align*}
+a &amp;= 1 + xy\\
+b &amp;= 1-y \\
+f(x, y) &amp;= xa^2 + yb + ab
+\end{align*}\]
+
+<p>In writing a procedure to compute \(f\), we would like to include as local variables not only \(x\) and \(y\)
+but also the names of intermediate quantities like \(a\) and \(b\).</p>
+
+<p>One way to accomplish this is to use an auxiliary procedure to bind the local variables:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">f</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">f-helper</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)</span>
+        <span class="p">(</span><span class="nb">+</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">x</span> <span class="p">(</span><span class="nf">square</span> <span class="nv">a</span><span class="p">))</span>
+           <span class="p">(</span><span class="nb">*</span> <span class="nv">y</span> <span class="nv">b</span><span class="p">)</span>
+           <span class="p">(</span><span class="nb">*</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)))</span>
+      <span class="p">(</span><span class="nf">f-helper</span> <span class="p">(</span><span class="nb">+</span> <span class="mi">1</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">))</span>
+                <span class="p">(</span><span class="nb">-</span> <span class="mi">1</span> <span class="nv">y</span><span class="p">)))</span>
+</code></pre></div></div>
+<p>Of course, we could use a <code class="language-plaintext highlighter-rouge">lambda</code> expression to specify an anonymous procedure for binding
+our local variables. The body of \(f\) then become a single call to that procedure:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">f</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">)</span>
+      <span class="p">((</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">a</span> <span class="nv">b</span><span class="p">)</span>
+         <span class="p">(</span><span class="nb">+</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">x</span> <span class="p">(</span><span class="nf">square</span> <span class="nv">a</span><span class="p">))</span>
+            <span class="p">(</span><span class="nb">*</span> <span class="nv">y</span> <span class="nv">b</span><span class="p">)</span>
+            <span class="p">(</span><span class="nb">*</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)))</span>
+       <span class="p">(</span><span class="nb">+</span> <span class="mi">1</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">))</span>
+       <span class="p">(</span><span class="nb">-</span> <span class="mi">1</span> <span class="nv">y</span><span class="p">)))</span>
+</code></pre></div></div>
+<p>This construct is so useful that there is a special form called <code class="language-plaintext highlighter-rouge">let</code> to make its use more convenient.
+Using <code class="language-plaintext highlighter-rouge">let</code>, the \(f\) procedure could be written as</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">f</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="nf">a</span> <span class="p">(</span><span class="nb">+</span> <span class="mi">1</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">)))</span>
+            <span class="p">(</span><span class="nf">b</span> <span class="p">(</span><span class="nb">-</span> <span class="mi">1</span> <span class="nv">y</span><span class="p">)))</span>
+        <span class="p">(</span><span class="nb">+</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">x</span> <span class="p">(</span><span class="nf">square</span> <span class="nv">a</span><span class="p">))</span>
+           <span class="p">(</span><span class="nb">*</span> <span class="nv">y</span> <span class="nv">b</span><span class="p">)</span>
+           <span class="p">(</span><span class="nb">*</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">))))</span>
+</code></pre></div></div>
+<p>The general form of a <code class="language-plaintext highlighter-rouge">let</code> expression is</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="nf">&lt;var1&gt;</span> <span class="nv">&lt;exp1&gt;</span><span class="p">)</span>
+          <span class="p">(</span><span class="nf">&lt;var2&gt;</span> <span class="nv">&lt;exp2&gt;</span><span class="p">)</span>
+          <span class="o">...</span>
+          <span class="p">(</span><span class="nf">&lt;varn&gt;</span> <span class="nv">&lt;expn&gt;</span><span class="p">))</span>
+      <span class="nv">&lt;body&gt;</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>The first part of the <code class="language-plaintext highlighter-rouge">let</code> expression is a list of name-expression pairs.
+When the <code class="language-plaintext highlighter-rouge">let</code> is evaluated, each name is associated with the value of the corresponding expression.
+The body of the <code class="language-plaintext highlighter-rouge">let</code> is evaluated with these names bound as local variables. The way this happens is that
+the <code class="language-plaintext highlighter-rouge">let</code> expression is interpreted as an alternate syntax for</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">((</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">&lt;var1&gt;</span> <span class="nv">&lt;var2&gt;</span> <span class="o">...</span> <span class="nv">&lt;varn&gt;</span><span class="p">)</span>
+       <span class="nv">&lt;body&gt;</span><span class="p">)</span>
+     <span class="nv">&lt;exp1&gt;</span>
+     <span class="nv">&lt;exp2&gt;</span>
+     <span class="o">...</span>
+     <span class="nv">&lt;expn&gt;</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><strong>No new mechanism is required in the interpreter in order to provide local variables. A <code class="language-plaintext highlighter-rouge">let</code> expression
+is simply syntactic sugar for the underlying <code class="language-plaintext highlighter-rouge">lambda</code> application</strong></p>
+
+<p>My note: This is fascinating! This way of implementing this local variables is pure functional!</p>
+
+<p>We can see from this equivalence that the scope of a variable specified by a <code class="language-plaintext highlighter-rouge">let</code> expression is the body
+of <code class="language-plaintext highlighter-rouge">let</code>. This implies that:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Let</code> allows one to bind variables as locally as possible to where they are to be used. For example,
+if the value of \(x\) is 5, the value of the expression:
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="nv">x</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="p">(</span><span class="nb">+</span> <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="nf">x</span> <span class="mi">3</span><span class="p">))</span>
+         <span class="p">(</span><span class="nb">+</span> <span class="nv">x</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">x</span> <span class="mi">10</span><span class="p">)))</span>
+       <span class="nv">x</span><span class="p">)</span>
+</code></pre></div>    </div>
+    <p>is 38. Here, the \(x\) in the body of the <code class="language-plaintext highlighter-rouge">let</code> is 3, so the value of the let expression is 33. On the
+other hand, the \(x\) that is the second argument to the outermost + is still 5.</p>
+  </li>
+  <li>The variables’ values are computed outside the <code class="language-plaintext highlighter-rouge">let</code>. This matters when the expressions that provide
+the values for the local variables depend upon variables having the same names as the local variables
+themselves. For example, if the value of \(x\) is 2, the expression:
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="nv">x</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="nf">x</span> <span class="mi">3</span><span class="p">)</span>
+          <span class="p">(</span><span class="nf">y</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">x</span> <span class="mi">2</span><span class="p">)))</span>
+      <span class="p">(</span><span class="nb">*</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">))</span>
+    <span class="c1">;; yields 12</span>
+</code></pre></div>    </div>
+
+    <p>will have the value 12 because, inside the body of the <code class="language-plaintext highlighter-rouge">let</code>, \(x\) will be 3 and \(y\) will be 4 (which
+is the outer \(x\) plus 2).</p>
+  </li>
+</ul>
+
+<p>Sometimes we can use internal definitions to get the same effect as with <code class="language-plaintext highlighter-rouge">let</code>. For example, we could
+have defined the procedure \(f\) above as</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">f</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">define</span> <span class="nv">a</span> <span class="p">(</span><span class="nb">+</span> <span class="mi">1</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">)))</span>
+      <span class="p">(</span><span class="k">define</span> <span class="nv">b</span> <span class="p">(</span><span class="nb">-</span> <span class="mi">1</span> <span class="nv">y</span><span class="p">))</span>
+      <span class="p">(</span><span class="nb">+</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">x</span> <span class="p">(</span><span class="nf">square</span> <span class="nv">a</span><span class="p">))</span>
+         <span class="p">(</span><span class="nb">*</span> <span class="nv">y</span> <span class="nv">b</span><span class="p">)</span>
+         <span class="p">(</span><span class="nb">*</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)))</span>
+</code></pre></div></div>
+<p>We prefer, however, to use <code class="language-plaintext highlighter-rouge">let</code> in situations like this and to use internal <code class="language-plaintext highlighter-rouge">define</code> only for internal
+procedures.</p>
+
+<p><a id="org90b8a60"></a></p>
+
+<h3 id="procedures-as-general-methods">Procedures as General Methods</h3>
+
+<p>We introduced compound procedures in section 1.1.4 as a mechanism for abstracting patterns of numerical 
+operations so as to make them independent of the particular numbers involved. With higher-order 
+procedures, such as the integral procedure of section 1.3.1, we began to see a more powerful kind of
+abstraction: <strong>procedures used to express general methods of computation, independent of the particular
+functions involved</strong>. In this section we discuss two more elaborate examples–general methods for finding
+zeros and fixed points of functions–and show how these methods can be expressed directly as procedures.</p>
+
+<ol>
+  <li>
+    <p>Finding roots of equations by the half-interval method</p>
+
+    <p>The <code class="language-plaintext highlighter-rouge">half-interval</code> method is a simple but powerful technique for finding roots of an equation 
+\(f(x) = 0\), where \(f\) is a continuous function.</p>
+
+    <p>The idea is that, if we are given points \(a\) and \(b\) such that \(f(a)&lt;0 &lt; f(b)\), then \(f\) must have at
+least one zero between \(a\) and \(b\). To locate a zero, let \(x\) be the average of \(a\) and \(b\) and compute
+\(f(x)\). If \(f(x)&gt;0\), then \(f\) must have a zero between \(a\) and \(x\). If \(f(x)&lt;0\), then \(f\) must have a
+zero between \(x\) and \(b\). Continuing this way, we can identify smaller and smaller intervals on which
+\(f\) must have a zero. When we reach a point where the interval is small enough, the process stops.
+Since the interval of uncertainty is reduced by half at each step of the process, the number of steps
+required grows as \(\Theta (\log (L/T))\), where \(L\) is the length of the original interval and \(T\) is the error 
+tolerance (that is, the size of the interval we will consider “small enough”). Here is a procedure that
+implements this strategy:</p>
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">search</span> <span class="nv">f</span> <span class="nv">neg-point</span> <span class="nv">pos-point</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="nf">mid-point</span> <span class="p">(</span><span class="nf">average</span> <span class="nv">neg-point</span> <span class="nv">pos-point</span><span class="p">)))</span>
+        <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nf">close-enough?</span> <span class="nv">neg-point</span> <span class="nv">pos-point</span><span class="p">)</span>
+            <span class="nv">mid-point</span>
+            <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="nf">test-value</span> <span class="p">(</span><span class="nf">f</span> <span class="nv">mid-point</span><span class="p">)))</span>
+              <span class="p">(</span><span class="k">cond</span> <span class="p">((</span><span class="nb">positive?</span> <span class="nv">test-value</span><span class="p">)</span>
+                     <span class="p">(</span><span class="nf">search</span> <span class="nv">f</span> <span class="nv">neg-point</span> <span class="nv">mid-point</span><span class="p">))</span>
+                    <span class="p">((</span><span class="nb">negative?</span> <span class="nv">test-value</span><span class="p">)</span>
+                     <span class="p">(</span><span class="nf">search</span> <span class="nv">f</span> <span class="nv">mid-point</span> <span class="nv">pos-point</span><span class="p">))</span>
+                    <span class="p">(</span><span class="k">else</span> <span class="nv">mid-point</span><span class="p">))))))</span>
+</code></pre></div>    </div>
+    <p>We assume that we are initially given the function \(f\) together with points at which its values are
+negative and positive. We first compute the midpoint of the two given points. Next we check to see
+if the given interval is small enough, and if so we simply return the midpoint as our answer.
+Otherwise, we compute as a test value the value of \(f\) at the midpoint. If the test value is positive,
+then we continue the process with a new interval running from the original negative point to the 
+midpoint. If the test value is negative, we continue with the interval from the midpoint to the positive
+point. Finally, there is the possibility that the test value is 0, in which case the midpoint is itself
+the root we are looking for.</p>
+
+    <p>To test whether the endpoints are “close enough” we can use a procedure similar to the one used in
+section 1.1.7 for computing square roots:</p>
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">close-enough?</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">)</span>
+      <span class="p">(</span><span class="nb">&lt;</span> <span class="p">(</span><span class="nb">abs</span> <span class="p">(</span><span class="nb">-</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">))</span> <span class="mf">0.001</span><span class="p">))</span>
+</code></pre></div>    </div>
+    <p>The appropriate tolerance for a real calculation depends upon the problem to be solved and the 
+limitations of the computer and the algorithm. This is often a very subtle consideration, requiring
+help from a numerical analyst or some other kind of magician.</p>
+
+    <p><code class="language-plaintext highlighter-rouge">Search</code> is awkward to use directly, because we can accidentally give it points at which \(f\)’s values
+do not have the required sign, in which case we get a wrong answer. Instead we will use <code class="language-plaintext highlighter-rouge">search</code>
+via the following procedure, which checks to see which of the endpoints has a negative function value
+and which has a positive function value, and calls the <code class="language-plaintext highlighter-rouge">search</code> procedure accordingly. If the function
+has the same sign on the two given points, the half-interval method cannot be used, in which case 
+the procedure signals error:</p>
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">half-interval-method</span> <span class="nv">f</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="nf">a-value</span> <span class="p">(</span><span class="nf">f</span> <span class="nv">a</span><span class="p">))</span>
+            <span class="p">(</span><span class="nf">b-value</span> <span class="p">(</span><span class="nf">f</span> <span class="nv">b</span><span class="p">)))</span>
+        <span class="p">(</span><span class="k">cond</span> <span class="p">((</span><span class="k">and</span> <span class="p">(</span><span class="nb">negative?</span> <span class="nv">a-value</span><span class="p">)</span> <span class="p">(</span><span class="nb">positive?</span> <span class="nv">b-value</span><span class="p">))</span>
+               <span class="p">(</span><span class="nf">search</span> <span class="nv">f</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">))</span>
+              <span class="p">((</span><span class="k">and</span> <span class="p">(</span><span class="nb">positive?</span> <span class="nv">a-value</span><span class="p">)</span> <span class="p">(</span><span class="nb">negative?</span> <span class="nv">b-value</span><span class="p">))</span>
+               <span class="p">(</span><span class="nf">search</span> <span class="nv">f</span> <span class="nv">b</span> <span class="nv">a</span><span class="p">))</span>
+              <span class="p">(</span><span class="k">else</span>
+               <span class="p">(</span><span class="nf">error</span> <span class="s">"Values are not of opposite sign"</span> <span class="nv">a</span> <span class="nv">b</span><span class="p">)))))</span>
+</code></pre></div>    </div>
+    <p>Usage:</p>
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="nf">half-interval-method</span> <span class="nv">sin</span> <span class="mf">2.0</span> <span class="mf">4.0</span><span class="p">)</span>
+    <span class="c1">;; yields 3.14111328125</span>
+    <span class="p">(</span><span class="nf">half-interval-method</span> <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">x</span><span class="p">)</span> <span class="p">(</span><span class="nb">-</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">x</span> <span class="nv">x</span> <span class="nv">x</span><span class="p">)</span> <span class="p">(</span><span class="nb">*</span> <span class="mi">2</span> <span class="nv">x</span><span class="p">)</span> <span class="mi">3</span><span class="p">))</span>
+                          <span class="mf">1.0</span>
+                          <span class="mf">2.0</span><span class="p">)</span>
+    <span class="c1">;; yields 1.89306640625</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Finding fixed points of functions</p>
+
+    <p>A number \(x\) is called a <em>fixed point</em> of a function \(f\) if \(x\) satisfies the equation \(f(x)=x\).
+For some functions \(f\) we can locate a fixed point by beginning with an initial guess and applying
+\(f\) repeatedly,
+[
+f(x), f(f(x)), f(f(f(x))), \ldots
+]
+until the value does not change very much. Using this idea, we can devise a procedure <code class="language-plaintext highlighter-rouge">fixed-point</code>
+that takes as inputs a function and an initial guess and produces an approximation to a fixed point of
+the function. We apply the function repeatedly until we find two successive values whose difference
+is less than some prescribed tolerance.</p>
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="nv">tolerance</span> <span class="mf">0.00001</span><span class="p">)</span>
+    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">fixed-point</span> <span class="nv">f</span> <span class="nv">first-guess</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">close-enough?</span> <span class="nv">v1</span> <span class="nv">v2</span><span class="p">)</span>
+        <span class="p">(</span><span class="nb">&lt;</span> <span class="p">(</span><span class="nb">abs</span> <span class="p">(</span><span class="nb">-</span> <span class="nv">v1</span> <span class="nv">v2</span><span class="p">))</span> <span class="nv">tolerance</span><span class="p">))</span>
+      <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">try</span> <span class="nv">guess</span><span class="p">)</span>
+        <span class="p">(</span><span class="k">let</span> <span class="p">((</span><span class="nf">next</span> <span class="p">(</span><span class="nf">f</span> <span class="nv">guess</span><span class="p">)))</span>
+          <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="nf">close-enough?</span> <span class="nv">guess</span> <span class="nv">next</span><span class="p">)</span>
+              <span class="nv">next</span>
+              <span class="p">(</span><span class="nf">try</span> <span class="nv">next</span><span class="p">))))</span>
+      <span class="p">(</span><span class="nf">try</span> <span class="nv">first-guess</span><span class="p">))</span>
+</code></pre></div>    </div>
+    <p>For example, we can use this method to approximate the fixed point of the cosine function, starting
+with 1 as an initial approximation:</p>
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="nf">fixed-point</span> <span class="nv">cos</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="c1">;; yields .739082298522403</span>
+</code></pre></div>    </div>
+    <p>Similarly, we can find a solution to the equation \(y= \sin{y} + \cos{y}\)</p>
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      <span class="p">(</span><span class="nf">fixed-point</span> <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">y</span><span class="p">)</span> <span class="p">(</span><span class="nb">+</span> <span class="p">(</span><span class="nb">sin</span> <span class="nv">y</span><span class="p">)</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">cos</span> <span class="nv">y</span><span class="p">)))</span>
+                   <span class="mf">1.0</span><span class="p">)</span>
+    <span class="c1">;; yields 1.2587315962971173</span>
+</code></pre></div>    </div>
+    <p>The fixed-point process is reminiscent of the process we used for finding square roots in section 1.1.7.
+Both are based on the idea of repeatedly improving a guess until the result satisfies some criterion.</p>
+
+    <p>In fact, we can readily formulate the square-root computation as a fixed point search. Computing the 
+square root of some number \(x\) requires finding a \(y\) such that \(y^2 = x\). Putting this equation into
+the equivalent form \(y = x / y\), we recognize that we are looking for a fixed point of the function 
+\(y \mapsto x/y\), and we can therefore try to compute square roots as</p>
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nb">sqrt</span> <span class="nv">x</span><span class="p">)</span>
+      <span class="p">(</span><span class="nf">fixed-point</span> <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">y</span><span class="p">)</span> <span class="p">(</span><span class="nb">/</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">))</span>
+                   <span class="mf">1.0</span><span class="p">))</span>
+</code></pre></div>    </div>
+    <p>\(\mapsto\) (pronounced as “maps to”) is the mathematician’s way of writing <code class="language-plaintext highlighter-rouge">lambda</code>. \(y \mapsto x/y\) means
+<code class="language-plaintext highlighter-rouge">(lambda (y) (/ x y))</code>, that is, the function whose value at \(y\) is \(x/y\).</p>
+
+    <p>Unfortunately, this fixed-point search does not converge. It oscillates. Consider an initial guess
+\(y_1\). The next guess is \(y_2 = x/y_1\) and the next guess is \(y_3 = x / y_2 = x / (x/y_1) = y_1\). This 
+results in an infinite loop in which the two guesses \(y_1\) and \(y_2\) repeat over and over, oscillating
+about the answer.</p>
+
+    <p>One way to control such oscillations is to prevent the guess from changing to much. Since the answer is
+always between our guess \(y\) and \(x/y\), we can make a new guess that is not as far from \(y\) as \(x/y\) by
+averaging them, so that the next guess is \((y + x/y)/2\) instead of \(x/y\). The process of making such
+a sequence of guesses is simply the process of looking for a fixed point of \(y\mapsto \frac{1}{2}(y+x/y)\):</p>
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nb">sqrt</span> <span class="nv">x</span><span class="p">)</span>
+      <span class="p">(</span><span class="nf">fixed-point</span> <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">y</span><span class="p">)</span> <span class="p">(</span><span class="nf">average</span> <span class="nv">y</span> <span class="p">(</span><span class="nb">/</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">)))</span>
+                   <span class="mf">1.0</span><span class="p">))</span>
+</code></pre></div>    </div>
+    <p>(Note that \(y = \frac{1}{2} (y+x/y)\) is a simple transformation of the equation \(y = x/y\); to derive it, add \(y\) to 
+both sides of the equation and divide by 2.)</p>
+
+    <p>With this modification, the square-root procedure works. In fact, if we unravel the definitions, we
+can see that the sequence of approximations to the square root generated here is precisely the same 
+as the one generated by our original square-root procedure of section 1.1.7. This approach of 
+<strong>averaging successive approximations to a solution, a technique we call average damping</strong>, often aids
+the convergence of fixed-point searches.</p>
+  </li>
+</ol>
+
+<p><a id="org1e0a253"></a></p>
+
+<h3 id="procedures-as-returned-values">Procedures as Returned Values</h3>
+
+<p>The above examples demonstrate how the ability to pass procedures as arguments significantly enhances
+the expressive power of our programming language. We can achieve even more expressive power by creating
+procedures whose returned values are themselves procedures.</p>
+
+<p>We can illustrate this idea by looking again at the fixed-point example described at the end of 
+section 1.3.3. We formulated a new version of the square-root procedure as a fixed-point search, starting
+with the observation that \(\sqrt{x}\) is a fixed-point of the function \(y \mapsto x/y\). Then we used 
+average damping to make the approximations converge. Average damping is useful general technique itself.
+Namely, given a function \(f\), we consider the function whose value at \(x\) is equal to the average of
+\(x\) and \(f(x)\).</p>
+
+<p>We can express the idea of average damping by means of the following procedure:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">average-damp</span> <span class="nv">f</span><span class="p">)</span>
+      <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">x</span><span class="p">)</span> <span class="p">(</span><span class="nf">average</span> <span class="nv">x</span> <span class="p">(</span><span class="nf">f</span> <span class="nv">x</span><span class="p">))))</span>
+</code></pre></div></div>
+<p><code class="language-plaintext highlighter-rouge">average-damp</code> is a procedure that takes as its argument a procedure <code class="language-plaintext highlighter-rouge">f</code> and returns as its value a
+procedure (produced by the <code class="language-plaintext highlighter-rouge">lambda</code>) that, when applied to a number <code class="language-plaintext highlighter-rouge">x</code>, produces the average of 
+<code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">(f x)</code>. For example, applying <code class="language-plaintext highlighter-rouge">average-damp</code> to the <code class="language-plaintext highlighter-rouge">square</code> procedure produces a procedure
+whose value at some number \(x\) is the average of \(x\) and \(x^2\). Applying this resulting procedure
+to 10 returns the average of 10 and 100, or 55.</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">((</span><span class="nf">average-damp</span> <span class="nv">square</span><span class="p">)</span> <span class="mi">10</span><span class="p">)</span> <span class="c1">;; yields 55</span>
+</code></pre></div></div>
+<p>Using <code class="language-plaintext highlighter-rouge">average-damp</code>, we can reformulate the square-root procedure as follows:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nb">sqrt</span> <span class="nv">x</span><span class="p">)</span>
+      <span class="p">(</span><span class="nf">fixed-point</span> <span class="p">(</span><span class="nf">average-damp</span> <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">y</span><span class="p">)</span> <span class="p">(</span><span class="nb">/</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">)))</span>
+                   <span class="mf">1.0</span><span class="p">))</span>
+</code></pre></div></div>
+<p>Notice how this formulation makes explicit the three ideas in the method:</p>
+
+<ol>
+  <li>Fixed-point search</li>
+  <li>Average damping</li>
+  <li>The function \(y \mapsto x/y\).</li>
+</ol>
+
+<p>It is instructive to compare this formulation of the square-root method with the original version given
+in section 1.1.7. Bear in mind that these procedures express the same process, and notice how much clearer
+the idea becomes when we express the process in terms of these abstractions.</p>
+
+<p>In general, there are many ways to formulate a process as a procedure. Experienced programmers know
+how to choose procedural formulations that are particularly perspicuous, and where useful elements of the
+procedure are exposed as separate entities that can be reused in other applications.</p>
+
+<p>As simple example of reuse, notice that the cube root of \(x\) is a fixed-point of the function 
+\(y\mapsto x/y^2\), so we can immediately generalize our square-root procedure to one that extract cube roots:</p>
+<div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">cube-root</span> <span class="nv">x</span><span class="p">)</span>
+      <span class="p">(</span><span class="nf">fixed-point</span> <span class="p">(</span><span class="nf">average-damp</span> <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">y</span><span class="p">)</span> <span class="p">(</span><span class="nb">/</span> <span class="nv">x</span> <span class="p">(</span><span class="nf">square</span> <span class="nv">y</span><span class="p">))))</span>
+                   <span class="mf">1.0</span><span class="p">))</span>
+</code></pre></div></div>
+
+<ol>
+  <li>
+    <p>Newton’s Method</p>
+
+    <p>When we first introduced the square-root procedure, in section 1.1.7, we mentioned that this was a 
+ special case of Newton’s method. If \(x\mapsto g(x)\) is a differentiable function, then a solution of 
+ the equation \(g(x) = 0\) is a fixed-point of the function \(x \mapsto f(x)\) where:</p>
+
+    <p>[
+ f(x) = x - \frac{g(x)}{Dg(x)}
+ ]</p>
+
+    <p>and \(Dg(x)\) is the derivative of \(g\) evaluated at \(x\).</p>
+
+    <p>Newton’s method is the use of the fixed-point method we saw above to approximate a solution of the 
+ equation by finding a fixed point of the function \(f\).</p>
+
+    <p>My Note: How is the square-root a special case? In the square root example, let \(n\) is the number
+ which we want to find a square root for. Then we want to find a \(x\) that \(x^2=n\). So \(g(x) = x^2-n\).
+ The fixed point we are looking for is \(g(x) = x^2 - n = 0\).
+ The \(f(x)\) is:</p>
+
+\[\begin{align*}
+ f(x) &amp;= x - \frac{x^2 - n}{2x}\\
+ &amp;=x - \frac{x}{2} + \frac{n}{2x}\\
+ &amp;= \frac{x}{2} + \frac{n}{2x}\\
+ &amp;= \frac{1}{2}(x + \frac{n}{x})
+ \end{align*}\]
+
+    <p>To make this more clear, the \(x\) here is the \(y\) we used before, the answer of square root. The \(n\)
+ is the \(x\) we used before, which is the number we want to find a square root for.</p>
+
+    <p>For many functions \(g\) and for sufficiently good initial guesses for \(x\), Newton’s method converges
+ very rapidly to a solution of \(g(x) = 0\).</p>
+
+    <p>(Newton’s method doesn’t always converge to an answer, but it can be shown that in favorable cases each
+ iteration doubles the number-of-digits accuracy of the approximation to the solution. In such cases,
+ Newton’s method will converge much more rapidly than the half-interval method.)</p>
+
+    <p>In order to implement Newton’s method as a procedure, we must first express the idea of derivative. Note
+ that “derivative,” like average damping, is <strong>something that transforms a function into another function.</strong> For instance, the derivative of the function \(x \mapsto x^3\) is the function \(x \mapsto 3x^2\).
+ In general, if \(g\) is a function and \(dx\) is a small number, then the derivative \(Dg\) of \(g\) is the 
+ function whose value at any number \(x\) is given (in the limit of small \(dx\)) by:</p>
+
+    <p>[
+ Dg(x) = \frac{g(x+dx) - g(x)}{dx}
+ ]</p>
+
+    <p>Thus, we can express the idea of derivative (taking \(dx\) to be, say, 0.00001) as the procedure</p>
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>     <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">deriv</span> <span class="nv">g</span><span class="p">)</span>
+       <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">x</span><span class="p">)</span>
+         <span class="p">(</span><span class="nb">/</span> <span class="p">(</span><span class="nb">-</span> <span class="p">(</span><span class="nf">g</span> <span class="p">(</span><span class="nb">+</span> <span class="nv">x</span> <span class="nv">dx</span><span class="p">))</span> <span class="p">(</span><span class="nf">g</span> <span class="nv">x</span><span class="p">))</span>
+            <span class="nv">dx</span><span class="p">)))</span>
+        
+     <span class="p">(</span><span class="k">define</span> <span class="nv">dx</span> <span class="mf">0.00001</span><span class="p">)</span>
+</code></pre></div>    </div>
+    <p>Like <code class="language-plaintext highlighter-rouge">average-damp</code>, <code class="language-plaintext highlighter-rouge">deriv</code> is a procedure that takes a procedure as argument and returns a procedure
+ as value. For example, to approximate the derivative of \(x\mapsto x^3\) at 5 (whose exact value is 75)
+ we can evaluate</p>
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>       <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">cube</span> <span class="nv">x</span><span class="p">)</span> <span class="p">(</span><span class="nb">*</span> <span class="nv">x</span> <span class="nv">x</span> <span class="nv">x</span><span class="p">))</span>
+        
+     <span class="p">((</span><span class="nf">deriv</span> <span class="nv">cube</span><span class="p">)</span> <span class="mi">5</span><span class="p">)</span>
+     <span class="c1">;; yields 75.00014999664018</span>
+</code></pre></div>    </div>
+    <p>With the aid of <code class="language-plaintext highlighter-rouge">deriv</code>, we can express Newton’s method as a fixed-point process:</p>
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>     <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">newton-transform</span> <span class="nv">g</span><span class="p">)</span>
+       <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">x</span><span class="p">)</span>
+         <span class="p">(</span><span class="nb">-</span> <span class="nv">x</span> <span class="p">(</span><span class="nb">/</span> <span class="p">(</span><span class="nf">g</span> <span class="nv">x</span><span class="p">)</span> <span class="p">((</span><span class="nf">deriv</span> <span class="nv">g</span><span class="p">)</span> <span class="nv">x</span><span class="p">)))))</span>
+        
+     <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">newtons-method</span> <span class="nv">g</span> <span class="nv">guess</span><span class="p">)</span>
+       <span class="p">(</span><span class="nf">fixed-point</span> <span class="p">(</span><span class="nf">newton-transform</span> <span class="nv">g</span><span class="p">)</span> <span class="nv">guess</span><span class="p">))</span>
+</code></pre></div>    </div>
+
+    <p>The <code class="language-plaintext highlighter-rouge">newton-transform</code> procedure expresses the formula at the beginning of this section, and
+ <code class="language-plaintext highlighter-rouge">newtons-method</code> is readily defined in terms of this. It takes arguments a procedure that computes
+ the function for which we want to find a zero, together with an initial guess. For instance,
+ to find the square root of \(x\), we can use Newton’s method to find a zero of the function
+ \(y \mapsto y^2-x\) starting with an initial value of 1.0. This provides yet another form of the 
+ square-root procedure:</p>
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>     <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nb">sqrt</span> <span class="nv">x</span><span class="p">)</span>
+       <span class="p">(</span><span class="nf">newtons-method</span> <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">y</span><span class="p">)</span> <span class="p">(</span><span class="nb">-</span> <span class="p">(</span><span class="nf">square</span> <span class="nv">y</span><span class="p">)</span> <span class="nv">x</span><span class="p">))</span>
+                       <span class="mf">1.0</span><span class="p">))</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p>Abstractions and first-class procedures</p>
+
+    <p>We’ve seen two ways to express the square-root computation as an instance of a more general method, 
+once as a fixed-point search and once using Newton’s method. Since Newton’s method was itself
+expressed as a fixed-point process, we actually saw two ways to compute square roots as fixed points.</p>
+
+    <p><strong>Each method begins with a function and finds a fixed point of some transformation of the function</strong>.
+We can express this general idea itself as a procedure:</p>
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nf">fixed-point-of-transform</span> <span class="nv">g</span> <span class="nv">transform</span> <span class="nv">guess</span><span class="p">)</span>
+      <span class="p">(</span><span class="nf">fixed-point</span> <span class="p">(</span><span class="nf">transform</span> <span class="nv">g</span><span class="p">)</span> <span class="nv">guess</span><span class="p">))</span>
+</code></pre></div>    </div>
+    <p>This very general procedure takes as its arguments a procedure <code class="language-plaintext highlighter-rouge">g</code> that computes some function,
+a function that transforms <code class="language-plaintext highlighter-rouge">g</code>, and an initial guess. The returned result is a fixed point of the 
+transformed function.</p>
+
+    <p>Using this abstraction, we can recast the first square-root computation from this section (where we 
+look for a fixed point of the average-damped version of \(y\mapsto x/y\)) as an instance of this 
+general method:</p>
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nb">sqrt</span> <span class="nv">x</span><span class="p">)</span>
+      <span class="p">(</span><span class="nf">fixed-point-of-transform</span> <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">y</span><span class="p">)</span> <span class="p">(</span><span class="nb">/</span> <span class="nv">x</span> <span class="nv">y</span><span class="p">))</span>
+                                <span class="nv">average-damp</span>
+                                <span class="mf">1.0</span><span class="p">))</span>
+</code></pre></div>    </div>
+    <p>Similarly, we can express the second square-root computation from this section (an instance of
+Newton’s method that finds a fixed point of the Newton transform \(y\mapsto y^2 - x\)) as</p>
+    <div class="language-scheme highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="p">(</span><span class="k">define</span> <span class="p">(</span><span class="nb">sqrt</span> <span class="nv">x</span><span class="p">)</span>
+      <span class="p">(</span><span class="nf">fixed-point-of-transform</span> <span class="p">(</span><span class="k">lambda</span> <span class="p">(</span><span class="nf">y</span><span class="p">)</span> <span class="p">(</span><span class="nb">-</span> <span class="p">(</span><span class="nf">square</span> <span class="nv">y</span><span class="p">)</span> <span class="nv">x</span><span class="p">))</span>
+                                <span class="nv">newton-transform</span>
+                                <span class="mf">1.0</span><span class="p">))</span>
+</code></pre></div>    </div>
+    <p>We began section 1.3 with the observation that compound procedures are a crucial abstraction mechanism,
+because they permit us to express general methods of computing as explicit elements in our programming
+language. Now we’ve seen how higher-order procedures permit us to manipulate these general methods
+to create further abstractions.</p>
+
+    <p><strong>As programmers, we should be alert to opportunities to identify the underlying abstractions in our 
+programs and to build upon them and generalize them to create more powerful abstractions.</strong>
+This is not to say that one should always write programs in the most abstract way possible;
+expert programmers know how to choose the level of abstraction appropriate to their task.
+But it is important to be able to think in terms of these abstractions, so that we can be ready to apply
+them in new contexts.</p>
+
+    <p>The significance of higher-order procedures is that they enable us to represent these abstractions 
+explicitly as elements in our programming language, so that they can be handled just like other
+computational elements.</p>
+
+    <p>In general, programming languages impose restrictions on the ways in which computational elements can
+be manipulated. Elements with the fewest restrictions are said to have <em>first-class</em> status.</p>
+
+    <p>Some of the “rights and privileges” of first-class elements are:</p>
+
+    <ul>
+      <li>They may be named by variables.</li>
+      <li>They may be passed as arguments to procedures.</li>
+      <li>They may be returned as the results of procedures.</li>
+      <li>They may be included in data structures.</li>
+    </ul>
+
+    <p><strong>Lisp, unlike other programming languages, awards procedures full first-class status. This poses 
+challenges for efficient implementation, but the resulting gain in expressive power is enormous.</strong>
+(The major implementation cost of first-class procedures is that allowing procedures to be returned
+as values requires reserving storage for a procedure’s free variables even while the procedure is not
+executing.)</p>
+  </li>
+</ol>
+
+:ET

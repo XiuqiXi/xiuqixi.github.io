@@ -1,0 +1,161 @@
+I"42<p>This post is my note I kept when I was reading the Introduction to Algorithms book.</p>
+
+<aside class="sidebar__right">
+<nav class="toc">
+    <header><h4 class="nav__title"><i class="fa fa-file-text"></i> Contents</h4></header>
+<ul class="toc__menu" id="markdown-toc">
+  <li><a href="#overview-of-string-matching-algorithms" id="markdown-toc-overview-of-string-matching-algorithms">Overview of String Matching Algorithms</a></li>
+  <li><a href="#notation-and-terminology" id="markdown-toc-notation-and-terminology">Notation and Terminology</a></li>
+  <li><a href="#kmp-implementation-in-c" id="markdown-toc-kmp-implementation-in-c">KMP Implementation in C++</a></li>
+</ul>
+
+  </nav>
+</aside>
+<p><span style="display:block; 	float:left; 	font-family:Georgia; 	font-size: 310%; 	font-weight: bold; 	line-height: 90%; 	margin-right: 6px; 	margin-bottom:-2px; 	margin-top: 7px;">S</span>tring matching problem is formalized as follows.</p>
+<ol>
+  <li>$T[1\cdots n]$ : An array of length $n$.</li>
+  <li>$P[1\cdots m]$ : An array of the pattern that we are looking for.</li>
+  <li>Assumption: Both elements of $P$ and $T$ are characters drawn from a finite alphabet $\Sigma$.</li>
+</ol>
+
+<p>According to problems, $\Sigma$ could be $\{0, 1\}$ or $\{a, b, \ldots, z \}$.</p>
+
+<p>And, to make describing the problem easier, we define the following concepts:</p>
+<ol>
+  <li><strong>$P$ occurs with shift s</strong> (starting from 0): Or pattern $P$ occurs beginning at position $s+1$(starting from 1) if
+$0 \leq s \leq n-m $ and $T[s+1\ldots s+m] = P[1\ldots m]$. And such a shift position is also called a <strong>valid shift</strong>.
+Otherwise, a shift is an <strong>invalid shift</strong>.</li>
+</ol>
+
+<p>Thus, the string matching is the problem of finding all valid shifts with which a given pattern $P$ occurs in a given text $T$.</p>
+
+<h1 id="overview-of-string-matching-algorithms">Overview of String Matching Algorithms</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Algorithm</th>
+      <th>Preprocessing Time</th>
+      <th>Matching Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Naive</td>
+      <td>0</td>
+      <td>$O((n-m+1)m)$</td>
+    </tr>
+    <tr>
+      <td>Rabin-Karp</td>
+      <td>$\Theta(m)$</td>
+      <td>$O((n-m+1)m)$</td>
+    </tr>
+    <tr>
+      <td>Finite Automaton</td>
+      <td>$O(m\vert \Sigma \vert)$</td>
+      <td>$\Theta(n)$</td>
+    </tr>
+    <tr>
+      <td>**Knuth-Morris-Pratt**</td>
+      <td>$\Theta(m)$</td>
+      <td>$\Theta(n)$</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The first time I saw this table, I was confused completely. The Rabin-Karp method is definitely off somewhere. Its total running time
+is worse than the Naive method. Yes, that’s true for the worst cases. But the Rabin-Karp algorithm works much better on average and
+in practice. And it generalizes nicely to other pattern-matching problems.</p>
+
+<h1 id="notation-and-terminology">Notation and Terminology</h1>
+<ul>
+  <li>$\Sigma ^ \ast$ : the set of all finite-length strings formed using characters from the alphabet $\Sigma$</li>
+  <li><strong>Concatenation</strong>: the concatenation of two strings $x$ and $y$ is denoted $xy$.</li>
+  <li><strong>Prefix</strong>: String $w$ is a prefix of a string $x$, denoted $w \sqsubset x$, if $x = wy$ for some string $y \in \Sigma^\ast$.</li>
+  <li><strong>Suffix</strong>: denoted $w \sqsupset x$, if $x = yw$ for some $y \in \Sigma^\ast$.</li>
+  <li><strong>Empty String</strong>: denoted $\varepsilon$</li>
+</ul>
+
+<p>By definition, empty string is both a suffix and a prefix of all strings.</p>
+
+<p>From the notations we already have, we can move forward to have the following lemma.</p>
+<ul>
+  <li><strong>Overlapping-suffix Lemma</strong> : Suppose that $x$, $y$, and $z$ are strings such that $x\sqsupset z$ and $y \sqsupset z$.
+If $|x| \leq |z|$, then $x \sqsupset y$. If $|x|\geq |y|$, then $y\sqsupset x$. If $|x| = |y|$, then x=y.</li>
+</ul>
+
+<h1 id="kmp-implementation-in-c">KMP Implementation in C++</h1>
+
+<figure class="highlight"><pre><code class="language-cpp" data-lang="cpp"><span class="cp">#include &lt;iostream&gt;
+#include &lt;cstring&gt;
+#include &lt;vector&gt;
+</span>
+<span class="cp">#define LOG(X) std::cout &lt;&lt; X &lt;&lt; std::endl
+</span>
+<span class="cm">/*
+ * KMP string matching algorithm
+ * Input:
+ * - T: the string where we are searching for pattern P
+ * - P: the target string pattern
+ * - shifts: Used to store all found valid shifts
+ */</span>
+<span class="kt">void</span> <span class="nf">KMP_matcher</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">T</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">P</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">shifts</span><span class="p">);</span>
+
+<span class="cm">/*
+ * Function to compute the prefix function, that is compare P against itself.
+ * Input:
+ * - P: the given pattern
+ * - pi: the array to store the results
+ */</span>
+<span class="kt">void</span> <span class="nf">compute_prefix_function</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">P</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">pi</span><span class="p">);</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">T</span> <span class="o">=</span> <span class="s">"bahjicbababaabhjicbabhji"</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">P</span> <span class="o">=</span> <span class="s">"aba"</span><span class="p">;</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">shifts</span><span class="p">;</span>
+  <span class="n">KMP_matcher</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">shifts</span><span class="p">);</span>
+  <span class="k">for</span><span class="p">(</span><span class="k">auto</span> <span class="n">i</span> <span class="o">:</span> <span class="n">shifts</span><span class="p">){</span>
+    <span class="n">LOG</span><span class="p">(</span><span class="n">i</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">KMP_matcher</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">T</span><span class="p">,</span>
+                 <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">P</span><span class="p">,</span>
+                 <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">shifts</span><span class="p">){</span>
+  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">T</span><span class="p">.</span><span class="n">length</span><span class="p">();</span>
+  <span class="kt">int</span> <span class="n">m</span> <span class="o">=</span> <span class="n">P</span><span class="p">.</span><span class="n">length</span><span class="p">();</span>
+  <span class="kt">int</span> <span class="n">pi</span><span class="p">[</span><span class="n">m</span><span class="p">];</span>
+  <span class="n">compute_prefix_function</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">pi</span><span class="p">);</span>
+
+  <span class="kt">int</span> <span class="n">q</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// the number of characters matched</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span> <span class="p">;</span> <span class="n">i</span> <span class="o">++</span><span class="p">){</span> <span class="c1">// scan through the string T</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">q</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">P</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="o">!=</span> <span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">]){</span>
+      <span class="n">q</span> <span class="o">=</span> <span class="n">pi</span><span class="p">[</span><span class="n">q</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="o">==</span> <span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">]){</span>
+      <span class="n">q</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">q</span> <span class="o">==</span> <span class="n">m</span><span class="p">){</span>
+      <span class="n">shifts</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="n">m</span><span class="p">);</span>
+      <span class="n">q</span> <span class="o">=</span> <span class="n">pi</span><span class="p">[</span><span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">compute_prefix_function</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">P</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">pi</span><span class="p">){</span>
+  <span class="kt">int</span> <span class="n">m</span> <span class="o">=</span> <span class="n">P</span><span class="p">.</span><span class="n">length</span><span class="p">();</span>
+  <span class="n">pi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">q</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">q</span> <span class="o">&lt;</span> <span class="n">m</span> <span class="p">;</span> <span class="n">q</span> <span class="o">++</span><span class="p">){</span>
+    <span class="k">while</span><span class="p">(</span><span class="n">k</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">P</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="n">P</span><span class="p">[</span><span class="n">q</span><span class="p">]){</span>
+      <span class="n">k</span> <span class="o">=</span> <span class="n">pi</span><span class="p">[</span><span class="n">k</span><span class="o">-</span><span class="mi">1</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">P</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="n">P</span><span class="p">[</span><span class="n">q</span><span class="p">]){</span>
+      <span class="n">k</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">pi</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="o">=</span> <span class="n">k</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
+
+:ET
