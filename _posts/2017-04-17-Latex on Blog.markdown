@@ -22,6 +22,7 @@ Consider a cold plasma made up of electrons and ions with mass $M_{i}$ and elect
 
 The equilibrium flows are such that there is no net current. We demand that the plasma is quasi-neutral. This provides a unique relationship between the equilibrium electron and ion density.
 
+### The dielectric tensor for the plasma
 $$
 0=\operatorname{Zen}_{z 0}-e n_{e 0}
 $$
@@ -40,4 +41,16 @@ Using the above relationship for nz0, we see that the electrons and ion fluids f
 
 $$
 \mathbf{u}_{e 0}=\mathbf{u}_{z 0}
+$$
+
+The dielectric relationship is obtained from $\epsilon(\omega, \mathbf{k})=\epsilon_{o} \mathbf{I}+(i / \omega) \overrightarrow{\vec{\sigma}}$ where $\overrightarrow{\vec{\sigma}}$ is the conductivity defnied from
+
+$$
+\mathrm{J}=\overrightarrow{\vec{\sigma}} \cdot \mathbf{E}
+$$
+
+The linearized current is obtained from,
+
+$$
+\tilde{\mathbf{J}}=\sum_{s} q_{s}\left(n_{s o} \tilde{\mathbf{u}}_{s}+\tilde{n}_{s} \mathbf{u}_{s o}\right)
 $$
