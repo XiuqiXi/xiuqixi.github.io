@@ -81,3 +81,15 @@ which, in combination with the fluid velocity perturbation gives
 $$
 \tilde{n}_{s}=n_{s o} \frac{\mathbf{k} \cdot \tilde{\mathbf{u}}_{s}}{\omega-\mathbf{k} \cdot \mathbf{u}_{s o}}=i \frac{q_{s} n_{s o}}{m_{s}\left(\omega-\mathbf{k} \cdot \mathbf{u}_{s o}\right)^{2}}\left[\mathbf{k} \cdot \tilde{\mathbf{E}}\left(1-\frac{\mathbf{k} \cdot \mathbf{u}_{s o}}{\omega}\right)+\frac{k^{2}}{\omega} \mathbf{u}_{s o} \cdot \tilde{\mathbf{E}}\right]
 $$
+
+As such, the perturbated plasma current becomes
+$$
+\tilde{\mathbf{J}}=i \sum_{s} \frac{n_{s o} q_{s}^{2}}{m_{s}\left(\omega-\mathbf{k} \cdot \mathbf{u}_{s o}\right)}\left[\tilde{\mathbf{E}}+\frac{\mathbf{k}}{\omega} \mathbf{u}_{s o} \cdot \tilde{\mathbf{E}}-\frac{\mathbf{k} \cdot \mathbf{u}_{s o}}{\omega} \tilde{\mathbf{E}}\right]
+$$
+
+$$
++i \sum_{s} \frac{n_{s o} q_{s}^{2}}{m_{s}\left(\omega-\mathbf{k} \cdot \mathbf{u}_{s o}\right)^{2}} \mathbf{u}_{s o}\left[\mathbf{k} \cdot \tilde{\mathbf{E}}\left(1-\frac{\mathbf{k} \cdot \mathbf{u}_{s o}}{\omega}\right)+\frac{k^{2}}{\omega} \mathbf{u}_{s o} \cdot \tilde{\mathbf{E}}\right]
+$$
+
+Introducing the plasma freuency for each species $\omega_{p s}^{2}=n_{s o} q_{s}^{2} / \epsilon_{o} m_{s}$, the conductivity tensor $\overrightarrow{\vec{\sigma}}$ can be identified
+$\overrightarrow{\vec{\sigma}}=\frac{i \epsilon_{o}}{\omega} \sum_{s} \omega_{p s}^{2}\left[\mathbf{I}+\frac{\mathbf{k u}_{s o}+\mathbf{u}_{s o} \mathbf{k}}{\left(\omega-\mathbf{k} \cdot \mathbf{u}_{s o}\right)}+\frac{k^{2}}{\left(\omega-\mathbf{k} \cdot \mathbf{u}_{s o}\right)^{2}} \mathbf{u}_{s o} \mathbf{u}_{s o}\right]$
