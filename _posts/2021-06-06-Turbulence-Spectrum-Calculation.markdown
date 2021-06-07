@@ -119,5 +119,6 @@ The energy sprectrum is,
 ```Matlab
 EK_avsphr = 0.5*(EK_U_avsphr + EK_V_avsphr + EK_W_avsphr);
 ```
+The figure shows the energy sprectrums.
 
 {% include figure image_path="/assets/images/energy_spectrum.jpg" alt="Energy spectrum" caption="One case through the calculation" %}
