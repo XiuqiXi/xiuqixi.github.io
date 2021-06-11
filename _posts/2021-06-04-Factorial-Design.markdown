@@ -22,3 +22,5 @@ In factoral design, a factor is a major independent variable. A level is a subdi
 3. Home visit(yes/no)
 
 There are three factors and each factor has two levels, that is a $2^3$ factoral design. 8 different conditions exist.
+
+Fractional Factorial design
