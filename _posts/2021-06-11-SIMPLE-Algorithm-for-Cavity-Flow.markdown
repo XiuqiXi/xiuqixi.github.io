@@ -1,6 +1,6 @@
 ---
 layout: single
-title:  "Cold Plasma in Moving Flow"
+title:  "Simple Algrithm for Cavity Flow"
 date:   2021-06-011 09:08:55 +0800
 #categories: iOS
 mathjax: true
