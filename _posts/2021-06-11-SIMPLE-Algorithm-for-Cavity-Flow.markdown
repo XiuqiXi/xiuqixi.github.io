@@ -22,13 +22,32 @@ Mass conservation:
 
 $$\frac{\partial u}{\partial x} + \frac{\partial u}{\partial y} = 0$$
 
+Momentum conservation:
 
 $$u \frac{\partial u}{\partial x}+v \frac{\partial u}{\partial y}=-\frac{1}{\rho} \frac{\partial p}{\partial x}+\nu\left(\frac{\partial^{2} u}{\partial x^{2}}+\frac{\partial^{2} u}{\partial y^{2}}\right)$$
 
 $$u \frac{\partial v}{\partial x}+v \frac{\partial v}{\partial y}=-\frac{1}{\rho} \frac{\partial p}{\partial y}+\nu\left(\frac{\partial^{2} v}{\partial x^{2}}+\frac{\partial^{2} v}{\partial y^{2}}\right)$$
 
 ## Discretization Method
+SIMPLE(Semi-Implicit Method for Pressure Linked Equations) method is designed to solve the incompressible flow, where the pressure acts as the dependent variable. The implicit discretization for the $\bold{u}$ momentum equation is,
 
+$$
+\begin{aligned}
+&\frac{u_{i, j}^{n+1}-u_{i, j}^{n}}{\Delta t}+u_{i, j}^{n+1} \frac{u_{i, j}^{n+1}-u_{i-1, j}^{n+1}}{\Delta x}+v_{i, j}^{n+1} \frac{u_{i, j}^{n+1}-u_{i, j-1}^{n+1}}{\Delta y}= \\
+&-\frac{1}{\rho} \frac{p_{i+1, j}^{n+1}-p_{i-1, j}^{n+1}}{2 \Delta x} \\
+&+\nu\left(\frac{u_{i+1, j}^{n+1}-2 u_{i, j}^{n+1}+u_{i-1, j}^{n+1}}{\Delta x^{2}}+\frac{u_{i, j+1}^{n+1}-2 u_{i, j}^{n+1}+u_{i, j-1}^{n+1}}{\Delta y^{2}}\right)
+\end{aligned}
+$$
+
+Similarly for the $\bold{v}$ momemtum equation is
+
+$$
+\begin{gathered}
+\frac{v_{i, j}^{n+1}-v_{i, j}^{n}}{\Delta t}+u_{i, j}^{n+1} \frac{v_{i, j}^{n+1}-v_{i-1, j}^{n+1}}{\Delta x}+v_{i, j}^{n+1} \frac{v_{i, j}^{n+1}-v_{i, j-1}^{n+1}}{\Delta y}= \\
+-\frac{1}{\rho} \frac{p_{i, j+1}^{n+1}-p_{i, j-1}^{n+1}}{2 \Delta y} \\
++\nu\left(\frac{v_{i+1, j}^{n+1}-2 v_{i, j}^{n+1}+v_{i-1, j}^{n+1}}{\Delta x^{2}}+\frac{v_{i, j+1}^{n+1}-2 v_{i, j}^{n+1}+v_{i, j-1}^{n+1}}{\Delta y^{2}}\right)
+\end{gathered}
+$$
 
 ## code
 
