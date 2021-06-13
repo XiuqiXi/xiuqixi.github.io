@@ -33,9 +33,9 @@ SIMPLE(Semi-Implicit Method for Pressure Linked Equations) method is designed to
 
 $$
 \begin{aligned}
-&\frac{u_{i, j}^{n+1}-u_{i, j}^{n}}{\Delta t}+u_{i+1/2, j}^{n+1} \frac{u_{i+1/2, j}^{n+1}-u_{i-1/2, j}^{n+1}}{\Delta x}+v_{i, j+1/2}^{n+1} \frac{u_{i, j+1/2}^{n+1}-u_{i, j-1/2}^{n+1}}{\Delta y}= \\
+&\frac{u_{i, j}^{n+1}-u_{i, j}^{n}}{\Delta t}+u_{i, j}^{n} \frac{u_{i+1/2, j}^{n+1}-u_{i-1/2, j}^{n+1}}{\Delta x}+v_{i, j}^{n} \frac{u_{i, j+1/2}^{n+1}-u_{i, j-1/2}^{n+1}}{\Delta y}= \\
 &-\frac{1}{\rho} \frac{p_{i+1, j}^{n+1}-p_{i, j}^{n+1}}{\Delta x} \\
-&+\nu\left(\frac{u_{i+3/2, j}^{n+1}-2 u_{i+1/2, j}^{n+1}+u_{i-1/2, j}^{n+1}}{\Delta x^{2}}+\frac{u_{i, j+3/2}^{n+1}-2 u_{i, j+1/2}^{n+1}+u_{i, j-1/2}^{n+1}}{\Delta y^{2}}\right)
+&+\nu\left(\frac{u_{i+3/2, j}^{n+1}-2 u_{i+1/2, j}^{n}+u_{i-1/2, j}^{n+1}}{\Delta x^{2}}+\frac{u_{i, j+3/2}^{n+1}-2 u_{i, j}^{n}+u_{i, j-1/2}^{n+1}}{\Delta y^{2}}\right)
 \end{aligned}
 $$
 
@@ -43,16 +43,22 @@ Similarly for the $\textbf{v}$ momemtum equation is
 
 $$
 \begin{gathered}
-\frac{v_{i, j}^{n+1}-v_{i, j}^{n}}{\Delta t}+u_{i+1/2, j}^{n+1} \frac{v_{i+1/2, j}^{n+1}-v_{i-1/2, j}^{n+1}}{\Delta x}+v_{i, j+1/2}^{n+1} \frac{v_{i, j+1/2}^{n+1}-v_{i, j-1/2}^{n+1}}{\Delta y}= \\
+\frac{v_{i, j}^{n+1}-v_{i, j}^{n}}{\Delta t}+u_{i, j}^{n} \frac{v_{i, j+1/2}^{n+1}-v_{i, j-1/2}^{n+1}}{\Delta x}+v_{i, j}^{n} \frac{v_{i, j+1/2}^{n+1}-v_{i, j-1/2}^{n+1}}{\Delta y}= \\
 -\frac{1}{\rho} \frac{p_{i, j+1}^{n+1}-p_{i, j}^{n+1}}{\Delta y} \\
-+\nu\left(\frac{v_{i+3/2, j}^{n+1}-2 v_{i+1/2, j}^{n+1}+v_{i-1/2, j}^{n+1}}{\Delta x^{2}}+\frac{v_{i, j+3/2}^{n+1}-2 v_{i, j+1/2}^{n+1}+v_{i, j-1/2}^{n+1}}{\Delta y^{2}}\right)
++\nu\left(\frac{v_{i+3/2, j}^{n+1}-2 v_{i+1/2, j}^{n}+v_{i-1/2, j}^{n+1}}{\Delta x^{2}}+\frac{v_{i, j+3/2}^{n+1}-2 v_{i, j}^{nArrheniusArrheniusArrheniusArrhenius}+v_{i, j-1/2}^{n+1}}{\Delta y^{2}}\right)
 \end{gathered}
 $$
 
+Where the fraction index is from staggered mesh as
+
+$$<>_{i+a/2, j+b/2} = \frac{<>_{i+a/2+1, j+b/2+1}+<>_{i+a/2-1, j+b/2-1}}{2}$$
+
+where $a, b\in \{-3, -2, -1, 0, 1, 2, 3 \}$.
 
 
 
-## code
+
+## Code
 
 
 ## Results
